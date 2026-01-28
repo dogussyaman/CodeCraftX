@@ -2,6 +2,7 @@ import { createClient } from "@/lib/supabase/server"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import { Badge } from "@/components/ui/badge"
 import { Users, Clock } from "lucide-react"
+import { HrApplicationActions } from "../_components/HrApplicationActions"
 
 export default async function HRApplicationsPage() {
   const supabase = await createClient()
@@ -36,6 +37,10 @@ export default async function HRApplicationsPage() {
         full_name,
         email,
         phone
+      ),
+      cvs:cv_id (
+        file_name,
+        file_url
       )
     `,
     )
@@ -93,14 +98,51 @@ export default async function HRApplicationsPage() {
                   {getStatusBadge(application.status)}
                 </div>
               </CardHeader>
-              <CardContent className="space-y-2">
-                <div className="text-sm text-muted-foreground">
+              <CardContent className="space-y-3">
+                <div className="text-sm text-muted-foreground space-y-1">
                   <div>Email: {application.profiles?.email}</div>
                   {application.profiles?.phone && <div>Telefon: {application.profiles.phone}</div>}
+                  {typeof application.expected_salary === "number" && (
+                    <div>
+                      Maaş beklentisi:{" "}
+                      <span className="font-medium text-foreground">
+                        {application.expected_salary.toLocaleString("tr-TR")} ₺
+                      </span>
+                    </div>
+                  )}
+                  {application.cvs?.file_url && (
+                    <div>
+                      CV:{" "}
+                      <a
+                        href={application.cvs.file_url}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="text-primary hover:underline"
+                      >
+                        {application.cvs.file_name || "CV'yi görüntüle"}
+                      </a>
+                    </div>
+                  )}
                 </div>
                 <div className="flex items-center gap-1 text-xs text-muted-foreground">
                   <Clock className="size-3" />
                   Başvuru: {formatDate(application.created_at)}
+                </div>
+                {application.cover_letter && (
+                  <div className="pt-2 border-t border-border/40 text-sm">
+                    <div className="font-medium text-foreground mb-1">Ön yazı</div>
+                    <p className="text-muted-foreground whitespace-pre-line line-clamp-4">
+                      {application.cover_letter}
+                    </p>
+                  </div>
+                )}
+                <div className="pt-2 border-t border-border/40 flex justify-end">
+                  <HrApplicationActions
+                    applicationId={application.id}
+                    initialStatus={application.status}
+                    developerId={application.developer_id}
+                    jobTitle={application.job_postings?.title || ""}
+                  />
                 </div>
               </CardContent>
             </Card>

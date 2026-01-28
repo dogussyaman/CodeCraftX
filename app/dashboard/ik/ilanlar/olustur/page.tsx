@@ -11,6 +11,7 @@ import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import { Textarea } from "@/components/ui/textarea"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
+import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group"
 import { AlertCircle } from "lucide-react"
 import Link from "next/link"
 
@@ -28,6 +29,8 @@ export default function CreateJobPage() {
     salary_min: "",
     salary_max: "",
     status: "draft",
+    ask_expected_salary: false,
+    expected_salary_required: false,
   })
   const [loading, setLoading] = useState(false)
   const [loadingCompany, setLoadingCompany] = useState(true)
@@ -103,6 +106,8 @@ export default function CreateJobPage() {
         experience_level: formData.experience_level || null,
         salary_min: formData.salary_min ? Number.parseInt(formData.salary_min) : null,
         salary_max: formData.salary_max ? Number.parseInt(formData.salary_max) : null,
+        ask_expected_salary: formData.ask_expected_salary,
+        expected_salary_required: formData.expected_salary_required,
         status: formData.status,
         created_by: user.id,
       })
@@ -312,6 +317,77 @@ export default function CreateJobPage() {
                   onChange={(e) => setFormData({ ...formData, salary_max: e.target.value })}
                   placeholder="45000"
                 />
+              </div>
+
+              <div className="space-y-4 md:col-span-2">
+                <div className="rounded-md border border-border/50 p-4 space-y-4">
+                  <div>
+                    <Label className="text-base font-medium mb-2 block">
+                      Başvuru formunda adaydan net maaş beklentisi istenecek mi?
+                    </Label>
+                    <RadioGroup
+                      value={formData.ask_expected_salary ? "yes" : "no"}
+                      onValueChange={(value) =>
+                        setFormData((prev) => ({
+                          ...prev,
+                          ask_expected_salary: value === "yes",
+                          // Hayır seçilirse zorunluluk da false olsun
+                          expected_salary_required: value === "yes" ? prev.expected_salary_required : false,
+                        }))
+                      }
+                      className="flex gap-6"
+                    >
+                      <div className="flex items-center space-x-2">
+                        <RadioGroupItem value="yes" id="ask_salary_yes" />
+                        <Label htmlFor="ask_salary_yes" className="font-normal cursor-pointer">
+                          Evet
+                        </Label>
+                      </div>
+                      <div className="flex items-center space-x-2">
+                        <RadioGroupItem value="no" id="ask_salary_no" />
+                        <Label htmlFor="ask_salary_no" className="font-normal cursor-pointer">
+                          Hayır
+                        </Label>
+                      </div>
+                    </RadioGroup>
+                  </div>
+
+                  {formData.ask_expected_salary && (
+                    <div className="pt-2 border-t border-border/40">
+                      <Label className="text-base font-medium mb-2 block">
+                        Maaş beklentisi alanı zorunlu olsun mu?
+                      </Label>
+                      <RadioGroup
+                        value={formData.expected_salary_required ? "yes" : "no"}
+                        onValueChange={(value) =>
+                          setFormData((prev) => ({
+                            ...prev,
+                            expected_salary_required: value === "yes",
+                          }))
+                        }
+                        className="flex gap-6"
+                      >
+                        <div className="flex items-center space-x-2">
+                          <RadioGroupItem value="yes" id="required_yes" />
+                          <Label htmlFor="required_yes" className="font-normal cursor-pointer">
+                            Evet
+                          </Label>
+                        </div>
+                        <div className="flex items-center space-x-2">
+                          <RadioGroupItem value="no" id="required_no" />
+                          <Label htmlFor="required_no" className="font-normal cursor-pointer">
+                            Hayır
+                          </Label>
+                        </div>
+                      </RadioGroup>
+                    </div>
+                  )}
+
+                  <p className="text-xs text-muted-foreground pt-2">
+                    Adaylar başvuru yaparken tek bir net maaş beklentisi yazacak. Bu bilgi sadece ilanınıza başvuran aday için
+                    saklanır.
+                  </p>
+                </div>
               </div>
             </div>
 

@@ -21,6 +21,12 @@ export default async function ApplicationsPage() {
         companies:company_id (
           name
         )
+      ),
+      application_notes (
+        id,
+        title,
+        content,
+        is_visible_to_developer
       )
     `,
     )
@@ -78,8 +84,8 @@ export default async function ApplicationsPage() {
                   {getStatusBadge(application.status)}
                 </div>
               </CardHeader>
-              <CardContent>
-                <div className="flex items-center gap-4 text-sm text-muted-foreground">
+              <CardContent className="space-y-3">
+                <div className="flex flex-wrap items-center gap-4 text-sm text-muted-foreground">
                   <div className="flex items-center gap-1">
                     <Clock className="size-4" />
                     Başvuru tarihi: {formatDate(application.created_at)}
@@ -89,6 +95,22 @@ export default async function ApplicationsPage() {
                     <span className="capitalize">{application.job_postings.job_type.replace("-", " ")}</span>
                   )}
                 </div>
+                {typeof application.expected_salary === "number" && (
+                  <div className="text-sm text-muted-foreground">
+                    Sizin maaş beklentiniz:{" "}
+                    <span className="font-medium text-foreground">
+                      {application.expected_salary.toLocaleString("tr-TR")} ₺
+                    </span>
+                  </div>
+                )}
+                {application.application_notes && application.application_notes.length > 0 && (
+                  <div className="pt-2 border-t border-border/40 text-sm">
+                    <div className="font-medium text-foreground mb-1">Şirketten mesaj</div>
+                    <p className="text-muted-foreground whitespace-pre-line">
+                      {application.application_notes[0].content}
+                    </p>
+                  </div>
+                )}
               </CardContent>
             </Card>
           ))}

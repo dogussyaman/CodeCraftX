@@ -33,6 +33,11 @@ export function JobApplyModal({ jobId, jobTitle, isOpen, onClose }: JobApplyModa
     const [saveAsTemplate, setSaveAsTemplate] = useState(false)
     const [templateTitle, setTemplateTitle] = useState("")
 
+    // Maaş beklentisi
+    const [askExpectedSalary, setAskExpectedSalary] = useState(false)
+    const [expectedSalaryRequired, setExpectedSalaryRequired] = useState(false)
+    const [expectedSalary, setExpectedSalary] = useState<string>("")
+
     const [loading, setLoading] = useState(false)
     const [fetchingData, setFetchingData] = useState(false)
     const supabase = createClient()
@@ -44,6 +49,21 @@ export function JobApplyModal({ jobId, jobTitle, isOpen, onClose }: JobApplyModa
             try {
                 const { data: { user } } = await supabase.auth.getUser()
                 if (!user) return
+
+                // İlan ayarlarını getir (maaş beklentisi)
+                const { data: jobSettings } = await supabase
+                    .from("job_postings")
+                    .select("ask_expected_salary, expected_salary_required")
+                    .eq("id", jobId)
+                    .maybeSingle()
+
+                if (jobSettings) {
+                    setAskExpectedSalary(!!jobSettings.ask_expected_salary)
+                    setExpectedSalaryRequired(!!jobSettings.expected_salary_required)
+                } else {
+                    setAskExpectedSalary(false)
+                    setExpectedSalaryRequired(false)
+                }
 
                 // Fetch CVs
                 const { data: cvData } = await supabase
@@ -79,8 +99,9 @@ export function JobApplyModal({ jobId, jobTitle, isOpen, onClose }: JobApplyModa
             setTemplateTitle("")
             setCoverLetter("")
             setSelectedTemplateId("")
+            setExpectedSalary("")
         }
-    }, [isOpen, supabase])
+    }, [isOpen, supabase, jobId])
 
     const handleTemplateChange = (templateId: string) => {
         setSelectedTemplateId(templateId)
@@ -104,6 +125,24 @@ export function JobApplyModal({ jobId, jobTitle, isOpen, onClose }: JobApplyModa
                 toast.error("Lütfen bir CV seçin")
                 setLoading(false)
                 return
+            }
+
+            // Maaş beklentisi kontrolü
+            if (askExpectedSalary && expectedSalaryRequired && !expectedSalary.trim()) {
+                toast.error("Lütfen maaş beklentinizi girin")
+                setLoading(false)
+                return
+            }
+
+            let expectedSalaryValue: number | null = null
+            if (expectedSalary.trim()) {
+                const parsed = Number(expectedSalary)
+                if (Number.isNaN(parsed) || parsed < 0) {
+                    toast.error("Lütfen geçerli bir maaş beklentisi girin")
+                    setLoading(false)
+                    return
+                }
+                expectedSalaryValue = parsed
             }
 
             // Template Saving Logic
@@ -154,6 +193,7 @@ export function JobApplyModal({ jobId, jobTitle, isOpen, onClose }: JobApplyModa
                     developer_id: user.id,
                     cv_id: selectedCvId,
                     cover_letter: coverLetter || null,
+                    expected_salary: expectedSalaryValue,
                 })
                 .select()
                 .single()
@@ -322,6 +362,27 @@ export function JobApplyModal({ jobId, jobTitle, isOpen, onClose }: JobApplyModa
                             </div>
                         )}
                     </div>
+
+                    {/* Maaş Beklentisi Bölümü */}
+                    {askExpectedSalary && (
+                        <div className="space-y-2">
+                            <Label htmlFor="expected-salary">
+                                Maaş Beklentiniz (aylık, net TL)
+                                {expectedSalaryRequired && <span className="text-destructive ml-1">*</span>}
+                            </Label>
+                            <Input
+                                id="expected-salary"
+                                type="number"
+                                placeholder="Örn: 65000"
+                                value={expectedSalary}
+                                onChange={(e) => setExpectedSalary(e.target.value)}
+                                className="max-w-xs"
+                            />
+                            <p className="text-[11px] text-muted-foreground">
+                                Bu bilgi yalnızca bu ilana yaptığınız başvuru için İK ekibiyle paylaşılır.
+                            </p>
+                        </div>
+                    )}
                 </div>
 
                 <div className="flex gap-3 justify-end">

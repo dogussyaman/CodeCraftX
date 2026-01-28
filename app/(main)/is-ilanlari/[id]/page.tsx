@@ -54,7 +54,6 @@ export default async function IsIlaniDetayPage({ params }: { params: Promise<{ i
       )
     `)
     .eq("id", id)
-    .eq("status", "active")
     .single()
 
   if (error || !ilan) {
@@ -107,6 +106,12 @@ export default async function IsIlaniDetayPage({ params }: { params: Promise<{ i
                   )}
                 </div>
                 <JobApplyButton jobId={ilan.id} jobTitle={ilan.title} label="Başvuru Yap" hasApplied={hasApplied} isAuthenticated={!!user} />
+                {ilan.ask_expected_salary && (
+                  <p className="mt-2 text-xs text-muted-foreground">
+                    Bu ilan için başvuru formunda maaş beklentiniz{" "}
+                    {ilan.expected_salary_required ? "zorunlu olarak" : "opsiyonel olarak"} sorulacaktır.
+                  </p>
+                )}
               </div>
             </div>
 

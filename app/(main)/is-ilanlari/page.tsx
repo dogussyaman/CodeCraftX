@@ -21,7 +21,6 @@ export default async function IsIlanlariPage() {
         )
       )
     `)
-    .eq("status", "active")
     .order("created_at", { ascending: false })
     .limit(20)
 
