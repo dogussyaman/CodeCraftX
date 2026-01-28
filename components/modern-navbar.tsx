@@ -56,13 +56,17 @@ export function ModernNavbar() {
         if (!isMounted) return;
         
         setUser(currentUser);
+        // Kullanıcı bilgisi geldiğinde loading'i false yap, butonları göster
+        setLoading(false);
 
+        // Rol bilgisini arka planda yükle (non-blocking)
         if (currentUser) {
-          await fetchUserRole(currentUser.id);
+          fetchUserRole(currentUser.id).catch((error) => {
+            console.error("Role fetch error:", error);
+          });
         }
       } catch (error) {
         console.error("Auth initialization error:", error);
-      } finally {
         if (isMounted) {
           setLoading(false);
         }
@@ -78,13 +82,17 @@ export function ModernNavbar() {
       
       const currentUser = session?.user || null;
       setUser(currentUser);
+      // Kullanıcı bilgisi geldiğinde loading'i false yap
+      setLoading(false);
 
+      // Rol bilgisini arka planda yükle (non-blocking)
       if (currentUser) {
-        await fetchUserRole(currentUser.id);
+        fetchUserRole(currentUser.id).catch((error) => {
+          console.error("Role fetch error:", error);
+        });
       } else {
         setRole(null);
       }
-      setLoading(false);
     });
 
     return () => {
@@ -103,6 +111,8 @@ export function ModernNavbar() {
   };
 
   const getDashboardLink = () => {
+    // Rol bilgisi henüz yüklenmemişse default olarak geliştirici paneline yönlendir
+    // Dashboard sayfası kendi içinde doğru yönlendirmeyi yapacaktır
     if (role === "admin") return "/dashboard/admin";
     if (role === "hr") return "/dashboard/ik";
     return "/dashboard/gelistirici";

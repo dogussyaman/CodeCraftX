@@ -21,9 +21,10 @@ import { toast } from "sonner"
 interface CVDeleteButtonProps {
   cvId: string
   fileUrl: string
+  status?: string
 }
 
-export function CVDeleteButton({ cvId, fileUrl }: CVDeleteButtonProps) {
+export function CVDeleteButton({ cvId, fileUrl, status }: CVDeleteButtonProps) {
   const [loading, setLoading] = useState(false)
   const [open, setOpen] = useState(false)
   const router = useRouter()
@@ -67,7 +68,12 @@ export function CVDeleteButton({ cvId, fileUrl }: CVDeleteButtonProps) {
   return (
     <AlertDialog open={open} onOpenChange={setOpen}>
       <AlertDialogTrigger asChild>
-        <Button variant="outline" size="sm" className="text-destructive hover:text-destructive">
+        <Button 
+          variant="outline" 
+          size="sm" 
+          className="text-destructive hover:text-destructive"
+          disabled={loading}
+        >
           <Trash2 className="mr-2 size-4" />
           Sil
         </Button>

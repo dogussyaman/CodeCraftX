@@ -106,24 +106,70 @@ export default async function CVPage() {
                 </div>
               </CardHeader>
               <CardContent>
-                <div className="flex items-center justify-between">
-                  <div className="text-sm text-muted-foreground">
-                    {cv.parsed_data && (
-                      <div className="flex gap-4">
-                        <span>
-                          Tespit edilen yetenekler:{" "}
-                          <span className="font-medium">{cv.parsed_data.skills?.length || 0}</span>
-                        </span>
+                <div className="flex flex-col gap-3">
+                  {/* Analiz Özeti */}
+                  {cv.parsed_data && (
+                    <div className="space-y-2 text-sm">
+                      {cv.parsed_data.summary && (
+                        <p className="text-muted-foreground leading-relaxed">
+                          <span className="font-medium text-foreground">Özet:</span>{" "}
+                          {cv.parsed_data.summary}
+                        </p>
+                      )}
+
+                      <div className="flex flex-wrap gap-3">
+                        {cv.parsed_data.experience_years && (
+                          <span className="inline-flex items-center rounded-full bg-muted px-3 py-1 text-xs font-medium text-muted-foreground">
+                            Toplam deneyim: {cv.parsed_data.experience_years} yıl
+                          </span>
+                        )}
+
+                        {cv.parsed_data.seniority && (
+                          <span className="inline-flex items-center rounded-full bg-blue-50 px-3 py-1 text-xs font-medium text-blue-700 dark:bg-blue-950/40 dark:text-blue-300">
+                            Seviye: {cv.parsed_data.seniority}
+                          </span>
+                        )}
                       </div>
-                    )}
-                  </div>
-                  <div className="flex gap-2">
+
+                      {cv.parsed_data.roles?.length > 0 && (
+                        <div className="flex flex-wrap items-center gap-2">
+                          <span className="text-xs font-medium text-muted-foreground">Roller:</span>
+                          {cv.parsed_data.roles.map((role: string) => (
+                            <Badge key={role} variant="outline" className="text-xs">
+                              {role}
+                            </Badge>
+                          ))}
+                        </div>
+                      )}
+
+                      {cv.parsed_data.skills?.length > 0 && (
+                        <div className="flex flex-col gap-1">
+                          <span className="text-xs font-medium text-muted-foreground">
+                            Tespit edilen yetenekler ({cv.parsed_data.skills.length}):
+                          </span>
+                          <div className="flex flex-wrap gap-1.5">
+                            {cv.parsed_data.skills.map((skill: string) => (
+                              <Badge
+                                key={skill}
+                                variant="secondary"
+                                className="text-xs bg-primary/5 text-foreground"
+                              >
+                                {skill}
+                              </Badge>
+                            ))}
+                          </div>
+                        </div>
+                      )}
+                    </div>
+                  )}
+
+                  <div className="flex items-center justify-end gap-2 pt-1">
                     <Button variant="outline" size="sm" asChild>
                       <Link href={cv.file_url} target="_blank">
                         Görüntüle
                       </Link>
                     </Button>
-                    <CVDeleteButton cvId={cv.id} fileUrl={cv.file_url} />
+                    <CVDeleteButton cvId={cv.id} fileUrl={cv.file_url} status={cv.status} />
                   </div>
                 </div>
               </CardContent>
