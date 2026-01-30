@@ -5,17 +5,28 @@ import { useRouter, useSearchParams } from "next/navigation"
 import { useForm } from "react-hook-form"
 import { zodResolver } from "@hookform/resolvers/zod"
 import { createClient } from "@/lib/supabase/client"
+import { MT_DASHBOARD_LOGIN_URL } from "@/lib/constants"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import Link from "next/link"
 import { signInSchema, type SignInFormValues } from "@/lib/validations"
 import { CheckCircle2 } from "lucide-react"
+import {
+    AlertDialog,
+    AlertDialogAction,
+    AlertDialogContent,
+    AlertDialogDescription,
+    AlertDialogFooter,
+    AlertDialogHeader,
+    AlertDialogTitle,
+} from "@/components/ui/alert-dialog"
 
 export function LoginForm() {
     const [error, setError] = useState<string | null>(null)
     const [success, setSuccess] = useState<string | null>(null)
     const [isLoading, setIsLoading] = useState(false)
+    const [showMtDialog, setShowMtDialog] = useState(false)
     const router = useRouter()
     const searchParams = useSearchParams()
 
@@ -62,9 +73,8 @@ export function LoginForm() {
 
                 if (profile?.role === "mt") {
                     await supabase.auth.signOut()
-                    setError(
-                        "Bu hesap müşteri temsilcisi (MT) paneli içindir. Lütfen MT Dashboard uygulamasından giriş yapın."
-                    )
+                    setError(null)
+                    setShowMtDialog(true)
                     return
                 }
                 if (profile?.role === "admin" || profile?.role === "platform_admin") {
@@ -219,6 +229,27 @@ export function LoginForm() {
                     Kayıt Ol
                 </Link>
             </p>
+
+            <AlertDialog open={showMtDialog} onOpenChange={setShowMtDialog}>
+                <AlertDialogContent>
+                    <AlertDialogHeader>
+                        <AlertDialogTitle>Müşteri Temsilcisi Hesabı</AlertDialogTitle>
+                        <AlertDialogDescription>
+                            Bu hesap müşteri temsilcisi (MT) paneli içindir. Giriş yapmak için MT Dashboard&apos;a
+                            yönlendirileceksiniz.
+                        </AlertDialogDescription>
+                    </AlertDialogHeader>
+                    <AlertDialogFooter>
+                        <AlertDialogAction
+                            onClick={() => {
+                                window.location.href = MT_DASHBOARD_LOGIN_URL
+                            }}
+                        >
+                            MT Dashboard&apos;a Git
+                        </AlertDialogAction>
+                    </AlertDialogFooter>
+                </AlertDialogContent>
+            </AlertDialog>
         </div>
     )
 }

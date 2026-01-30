@@ -5,6 +5,7 @@ import type React from "react"
 import { useState, useEffect } from "react"
 import { useRouter } from "next/navigation"
 import { createClient } from "@/lib/supabase/client"
+import type { CompanyPlan } from "@/lib/types"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
@@ -15,8 +16,11 @@ import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group"
 import { AlertCircle } from "lucide-react"
 import Link from "next/link"
 
+const JOB_LIMITS: Record<Exclude<CompanyPlan, "premium">, number> = { free: 5, orta: 100 }
+
 export default function CreateJobPage() {
-  const [company, setCompany] = useState<any | null>(null)
+  const [company, setCompany] = useState<{ id: string; plan?: CompanyPlan; [key: string]: unknown } | null>(null)
+  const [activeJobCount, setActiveJobCount] = useState<number>(0)
   const [formData, setFormData] = useState({
     company_id: "",
     title: "",
@@ -73,6 +77,13 @@ export default function CreateJobPage() {
           ...prev,
           company_id: profile.company_id,
         }))
+
+        const { count } = await supabase
+          .from("job_postings")
+          .select("id", { count: "exact", head: true })
+          .eq("company_id", profile.company_id)
+          .eq("status", "active")
+        setActiveJobCount(count ?? 0)
       }
 
       setLoadingCompany(false)
@@ -81,8 +92,13 @@ export default function CreateJobPage() {
     fetchCompanyForHR()
   }, [])
 
+  const companyPlan: CompanyPlan | undefined = company?.plan ?? "free"
+  const planLimit = companyPlan && companyPlan !== "premium" ? JOB_LIMITS[companyPlan] : null
+  const atJobLimit = planLimit != null && activeJobCount >= planLimit
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
+    if (atJobLimit) return
     setLoading(true)
     setError(null)
 
@@ -94,6 +110,10 @@ export default function CreateJobPage() {
 
       if (!user) throw new Error("Kullanıcı bulunamadı")
       if (!formData.company_id) throw new Error("Lütfen bir şirket seçin")
+      if (atJobLimit)
+        throw new Error(
+          `İlan limitine ulaştınız (${companyPlan === "free" ? "Free" : "Orta"} plan: ${planLimit} ilan). Plan yükseltmek için fiyatlandırma sayfamızı inceleyin.`
+        )
 
       const { error: dbError } = await supabase.from("job_postings").insert({
         company_id: formData.company_id,
@@ -163,6 +183,24 @@ export default function CreateJobPage() {
           ← Geri Dön
         </Link>
       </div>
+
+      {atJobLimit && (
+        <div className="mb-6 flex items-start gap-2 rounded-lg border border-amber-500/30 bg-amber-500/10 p-4 text-sm text-amber-800 dark:text-amber-200">
+          <AlertCircle className="size-5 shrink-0 mt-0.5" />
+          <div>
+            <p className="font-medium">İlan limitine ulaştınız</p>
+            <p className="mt-1 text-muted-foreground">
+              {companyPlan === "free" && "Free plan: en fazla 5 aktif ilan."}
+              {companyPlan === "orta" && "Orta plan: en fazla 100 aktif ilan."}
+              Plan yükseltmek için{" "}
+              <Link href="/#ucretlendirme" className="text-primary hover:underline font-medium">
+                fiyatlandırma sayfamızı
+              </Link>{" "}
+              inceleyin.
+            </p>
+          </div>
+        </div>
+      )}
 
       <Card>
         <CardHeader>
@@ -399,8 +437,8 @@ export default function CreateJobPage() {
             )}
 
             <div className="flex gap-3">
-              <Button type="submit" disabled={loading} className="flex-1">
-                {loading ? "Oluşturuluyor..." : "İlanı Oluştur"}
+              <Button type="submit" disabled={loading || atJobLimit} className="flex-1">
+                {loading ? "Oluşturuluyor..." : atJobLimit ? "İlan limitine ulaştınız" : "İlanı Oluştur"}
               </Button>
               <Button type="button" variant="outline" asChild>
                 <Link href="/dashboard/ik/ilanlar">İptal</Link>

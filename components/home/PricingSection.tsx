@@ -2,6 +2,7 @@
 
 import { useState } from "react"
 import Link from "next/link"
+import { useAuth } from "@/hooks/use-auth"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent } from "@/components/ui/card"
 import { Badge } from "@/components/ui/badge"
@@ -35,44 +36,47 @@ interface PricingPlan {
 
 const plans: PricingPlan[] = [
     {
-        name: "Başlangıç",
+        name: "Free",
         description: "Bireyler ve küçük projeler için ideal",
-        monthlyPrice: 290,
-        yearlyPrice: 232,
+        monthlyPrice: 0,
+        yearlyPrice: 0,
         features: [
-            { text: "5 takım üyesine kadar", tooltip: "Projenize 5 kişiye kadar üye ekleyebilirsiniz" },
-            { text: "10GB depolama alanı", tooltip: "CV, belge ve dosyalar için güvenli alan" },
+            { text: "En fazla 5 ilan", tooltip: "Aktif iş ilanı hakkı" },
+            { text: "Temel destek", tooltip: "Destek talebi ve yanıt" },
+            { text: "E-posta destek", tooltip: "Destek talebi için e-posta kanalı" },
             { text: "Temel analitik", tooltip: "Başvuru ve eşleşme istatistikleri" },
         ],
-        cta: "Planı Satın Al",
-        ctaLink: "/auth/kayit?plan=baslangic",
+        cta: "Ücretsiz Başla",
+        ctaLink: "/auth/kayit?plan=free",
     },
     {
-        name: "Standart",
+        name: "Orta",
         description: "Büyüyen takımlar ve işletmeler için ideal",
-        monthlyPrice: 490,
-        yearlyPrice: 392,
+        monthlyPrice: 35,
+        yearlyPrice: 28,
         popular: true,
         features: [
-            { text: "20 takım üyesine kadar", tooltip: "Ekibinizi genişletin" },
-            { text: "50GB depolama alanı", tooltip: "Daha fazla dosya ve belge saklayın" },
+            { text: "100 ilan hakkı", tooltip: "Aylık aktif ilan limiti" },
+            { text: "Destek ve canlı destek", tooltip: "E-posta ve canlı destek erişimi" },
+            { text: "Öncelikli destek", tooltip: "Daha hızlı yanıt süresi" },
             { text: "Gelişmiş analitik", tooltip: "Detaylı raporlar ve grafikler" },
-            { text: "Öncelikli destek", tooltip: "7/24 öncelikli teknik destek" },
+            { text: "10 İK çalışanına kadar", tooltip: "Şirketinize ekleyebileceğiniz İK sayısı" },
         ],
         cta: "Planı Satın Al",
-        ctaLink: "/auth/kayit?plan=standart",
+        ctaLink: "/auth/kayit?plan=orta",
     },
     {
         name: "Premium",
         description: "Büyük kurumlar ve ileri düzey ihtiyaçlar için",
-        monthlyPrice: 990,
-        yearlyPrice: 792,
+        monthlyPrice: 100,
+        yearlyPrice: 80,
         features: [
-            { text: "Sınırsız takım üyesi", tooltip: "Tüm ekibinizi dahil edin" },
-            { text: "250GB depolama alanı", tooltip: "Kurumsal düzeyde depolama" },
-            { text: "Özel analitik", tooltip: "Kişiselleştirilmiş raporlama paneli" },
-            { text: "7/24 premium destek", tooltip: "Özel hesap yöneticisi ile iletişim" },
-            { text: "White-label", tooltip: "Kendi markanızla kullanın" },
+            { text: "Sınırsız ilan hakkı", tooltip: "Aktif ilan limiti yok" },
+            { text: "Sınırsız İK çalışanı", tooltip: "Şirketinize ekleyebileceğiniz İK sayısı sınırsız" },
+            { text: "7/24 destek", tooltip: "Kesintisiz premium destek" },
+            { text: "Özel hesap yöneticisi", tooltip: "Size özel teknik ve iş geliştirme desteği" },
+            { text: "API erişimi", tooltip: "Entegrasyon ve otomasyon için API" },
+            { text: "White-label / özelleştirme", tooltip: "Kendi markanızla kullanım seçenekleri" },
         ],
         cta: "Planı Satın Al",
         ctaLink: "/auth/kayit?plan=premium",
@@ -83,12 +87,15 @@ function PricingCard({
     plan,
     billingPeriod,
     delay,
+    isCurrentPlan,
 }: {
     plan: PricingPlan
     billingPeriod: BillingPeriod
     delay: number
+    isCurrentPlan?: boolean
 }) {
     const price = billingPeriod === "monthly" ? plan.monthlyPrice : plan.yearlyPrice
+    const isHighlighted = plan.popular || isCurrentPlan
 
     return (
         <motion.div
@@ -102,7 +109,7 @@ function PricingCard({
                 className={cn(
                     "relative h-full flex flex-col transition-all duration-300",
                     "bg-card border-border hover:shadow-lg",
-                    plan.popular && "border-2 border-primary shadow-lg shadow-primary/10"
+                    isHighlighted && "border-2 border-primary shadow-lg shadow-primary/10"
                 )}
             >
                 {plan.popular && (
@@ -112,8 +119,15 @@ function PricingCard({
                         </Badge>
                     </div>
                 )}
+                {isCurrentPlan && !plan.popular && (
+                    <div className="absolute -top-3 left-1/2 -translate-x-1/2">
+                        <Badge className="bg-primary text-primary-foreground hover:bg-primary px-3 py-1 text-xs font-medium rounded-full">
+                            Mevcut Planınız
+                        </Badge>
+                    </div>
+                )}
 
-                <CardContent className="p-8 flex-grow flex flex-col">
+                <CardContent className="p-8 grow flex flex-col">
                     {/* Header */}
                     <div className="mb-6">
                         <h3 className="text-xl font-bold text-foreground">{plan.name}</h3>
@@ -123,8 +137,14 @@ function PricingCard({
                     {/* Price */}
                     <div className="mb-6">
                         <div className="flex items-baseline gap-1">
-                            <span className="text-5xl font-bold text-foreground">₺{price}</span>
-                            <span className="text-muted-foreground">/ay</span>
+                            {price === 0 ? (
+                                <span className="text-5xl font-bold text-foreground">Ücretsiz</span>
+                            ) : (
+                                <>
+                                    <span className="text-5xl font-bold text-foreground">${price}</span>
+                                    <span className="text-muted-foreground">/ay</span>
+                                </>
+                            )}
                         </div>
                     </div>
 
@@ -133,7 +153,7 @@ function PricingCard({
                         asChild
                         className={cn(
                             "w-full mb-8",
-                            plan.popular
+                            isHighlighted
                                 ? "bg-foreground text-background hover:bg-foreground/90"
                                 : "bg-muted text-foreground hover:bg-muted/80"
                         )}
@@ -142,9 +162,9 @@ function PricingCard({
                     </Button>
 
                     {/* Features */}
-                    <div className="flex-grow">
+                    <div className="grow">
                         <p className="text-sm font-medium text-foreground mb-4">
-                            {plan.name === "Başlangıç" ? "Neler dahil:" : plan.name === "Standart" ? "Başlangıç'taki her şey, artı:" : "Standart'taki her şey, artı:"}
+                            {plan.name === "Free" ? "Neler dahil:" : plan.name === "Orta" ? "Free'daki her şey, artı:" : "Orta'daki her şey, artı:"}
                         </p>
                         <TooltipProvider>
                             <ul className="space-y-3">
@@ -175,8 +195,13 @@ function PricingCard({
     )
 }
 
+const companyRoles = ["company", "company_admin", "hr"] as const
+
 export function PricingSection() {
     const [billingPeriod, setBillingPeriod] = useState<BillingPeriod>("annually")
+    const { role } = useAuth()
+    const isCompanyOrEmployee = role && companyRoles.includes(role as (typeof companyRoles)[number])
+    const freePlanIsCurrent = isCompanyOrEmployee
 
     return (
         <section id="ucretlendirme" className="container mx-auto px-4 py-20 md:py-32">
@@ -243,6 +268,7 @@ export function PricingSection() {
                         plan={plan}
                         billingPeriod={billingPeriod}
                         delay={idx * 0.1}
+                        isCurrentPlan={plan.name === "Free" ? freePlanIsCurrent : undefined}
                     />
                 ))}
             </div>

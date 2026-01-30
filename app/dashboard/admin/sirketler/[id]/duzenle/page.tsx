@@ -8,8 +8,10 @@ import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import { Textarea } from "@/components/ui/textarea"
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
 import { AlertCircle, Loader2, ArrowLeft } from "lucide-react"
 import Link from "next/link"
+import type { CompanyPlan } from "@/lib/types"
 
 export default function AdminEditCompanyPage({ params }: { params: Promise<{ id: string }> }) {
     const { id: companyId } = use(params)
@@ -20,6 +22,7 @@ export default function AdminEditCompanyPage({ params }: { params: Promise<{ id:
         website: "",
         location: "",
         employee_count: "",
+        plan: "free" as CompanyPlan,
     })
     const [loading, setLoading] = useState(true)
     const [saving, setSaving] = useState(false)
@@ -46,6 +49,7 @@ export default function AdminEditCompanyPage({ params }: { params: Promise<{ id:
                     website: data.website || "",
                     location: data.location || "",
                     employee_count: data.employee_count || "",
+                    plan: (data.plan as CompanyPlan) || "free",
                 })
             }
             setLoading(false)
@@ -76,6 +80,7 @@ export default function AdminEditCompanyPage({ params }: { params: Promise<{ id:
                     website: formData.website || null,
                     location: formData.location || null,
                     employee_count: formData.employee_count || null,
+                    plan: formData.plan,
                 })
                 .eq("id", companyId)
 
@@ -126,6 +131,23 @@ export default function AdminEditCompanyPage({ params }: { params: Promise<{ id:
                                 placeholder="Örn: Acme Technology"
                                 className="dark:bg-zinc-800/50 dark:border-zinc-700"
                             />
+                        </div>
+
+                        <div className="space-y-2">
+                            <Label htmlFor="plan">Plan</Label>
+                            <Select
+                                value={formData.plan}
+                                onValueChange={(value) => setFormData({ ...formData, plan: value as CompanyPlan })}
+                            >
+                                <SelectTrigger id="plan" className="dark:bg-zinc-800/50 dark:border-zinc-700">
+                                    <SelectValue placeholder="Plan seçin" />
+                                </SelectTrigger>
+                                <SelectContent>
+                                    <SelectItem value="free">Free</SelectItem>
+                                    <SelectItem value="orta">Orta</SelectItem>
+                                    <SelectItem value="premium">Premium</SelectItem>
+                                </SelectContent>
+                            </Select>
                         </div>
 
                         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">

@@ -39,7 +39,7 @@ async function processQueue(request: Request) {
     )
   }
 
-  const from = process.env.RESEND_FROM ?? "CodeCrafters <onboarding@resend.dev>"
+  const from = process.env.RESEND_FROM ?? "CodeCrafters <hello@notificationscodecrafters.xyz>"
   const resend = new Resend(apiKey)
   const supabase = createAdminClient()
 

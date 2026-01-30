@@ -29,6 +29,8 @@ export interface Profile {
   updated_at: string
 }
 
+export type CompanyPlan = "free" | "orta" | "premium"
+
 export interface Company {
   id: string
   name: string
@@ -38,6 +40,7 @@ export interface Company {
   logo_url?: string
   location?: string
   employee_count?: string
+  plan?: CompanyPlan
   created_by: string
   created_at: string
   updated_at: string

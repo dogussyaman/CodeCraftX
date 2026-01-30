@@ -20,7 +20,7 @@ export default async function CompanyDashboardPage() {
 
   const { data: company } = await supabase
     .from("companies")
-    .select("id, name, description, location, website, industry, employee_count")
+    .select("id, name, description, location, website, industry, employee_count, plan")
     .eq("id", profile?.company_id)
     .single()
 
@@ -45,9 +45,18 @@ export default async function CompanyDashboardPage() {
   return (
     <div className="container mx-auto px-4 py-8 space-y-8 min-h-screen">
       <div className="flex flex-col gap-2">
-        <h1 className="text-3xl font-bold">
-          {company?.name ?? "Şirket Paneli"}
-        </h1>
+        <div className="flex flex-wrap items-center gap-2">
+          <h1 className="text-3xl font-bold">
+            {company?.name ?? "Şirket Paneli"}
+          </h1>
+          {company?.plan && (
+            <span className="rounded-full border bg-muted px-3 py-1 text-sm font-medium text-muted-foreground">
+              {company.plan === "free" && "Free"}
+              {company.plan === "orta" && "Orta"}
+              {company.plan === "premium" && "Premium"}
+            </span>
+          )}
+        </div>
         <p className="text-muted-foreground">
           Şirketinizin ilanlarını ve başvurularını buradan yönetebilirsiniz.
         </p>

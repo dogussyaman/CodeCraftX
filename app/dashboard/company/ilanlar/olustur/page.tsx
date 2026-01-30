@@ -5,6 +5,7 @@ import type React from "react"
 import { useState, useEffect } from "react"
 import { useRouter } from "next/navigation"
 import { createClient } from "@/lib/supabase/client"
+import type { CompanyPlan } from "@/lib/types"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
@@ -14,8 +15,12 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { AlertCircle } from "lucide-react"
 import Link from "next/link"
 
+const JOB_LIMITS: Record<Exclude<CompanyPlan, "premium">, number> = { free: 5, orta: 100 }
+
 export default function CompanyCreateJobPage() {
   const [companyId, setCompanyId] = useState<string | null>(null)
+  const [companyPlan, setCompanyPlan] = useState<CompanyPlan | null>(null)
+  const [activeJobCount, setActiveJobCount] = useState<number>(0)
   const [formData, setFormData] = useState({
     title: "",
     description: "",
@@ -48,15 +53,36 @@ export default function CompanyCreateJobPage() {
 
       if (!profile?.company_id) {
         setCompanyId(null)
-      } else {
-        setCompanyId(profile.company_id)
+        return
       }
+
+      setCompanyId(profile.company_id)
+
+      const { data: company } = await supabase
+        .from("companies")
+        .select("plan")
+        .eq("id", profile.company_id)
+        .single()
+
+      setCompanyPlan((company?.plan as CompanyPlan) || "free")
+
+      const { count } = await supabase
+        .from("job_postings")
+        .select("id", { count: "exact", head: true })
+        .eq("company_id", profile.company_id)
+        .eq("status", "active")
+
+      setActiveJobCount(count ?? 0)
     }
     fetchCompany()
   }, [router])
 
+  const planLimit = companyPlan && companyPlan !== "premium" ? JOB_LIMITS[companyPlan] : null
+  const atJobLimit = planLimit != null && activeJobCount >= planLimit
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
+    if (atJobLimit) return
     setLoading(true)
     setError(null)
 
@@ -68,6 +94,10 @@ export default function CompanyCreateJobPage() {
 
       if (!user) throw new Error("Kullanıcı bulunamadı")
       if (!companyId) throw new Error("Bu kullanıcıya bağlı bir şirket bulunamadı")
+      if (atJobLimit)
+        throw new Error(
+          `İlan limitine ulaştınız (${companyPlan === "free" ? "Free" : "Orta"} plan: ${planLimit} ilan). Plan yükseltmek için fiyatlandırma sayfamızı inceleyin.`
+        )
 
       const { error: dbError } = await supabase.from("job_postings").insert({
         company_id: companyId,
@@ -121,6 +151,24 @@ export default function CompanyCreateJobPage() {
           ← Geri Dön
         </Link>
       </div>
+
+      {atJobLimit && (
+        <div className="mb-6 flex items-start gap-2 rounded-lg border border-amber-500/30 bg-amber-500/10 p-4 text-sm text-amber-800 dark:text-amber-200">
+          <AlertCircle className="size-5 shrink-0 mt-0.5" />
+          <div>
+            <p className="font-medium">İlan limitine ulaştınız</p>
+            <p className="mt-1 text-muted-foreground">
+              {companyPlan === "free" && "Free plan: en fazla 5 aktif ilan."}
+              {companyPlan === "orta" && "Orta plan: en fazla 100 aktif ilan."}
+              Plan yükseltmek için{" "}
+              <Link href="/#ucretlendirme" className="text-primary hover:underline font-medium">
+                fiyatlandırma sayfamızı
+              </Link>{" "}
+              inceleyin.
+            </p>
+          </div>
+        </div>
+      )}
 
       <Card>
         <CardHeader>
@@ -274,8 +322,8 @@ export default function CompanyCreateJobPage() {
             )}
 
             <div className="flex gap-3">
-              <Button type="submit" disabled={loading} className="flex-1">
-                {loading ? "Oluşturuluyor..." : "İlanı Oluştur"}
+              <Button type="submit" disabled={loading || atJobLimit} className="flex-1">
+                {loading ? "Oluşturuluyor..." : atJobLimit ? "İlan limitine ulaştınız" : "İlanı Oluştur"}
               </Button>
               <Button type="button" variant="outline" asChild>
                 <Link href="/dashboard/company/ilanlar">İptal</Link>

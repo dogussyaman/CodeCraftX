@@ -42,6 +42,7 @@ export default function CreateCompanyPage() {
         description: formData.description || null,
         industry: formData.industry || null,
         website: formData.website || null,
+        plan: "free",
         created_by: user.id,
       })
 

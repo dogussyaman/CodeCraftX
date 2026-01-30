@@ -87,10 +87,17 @@ export default function AdminCompanyDetailPage({ params }: { params: Promise<{ i
                             </div>
                             <div>
                                 <CardTitle className="text-2xl">{company.name}</CardTitle>
-                                <CardDescription className="mt-1">
+                                <CardDescription className="mt-1 flex flex-wrap items-center gap-2">
                                     <Badge variant="outline" className="bg-green-500/10 text-green-500 border-green-500/20">
                                         Aktif
                                     </Badge>
+                                    {company.plan && (
+                                        <Badge variant="secondary">
+                                            {company.plan === "free" && "Free"}
+                                            {company.plan === "orta" && "Orta"}
+                                            {company.plan === "premium" && "Premium"}
+                                        </Badge>
+                                    )}
                                 </CardDescription>
                             </div>
                         </div>

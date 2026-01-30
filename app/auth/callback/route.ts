@@ -1,4 +1,5 @@
 import { createServerClient } from "@/lib/supabase/server"
+import { MT_DASHBOARD_LOGIN_URL } from "@/lib/constants"
 import { NextResponse } from "next/server"
 
 export async function GET(request: Request) {
@@ -74,8 +75,15 @@ export async function GET(request: Request) {
       return NextResponse.redirect(`${requestUrl.origin}/auth/sifre-degistir?first_login=true`)
     }
 
-    // Rolüne göre yönlendir
     const role = profile?.role || user.user_metadata?.role || "developer"
+
+    // MT kullanıcıları CodeCrafters'da oturum açmasın; MT Dashboard'a yönlendir
+    if (role === "mt") {
+      await supabase.auth.signOut()
+      return NextResponse.redirect(MT_DASHBOARD_LOGIN_URL)
+    }
+
+    // Rolüne göre yönlendir
     let redirectPath = "/dashboard/gelistirici"
 
     if (role === "admin") {
