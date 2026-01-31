@@ -44,7 +44,7 @@ export function ThemeToggle({ showLabel = false, size = "sm" }: ThemeToggleProps
   if (!mounted) {
     return (
       <div className="flex items-center gap-2">
-        <div className={`${config.button} rounded-full bg-muted/30 border border-border/60 opacity-70`} />
+        <div className={`${config.button} rounded-lg bg-muted/30 border border-border opacity-70`} />
         {showLabel && <span className="text-sm text-muted-foreground">Tema</span>}
       </div>
     )
@@ -60,13 +60,13 @@ export function ThemeToggle({ showLabel = false, size = "sm" }: ThemeToggleProps
         className={`
           ${config.button}
           relative inline-flex items-center justify-center shrink-0
-          cursor-pointer rounded-full border
+          cursor-pointer rounded-lg border border-border
           transition-all duration-300 ease-out
           hover:bg-muted/50 active:scale-95
           focus:outline-none focus-visible:ring-2 focus-visible:ring-primary/50 focus-visible:ring-offset-2 focus-visible:ring-offset-background
           ${isDark
-            ? "bg-zinc-900/50 border-zinc-800 text-muted-foreground hover:text-foreground"
-            : "bg-background border-border text-muted-foreground hover:text-foreground"
+            ? "bg-muted/30 text-muted-foreground hover:text-foreground"
+            : "bg-background text-muted-foreground hover:text-foreground"
           }
         `}
       >

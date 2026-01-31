@@ -84,20 +84,6 @@ export function CreateCompanyRequestForm() {
     )
   }
 
-  if (!user) {
-    return (
-      <div className="rounded-lg border bg-muted/50 p-6 text-center">
-        <Building2 className="h-10 w-10 mx-auto text-muted-foreground mb-2" />
-        <p className="text-sm text-muted-foreground mb-4">
-          Şirket kayıt talebi oluşturmak için giriş yapmanız gerekiyor.
-        </p>
-        <Button asChild>
-          <Link href="/auth/giris">Giriş Yap</Link>
-        </Button>
-      </div>
-    )
-  }
-
   return (
     <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
       <div className="space-y-2">

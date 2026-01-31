@@ -114,7 +114,7 @@ function PricingCard({
             >
                 {plan.popular && (
                     <div className="absolute -top-3 left-1/2 -translate-x-1/2">
-                        <Badge className="bg-foreground text-background hover:bg-foreground px-3 py-1 text-xs font-medium rounded-full">
+                        <Badge className="bg-primary text-primary-foreground hover:bg-primary/90 px-3 py-1 text-xs font-medium rounded-full">
                             En Popüler
                         </Badge>
                     </div>
@@ -154,7 +154,7 @@ function PricingCard({
                         className={cn(
                             "w-full mb-8",
                             isHighlighted
-                                ? "bg-foreground text-background hover:bg-foreground/90"
+                                ? "bg-primary text-primary-foreground hover:bg-primary/90"
                                 : "bg-muted text-foreground hover:bg-muted/80"
                         )}
                     >

@@ -92,9 +92,9 @@ export function ModernNavbar() {
                 {user ? (
                   <>
                     <Button
-                      variant="ghost"
+                      variant="outline"
                       asChild
-                      className="hover:bg-muted/50 hover:text-foreground gap-2 transition-colors"
+                      className="rounded-lg border-border hover:bg-muted/50 hover:text-foreground gap-2 transition-colors"
                     >
                       <Link href={getDashboardLink()}>
                         <LayoutDashboard className="size-4" />
@@ -102,9 +102,9 @@ export function ModernNavbar() {
                       </Link>
                     </Button>
                     <Button
-                      variant="ghost"
+                      variant="outline"
                       onClick={handleLogout}
-                      className="hover:bg-destructive/10 hover:text-destructive gap-2 transition-colors"
+                      className="rounded-lg border-border hover:bg-destructive/10 hover:text-destructive hover:border-destructive/50 gap-2 transition-colors"
                     >
                       <LogOut className="size-4" />
                       Çıkış
@@ -189,9 +189,9 @@ export function ModernNavbar() {
                     {user ? (
                       <>
                         <Button
-                          variant="ghost"
+                          variant="outline"
                           asChild
-                          className="w-full justify-start gap-2 h-11 hover:bg-muted/50 transition-colors"
+                          className="w-full justify-start gap-2 h-11 rounded-lg border-border hover:bg-muted/50 transition-colors"
                           onClick={() => setIsMobileMenuOpen(false)}
                         >
                           <Link href={getDashboardLink()}>
@@ -202,7 +202,7 @@ export function ModernNavbar() {
                         <Button
                           variant="outline"
                           onClick={handleLogout}
-                          className="w-full justify-start gap-2 h-11 text-destructive hover:bg-destructive/10 transition-colors"
+                          className="w-full justify-start gap-2 h-11 rounded-lg border-border text-destructive hover:bg-destructive/10 hover:border-destructive/50 transition-colors"
                         >
                           <LogOut className="size-4" />
                           Çıkış Yap

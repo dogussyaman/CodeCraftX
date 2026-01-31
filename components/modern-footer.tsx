@@ -3,7 +3,7 @@
 import type React from "react"
 
 import Link from "next/link"
-import { MapPin, Phone, Mail, Facebook, Twitter, Instagram, Linkedin, Send, Heart } from "lucide-react"
+import { MapPin, Mail, Facebook, Twitter, Instagram, Linkedin, Send, Heart } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { ThemeToggle } from "@/components/theme-toggle"
@@ -13,13 +13,32 @@ import { useState } from "react"
 export function ModernFooter() {
   const [email, setEmail] = useState("")
   const [subscribed, setSubscribed] = useState(false)
+  const [loading, setLoading] = useState(false)
+  const [error, setError] = useState<string | null>(null)
 
-  const handleSubscribe = (e: React.FormEvent) => {
+  const handleSubscribe = async (e: React.FormEvent) => {
     e.preventDefault()
-    if (email) {
+    if (!email.trim()) return
+    setError(null)
+    setLoading(true)
+    try {
+      const res = await fetch("/api/newsletter/subscribe", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ email: email.trim() }),
+      })
+      const data = await res.json().catch(() => ({}))
+      if (!res.ok) {
+        setError(data?.error ?? "Kayıt başarısız.")
+        return
+      }
       setSubscribed(true)
       setEmail("")
       setTimeout(() => setSubscribed(false), 3000)
+    } catch {
+      setError("Bağlantı hatası. Lütfen tekrar deneyin.")
+    } finally {
+      setLoading(false)
     }
   }
 
@@ -45,12 +64,14 @@ export function ModernFooter() {
               <Button
                 type="submit"
                 size="icon"
-                className="absolute right-1 top-1 h-8 w-8 bg-foreground hover:bg-foreground/90"
+                disabled={loading}
+                className="absolute right-1 top-1 h-8 w-8 bg-primary hover:bg-primary/90 text-primary-foreground"
               >
-                <Send className="h-4 w-4 text-background" />
+                <Send className="h-4 w-4" />
               </Button>
             </form>
             {subscribed && <p className="text-sm text-green-500 animate-in fade-in">Başarıyla kaydoldunuz!</p>}
+            {error && <p className="text-sm text-destructive animate-in fade-in">{error}</p>}
           </div>
 
           {/* Hızlı Bağlantılar */}
@@ -87,23 +108,15 @@ export function ModernFooter() {
                 <MapPin className="h-5 w-5 text-muted-foreground shrink-0 mt-0.5" />
                 <div>
                   <p className="font-medium text-foreground">Adres</p>
-                  <p className="text-muted-foreground">123 İnovasyon Caddesi</p>
-                  <p className="text-muted-foreground">Teknoloji Şehri, TC 12345</p>
-                </div>
-              </li>
-              <li className="flex items-center gap-3 text-sm">
-                <Phone className="h-5 w-5 text-muted-foreground shrink-0" />
-                <div>
-                  <p className="font-medium text-foreground">Telefon</p>
-                  <p className="text-muted-foreground">(123) 456-7890</p>
+                  <p className="text-muted-foreground">Gürsu, Bursa</p>
                 </div>
               </li>
               <li className="flex items-center gap-3 text-sm">
                 <Mail className="h-5 w-5 text-muted-foreground shrink-0" />
                 <div>
                   <p className="font-medium text-foreground">E-posta</p>
-                  <p className="text-muted-foreground">hello@codecrafters.com</p>
-                  <p className="text-muted-foreground">team@notificationscodecrafters.xyz</p>
+                  <p className="text-muted-foreground">hello@codecrafters.xyz</p>
+                  <p className="text-muted-foreground">support@codecrafters.xyz</p>
                 </div>
               </li>
             </ul>

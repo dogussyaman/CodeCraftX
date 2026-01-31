@@ -12,7 +12,7 @@ import { DashboardSegmentGuard } from "@/components/dashboard-segment-guard"
 import { DashboardFooter } from "@/components/dashboard-footer"
 import type { Profile } from "@/lib/types"
 
-const DASHBOARD_ROLES = ["developer", "hr", "company_admin", "admin", "platform_admin"] as const
+const DASHBOARD_ROLES = ["developer", "hr", "company_admin", "admin", "platform_admin", "mt"] as const
 
 function getRole(profile: Profile | null): string {
   if (!profile?.role) return "developer"
@@ -43,7 +43,7 @@ export default async function DashboardLayout({ children }: { children: ReactNod
   const defaultOpen = cookieStore.get("sidebar_state")?.value === "true"
 
   const SidebarComponent =
-    role === "admin" || role === "platform_admin"
+    role === "admin" || role === "platform_admin" || role === "mt"
       ? AdminSidebar
       : role === "hr"
         ? HRSidebar

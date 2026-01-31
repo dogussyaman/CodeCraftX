@@ -12,6 +12,7 @@ import {
   Settings,
   Bell,
   ClipboardList,
+  Mail,
 } from "lucide-react"
 import {
   Sidebar,
@@ -33,6 +34,7 @@ const menuItems = [
   { title: "Eşleştirmeler", href: "/dashboard/admin/eslestirme", icon: Star },
   { title: "İstatistikler", href: "/dashboard/admin/istatistikler", icon: BarChart3 },
   { title: "Bildirimler", href: "/dashboard/admin/bildirimler", icon: Bell },
+  { title: "Bülten", href: "/dashboard/admin/bulten", icon: Mail },
   { title: "Yetenekler", href: "/dashboard/admin/yetenekler", icon: Settings },
 ]
 

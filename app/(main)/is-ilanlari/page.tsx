@@ -1,13 +1,19 @@
+import { Suspense } from "react"
 import { createServerClient } from "@/lib/supabase/server"
 import { JobsHero } from "./_components/JobsHero"
 import { JobsFilters } from "./_components/JobsFilters"
 import { JobsList } from "./_components/JobsList"
 import { JobsCta } from "./_components/JobsCta"
 
-export default async function IsIlanlariPage() {
-  const supabase = await createServerClient()
+type PageProps = { searchParams: Promise<{ experience_level?: string; job_type?: string }> }
 
-  const { data: ilanlar } = await supabase
+export default async function IsIlanlariPage({ searchParams }: PageProps) {
+  const supabase = await createServerClient()
+  const params = await searchParams
+  const experienceLevel = params.experience_level
+  const jobType = params.job_type
+
+  let query = supabase
     .from("job_postings")
     .select(`
       *,
@@ -21,13 +27,21 @@ export default async function IsIlanlariPage() {
         )
       )
     `)
+    .eq("status", "active")
     .order("created_at", { ascending: false })
-    .limit(20)
+    .limit(50)
+
+  if (experienceLevel) query = query.eq("experience_level", experienceLevel)
+  if (jobType) query = query.eq("job_type", jobType)
+
+  const { data: ilanlar } = await query
 
   return (
     <div className="min-h-screen bg-background">
       <JobsHero />
-      <JobsFilters />
+      <Suspense fallback={<div className="container mx-auto px-4 py-4" />}>
+        <JobsFilters />
+      </Suspense>
       <JobsList ilanlar={ilanlar} />
       <JobsCta />
     </div>
