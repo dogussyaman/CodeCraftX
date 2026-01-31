@@ -1,108 +1,95 @@
-<div align="center">
-  <img src="public/logo.svg" alt="CodeCrafters Logo" width="120" height="120" />
-  <h1>CodeCrafters</h1>
-  <p><strong>Next.js ve Supabase ile Güçlendirilmiş Modern Web Deneyimi</strong></p>
+<p align="center">
+  <img src="public/logo.svg" alt="CodeCrafters" width="96" height="96" />
+</p>
 
-  <p>
-    <a href="https://nextjs.org">
-      <img src="https://img.shields.io/badge/Next.js-15-black?style=for-the-badge&logo=next.js" alt="Next.js" />
-    </a>
-    <a href="https://supabase.com">
-      <img src="https://img.shields.io/badge/Supabase-Backend-3ECF8E?style=for-the-badge&logo=supabase" alt="Supabase" />
-    </a>
-    <a href="https://tailwindcss.com">
-      <img src="https://img.shields.io/badge/Tailwind_CSS-Styling-38B2AC?style=for-the-badge&logo=tailwind-css" alt="Tailwind CSS" />
-    </a>
-    <a href="https://www.typescriptlang.org">
-      <img src="https://img.shields.io/badge/TypeScript-Strongly_Typed-3178C6?style=for-the-badge&logo=typescript" alt="TypeScript" />
-    </a>
-  </p>
-</div>
+<h1 align="center">CodeCrafters</h1>
+<p align="center">
+  Geliştiriciler ve işverenler için modern işe alım ve destek platformu.
+</p>
 
-<br />
-
-# 🚀 Proje Hakkında
-
-**CodeCrafters**, geliştiriciler ve kullanıcılar için sorunsuz ve sağlam bir deneyim sunmak üzere tasarlanmış modern bir web uygulamasıdır. En son web teknolojilerini kullanarak performans, güvenlik ve kullanıcı deneyimini ön planda tutar.
-
-## ✨ Özellikler
-
-- **🔐 Güçlü Kimlik Doğrulama**: Supabase Auth ile güvenli kayıt, giriş ve OAuth entegrasyonları.
-- **🎨 Modern Arayüz**: Tailwind CSS ve Radix UI bileşenleri ile şık, erişilebilir ve duyarlı tasarım.
-- **📝 Form Yönetimi**: Zod ve React Hook Form ile tip güvenli ve kullanıcı dostu form doğrulama.
-- **🌓 Karanlık Mod**: Göz yormayan, sistem tercihlerine duyarlı tema desteği.
-- **📱 Mobil Öncelikli**: Her cihazda mükemmel görünen responsive yapı.
-
-## 🛠️ Teknoloji Yığını
-
-- **Framework**: [Next.js 16](https://nextjs.org/) (App Router & Server Actions)
-- **Dil**: [TypeScript](https://www.typescriptlang.org/)
-- **Stil**: [Tailwind CSS](https://tailwindcss.com/)
-- **İkonlar**: [Lucide React](https://lucide.dev/)
-- **Backend**: [Supabase](https://supabase.com/)
-- **Bileşen Kütüphanesi**: [shadcn/ui](https://ui.shadcn.com/) tabanlı
+<p align="center">
+  <a href="https://nextjs.org"><img src="https://img.shields.io/badge/Next.js-16-000?style=flat-square&logo=next.js" alt="Next.js" /></a>
+  <a href="https://www.typescriptlang.org"><img src="https://img.shields.io/badge/TypeScript-5-3178C6?style=flat-square&logo=typescript" alt="TypeScript" /></a>
+  <a href="https://supabase.com"><img src="https://img.shields.io/badge/Supabase-Backend-3ECF8E?style=flat-square&logo=supabase" alt="Supabase" /></a>
+  <a href="https://tailwindcss.com"><img src="https://img.shields.io/badge/Tailwind-4-38B2AC?style=flat-square&logo=tailwind-css" alt="Tailwind" /></a>
+</p>
 
 ---
 
-## 🏁 Başlangıç
+## Özellikler
 
-Projenin yerel kopyasını çalıştırmak için aşağıdaki adımları izleyin.
+| Alan | Açıklama |
+|------|----------|
+| **Kimlik** | Supabase Auth ile giriş, kayıt ve OAuth (Google vb.) |
+| **Roller** | Geliştirici, İK, Şirket, Platform Admin — rol bazlı dashboard |
+| **Destek** | Canlı destek sohbeti, destek talepleri |
+| **Arayüz** | shadcn/ui, Tailwind, karanlık mod, mobil uyumlu |
+| **Formlar** | Zod + React Hook Form ile doğrulama |
 
-### Gereksinimler
+---
 
-Bilgisayarınızda **Node.js** yüklü olduğundan emin olun.
+## Hızlı Başlangıç
 
-### Kurulum
+```bash
+git clone <repo-url>
+cd CodeCrafters
+npm install
+cp .env.example .env.local   # Supabase URL ve anon key'i doldur
+npm run dev
+```
 
-1. **Repoyu klonlayın:**
-   ```bash
-   git clone <repo-url>
-   cd codecrafters
-   ```
+Tarayıcıda **http://localhost:3000** açın.
 
-2. **Bağımlılıkları yükleyin:**
-   ```bash
-   npm install
-   # veya
-   pnpm install
-   ```
+### Ortam Değişkenleri
 
-3. **Çevre Değişkenlerini Ayarlayın:**
-   Örnek dosyadan kendi `.env.local` dosyanızı oluşturun.
-   ```bash
-   cp .env.example .env.local
-   ```
-   `.env.local` dosyasını açın ve Supabase bilgilerinizi girin:
-   - `NEXT_PUBLIC_SUPABASE_URL`: Supabase proje URL'iniz.
-   - `NEXT_PUBLIC_SUPABASE_ANON_KEY`: Supabase anon API anahtarınız.
-   - `SUPABASE_SERVICE_ROLE_KEY`: (Opsiyonel) Şirket/HR oluşturma ve cron API'leri için; sadece sunucu tarafında kullanılır, client'a gönderilmez.
+| Değişken | Açıklama |
+|----------|----------|
+| `NEXT_PUBLIC_SUPABASE_URL` | Supabase proje URL |
+| `NEXT_PUBLIC_SUPABASE_ANON_KEY` | Supabase anon (public) key |
+| `SUPABASE_SERVICE_ROLE_KEY` | Opsiyonel; şirket/HR API ve cron için sunucu tarafında |
 
-4. **Geliştirme Sunucusunu Başlatın:**
-   ```bash
-   npm run dev
-   ```
-   Tarayıcınızda [http://localhost:3000](http://localhost:3000) adresine gidin.
+---
 
-## 📜 Komutlar
+## Komutlar
 
 | Komut | Açıklama |
 |-------|----------|
-| `npm run dev` | Geliştirme sunucusunu başlatır. |
-| `npm run build` | Prodüksiyon için uygulamayı derler. |
-| `npm run start` | Prodüksiyon sunucusunu başlatır. |
-| `npm run lint` | Kod standartlarını kontrol eder (ESLint). |
+| `npm run dev` | Geliştirme sunucusu (http://localhost:3000) |
+| `npm run build` | Prodüksiyon build |
+| `npm run start` | Prodüksiyon sunucusu |
+| `npm run lint` | ESLint kontrolü |
 
-## 📂 Proje Yapısı
+---
+
+## Proje Yapısı
 
 ```
-codecrafters/
-├── app/            # Next.js App Router sayfaları ve layoutları
-├── components/     # Yeniden kullanılabilir React bileşenleri
-├── lib/            # Yardımcı fonksiyonlar ve Supabase istemcisi
-├── public/         # Statik dosyalar (görseller, fontlar)
-└── styles/         # Global stil dosyaları
+CodeCrafters/
+├── app/
+│   ├── (main)/          # Ana sayfa, landing
+│   ├── auth/            # Giriş, kayıt, şifre sıfırlama
+│   ├── dashboard/       # Rol bazlı dashboard (gelistirici, ik, company, admin)
+│   └── api/             # API routes
+├── components/          # UI bileşenleri (chat, sidebar, header, vb.)
+├── lib/                 # Supabase client, utils, types
+├── hooks/               # useAuth, useChat, useNotifications, vb.
+├── public/              # Statik dosyalar
+└── scripts/             # Supabase SQL migration / RLS scriptleri
 ```
 
-## 📄 Lisans
+---
 
-Bu proje [MIT](LICENSE) lisansı ile lisanslanmıştır.
+## Teknoloji
+
+- **Framework:** Next.js 16 (App Router, Server Actions)
+- **Dil:** TypeScript
+- **Styling:** Tailwind CSS
+- **UI:** shadcn/ui (Radix tabanlı)
+- **Backend / Auth / DB:** Supabase
+- **Form:** React Hook Form + Zod
+
+---
+
+## Lisans
+
+[MIT](LICENSE)
