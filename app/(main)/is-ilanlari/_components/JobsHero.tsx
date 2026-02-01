@@ -1,29 +1,80 @@
+"use client"
+
+import { useRouter, useSearchParams } from "next/navigation"
+import { useCallback, useState } from "react"
 import { Button } from "@/components/ui/button"
+import { Search, X } from "lucide-react"
 
 export function JobsHero() {
-    return (
-        <section className="relative pt-24 pb-14 md:pt-28 md:pb-18 overflow-hidden">
-            <div className="absolute top-20 right-10 size-96 bg-secondary/10 rounded-full blur-[120px]" />
+  const router = useRouter()
+  const searchParams = useSearchParams()
+  const [q, setQ] = useState(searchParams.get("q") ?? "")
+  const [location, setLocation] = useState(searchParams.get("city") ?? searchParams.get("location") ?? "")
 
-            <div className="container mx-auto px-4 relative z-10">
-                <div className="max-w-4xl mx-auto text-center">
-                    <h1 className="text-5xl md:text-6xl font-bold mb-6 text-balance">
-                        <span className="gradient-text">İş İlanları</span>
-                    </h1>
-                    <p className="text-xl text-muted-foreground mb-8 text-pretty">
-                        Hayallerinizdeki işi bulun, kariyer hedfinize ulaşın
-                    </p>
-                    <div className="flex flex-col sm:flex-row gap-3 max-w-2xl mx-auto">
-                        <input
-                            type="text"
-                            placeholder="Pozisyon ara..."
-                            className="flex-1 px-4 py-3 rounded-lg border border-border bg-background focus:outline-none focus:ring-2 focus:ring-primary"
-                        />
-                        <Button size="lg">İlan Ara</Button>
-                    </div>
-                </div>
+  const submitSearch = useCallback(() => {
+    const next = new URLSearchParams(searchParams.toString())
+    if (q.trim()) next.set("q", q.trim())
+    else next.delete("q")
+    if (location.trim()) next.set("city", location.trim())
+    else next.delete("city")
+    next.delete("page")
+    router.push(`/is-ilanlari?${next.toString()}`, { scroll: false })
+  }, [q, location, router, searchParams])
+
+  const clearLocation = () => {
+    setLocation("")
+    const next = new URLSearchParams(searchParams.toString())
+    next.delete("city")
+    next.delete("location")
+    router.push(`/is-ilanlari?${next.toString()}`, { scroll: false })
+  }
+
+  return (
+    <section className="pb-5 md:pb-6 overflow-hidden">
+      <div className="relative mx-auto z-10 sm:p-5 md:p-6">
+        <div className="max-w-2xl mx-auto">
+          <form
+            onSubmit={(e) => {
+              e.preventDefault()
+              submitSearch()
+            }}
+            className="flex flex-col gap-3 sm:flex-row sm:items-stretch sm:gap-3"
+          >
+            <div className="flex flex-1 items-center rounded-lg border border-input bg-background px-3 py-2.5 text-sm ring-offset-background transition-colors focus-within:ring-2 focus-within:ring-ring focus-within:ring-offset-2">
+              <Search className="size-4 text-muted-foreground shrink-0 mr-2" />
+              <input
+                type="text"
+                placeholder="Pozisyon veya şirket ara"
+                value={q}
+                onChange={(e) => setQ(e.target.value)}
+                className="min-w-0 flex-1 bg-transparent placeholder:text-muted-foreground focus:outline-none"
+              />
             </div>
-        </section>
-    )
+            <div className="flex flex-1 items-center rounded-lg border border-input bg-background px-3 py-2.5 text-sm ring-offset-background transition-colors focus-within:ring-2 focus-within:ring-ring focus-within:ring-offset-2">
+              <input
+                type="text"
+                placeholder="Konum (örn. İzmir)"
+                value={location}
+                onChange={(e) => setLocation(e.target.value)}
+                className="min-w-0 flex-1 bg-transparent placeholder:text-muted-foreground focus:outline-none"
+              />
+              {location && (
+                <button
+                  type="button"
+                  onClick={clearLocation}
+                  className="ml-1 rounded p-1 text-muted-foreground hover:bg-muted hover:text-foreground"
+                  aria-label="Konumu temizle"
+                >
+                  <X className="size-4" />
+                </button>
+              )}
+            </div>
+            <Button type="submit" size="lg" className="h-[42px] shrink-0 sm:h-auto">
+              İş Ara
+            </Button>
+          </form>
+        </div>
+      </div>
+    </section>
+  )
 }
-
