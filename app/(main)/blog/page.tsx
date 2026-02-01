@@ -6,7 +6,7 @@ export default async function BlogPage() {
   const supabase = await createServerClient()
   const { data: posts } = await supabase
     .from("blog_posts")
-    .select("id, title, slug, body, published_at, created_at, profiles(full_name, avatar_url)")
+    .select("id, title, slug, body, cover_image_url, published_at, created_at, profiles(full_name, avatar_url)")
     .eq("status", "published")
     .order("published_at", { ascending: false })
     .limit(50)

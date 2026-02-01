@@ -15,7 +15,7 @@ export default async function DashboardPage() {
 
   const role = (profile?.role as string) || "developer"
 
-  if (role === "admin" || role === "platform_admin") redirect("/dashboard/admin")
+  if (role === "admin" || role === "platform_admin" || role === "mt") redirect("/dashboard/admin")
   if (role === "hr") redirect("/dashboard/ik")
   if (role === "company_admin") redirect("/dashboard/company")
   redirect("/dashboard/gelistirici")

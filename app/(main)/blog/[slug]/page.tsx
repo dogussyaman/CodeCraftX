@@ -3,7 +3,7 @@ import Link from "next/link"
 import { createServerClient } from "@/lib/supabase/server"
 import { Button } from "@/components/ui/button"
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
-import { ArrowLeft } from "lucide-react"
+import { ArrowLeft, FileText } from "lucide-react"
 import { BlogCommentForm } from "../_components/BlogCommentForm"
 import { BlogCommentList } from "../_components/BlogCommentList"
 
@@ -13,7 +13,7 @@ export default async function BlogPostPage({ params }: { params: Promise<{ slug:
 
   const { data: post, error } = await supabase
     .from("blog_posts")
-    .select("id, title, slug, body, author_id, published_at, created_at, profiles!blog_posts_author_id_fkey(full_name, avatar_url)")
+    .select("id, title, slug, body, cover_image_url, author_id, published_at, created_at, profiles!blog_posts_author_id_fkey(full_name, avatar_url)")
     .eq("slug", slug)
     .eq("status", "published")
     .single()
@@ -48,6 +48,19 @@ export default async function BlogPostPage({ params }: { params: Promise<{ slug:
         </Button>
 
         <article className="mb-12">
+          <div className="relative w-full aspect-video max-h-[420px] rounded-xl overflow-hidden bg-muted mb-10">
+            {post.cover_image_url ? (
+              <img
+                src={post.cover_image_url}
+                alt=""
+                className="w-full h-full object-cover"
+              />
+            ) : (
+              <div className="w-full h-full flex items-center justify-center bg-gradient-to-br from-muted to-muted/70">
+                <FileText className="size-16 text-muted-foreground/50" />
+              </div>
+            )}
+          </div>
           <header className="mb-10">
             <h1 className="text-4xl md:text-5xl font-bold tracking-tight mb-6 leading-tight">
               {post.title}

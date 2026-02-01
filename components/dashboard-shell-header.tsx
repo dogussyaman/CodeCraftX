@@ -11,7 +11,7 @@ import { useRouter } from "next/navigation"
 import type { Profile } from "@/lib/types"
 
 function getDashboardPath(role: string): string {
-  if (role === "admin" || role === "platform_admin") return "/dashboard/admin"
+  if (role === "admin" || role === "platform_admin" || role === "mt") return "/dashboard/admin"
   if (role === "hr") return "/dashboard/ik"
   if (role === "company_admin") return "/dashboard/company"
   return "/dashboard/gelistirici"
