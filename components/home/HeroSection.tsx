@@ -3,6 +3,7 @@
 import Link from "next/link"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent } from "@/components/ui/card"
+import { TypewriterEffect } from "@/components/ui/typewriter-effect"
 import {
     ArrowRight,
     Zap,
@@ -11,6 +12,13 @@ import {
     TrendingUp,
 } from "lucide-react"
 import { motion } from "motion/react"
+
+const TYPEWRITER_WORDS = [
+    "Yeni nesil HR platformu.",
+    "CV analizi ile akıllı eşleştirme.",
+    "Doğru yetenek, doğru fırsat.",
+    "Geliştiricileri işlerle buluşturuyoruz.",
+]
 
 export function HeroSection() {
     return (
@@ -37,15 +45,20 @@ export function HeroSection() {
                     Akıllıca Buluşturun
                 </motion.h1>
 
-                <motion.p
+                <motion.div
                     initial={{ opacity: 0, y: 20 }}
                     animate={{ opacity: 1, y: 0 }}
                     transition={{ duration: 0.5, delay: 0.2 }}
-                    className="text-xl md:text-2xl text-muted-foreground mb-10 text-pretty max-w-3xl mx-auto leading-relaxed"
+                    className="text-xl md:text-2xl text-muted-foreground mb-10 max-w-3xl mx-auto leading-relaxed min-h-12 flex items-center justify-center"
                 >
-                    CV analizi ve beceri eşleştirme algoritması ile geliştiricileri en uygun kariyer fırsatlarıyla buluşturan
-                    yeni nesil HR platformu
-                </motion.p>
+                    <TypewriterEffect
+                        words={TYPEWRITER_WORDS}
+                        className="text-primary font-medium"
+                        typingSpeed={70}
+                        deletingSpeed={40}
+                        delayBetweenWords={2500}
+                    />
+                </motion.div>
 
                 <motion.div
                     initial={{ opacity: 0, y: 20 }}
@@ -59,14 +72,14 @@ export function HeroSection() {
                                 Ücretsiz Başlayın
                                 <ArrowRight className="size-5" />
                             </span>
-                            <div className="absolute inset-0 bg-gradient-to-r from-primary via-secondary to-accent opacity-0 group-hover:opacity-100 transition-opacity" />
+                            <div className="absolute inset-0 bg-linear-to-r from-primary via-secondary to-accent opacity-0 group-hover:opacity-100 transition-opacity" />
                         </Link>
                     </Button>
                     <Button
                         size="lg"
                         variant="outline"
                         asChild
-                        className="text-base border-border/50 hover:border-primary/50 bg-background/50 backdrop-blur-sm"
+                        className="text-base border-border/50 hover:border-primary/50 bg-background/50 backdrop-blur-sm dark:bg-zinc-900/50 dark:border-zinc-600 hover:bg-zinc-900/50 transition-all duration-300"
                     >
                         <Link href="#ozellikler">Özellikleri Keşfet</Link>
                     </Button>

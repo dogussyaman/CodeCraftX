@@ -1,4 +1,5 @@
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
+import { CONTACT } from "@/lib/constants"
 import { Mail, MapPin } from "lucide-react"
 
 export function ContactInfoCard() {
@@ -17,8 +18,8 @@ export function ContactInfoCard() {
           </div>
           <div>
             <h3 className="font-semibold mb-1">E-posta</h3>
-            <p className="text-sm text-muted-foreground">hello@codecrafters.xyz</p>
-            <p className="text-sm text-muted-foreground">support@codecrafters.xyz</p>
+            <p className="text-sm text-muted-foreground">{CONTACT.email}</p>
+            <p className="text-sm text-muted-foreground">{CONTACT.supportEmail}</p>
           </div>
         </div>
         <div className="flex items-start gap-4">
@@ -27,7 +28,7 @@ export function ContactInfoCard() {
           </div>
           <div>
             <h3 className="font-semibold mb-1">Adres</h3>
-            <p className="text-sm text-muted-foreground">Gürsu, Bursa</p>
+            <p className="text-sm text-muted-foreground">{CONTACT.address}</p>
           </div>
         </div>
       </CardContent>

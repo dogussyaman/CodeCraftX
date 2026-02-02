@@ -1,3 +1,12 @@
+import type { Metadata } from "next"
+import { buildPageMetadata, getSiteTitle } from "@/lib/seo"
+
+export const metadata: Metadata = buildPageMetadata({
+  title: getSiteTitle("Kullanım Şartları"),
+  description: "Codecrafters kullanım şartları. Platform kullanım koşulları ve sorumluluklar.",
+  path: "/kullanim-sartlari",
+})
+
 export default function KullanimSartlariPage() {
   return (
     <div className="min-h-screen bg-background">

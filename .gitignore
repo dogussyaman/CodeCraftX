@@ -23,6 +23,7 @@ yarn-error.log*
 
 # env files (never commit secrets)
 .env
+.env.*
 .env.local
 .env.development.local
 .env.test.local
@@ -55,3 +56,6 @@ ehthumbs.db
 # keys & secrets
 *.pem
 *.key
+
+# local / API collection (may contain project URLs or env var names)
+codecrafters.json

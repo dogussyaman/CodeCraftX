@@ -1,3 +1,12 @@
+import type { Metadata } from "next"
+import { buildPageMetadata, getSiteTitle } from "@/lib/seo"
+
+export const metadata: Metadata = buildPageMetadata({
+  title: getSiteTitle("Gizlilik Politikası"),
+  description: "Codecrafters gizlilik politikası. Kişisel verilerinizin nasıl toplandığı, kullanıldığı ve korunduğu.",
+  path: "/gizlilik-politikasi",
+})
+
 export default function GizlilikPolitikasiPage() {
   return (
     <div className="min-h-screen bg-background">

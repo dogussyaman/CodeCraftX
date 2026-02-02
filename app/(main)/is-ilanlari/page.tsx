@@ -1,5 +1,7 @@
+import type { Metadata } from "next"
 import { Suspense } from "react"
 import Link from "next/link"
+import { buildPageMetadata, getSiteTitle } from "@/lib/seo"
 import { createServerClient } from "@/lib/supabase/server"
 import {
   Breadcrumb,
@@ -14,6 +16,12 @@ import { JobsFilters } from "./_components/JobsFilters"
 import { JobsActiveFilters } from "./_components/JobsActiveFilters"
 import { JobsList } from "./_components/JobsList"
 import { JobsCta } from "./_components/JobsCta"
+
+export const metadata: Metadata = buildPageMetadata({
+  title: getSiteTitle("İş İlanları"),
+  description: "Yazılım ve teknoloji iş ilanları. Codecrafters ile doğru iş fırsatını bulun.",
+  path: "/is-ilanlari",
+})
 
 type PageProps = {
   searchParams: Promise<{

@@ -7,7 +7,7 @@ import {
   FeaturesSection,
   HowItWorksSection,
   ContributorsSection,
-  CTASection,
+  PricingSection,
 } from "@/components/home"
 
 function HomeContent() {
@@ -35,8 +35,8 @@ function HomeContent() {
         <HeroSection />
         <FeaturesSection />
         <HowItWorksSection />
+        <PricingSection ctaPathPrefix="/isveren" ctaHashAnchor="sirket-talebi" />
         <ContributorsSection />
-        <CTASection />
       </main>
     </div>
   )

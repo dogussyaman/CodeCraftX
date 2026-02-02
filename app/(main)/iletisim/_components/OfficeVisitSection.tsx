@@ -1,3 +1,4 @@
+import { CONTACT } from "@/lib/constants"
 import { MapPin } from "lucide-react"
 
 export function OfficeVisitSection() {
@@ -11,7 +12,7 @@ export function OfficeVisitSection() {
               <div className="text-center">
                 <MapPin className="h-12 w-12 text-muted-foreground mx-auto mb-4" />
                 <p className="text-muted-foreground">Harita entegrasyonu yakında eklenecek</p>
-                <p className="text-sm text-muted-foreground mt-2">Gürsu, Bursa</p>
+                <p className="text-sm text-muted-foreground mt-2">{CONTACT.address}</p>
               </div>
             </div>
           </div>

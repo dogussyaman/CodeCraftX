@@ -8,7 +8,7 @@ export function Spotlight() {
   useEffect(() => {
     const handleMouseMove = (e: MouseEvent) => {
       if (spotlightRef.current) {
-        spotlightRef.current.style.background = `radial-gradient(600px at ${e.clientX}px ${e.clientY}px, rgba(147, 51, 234, 0.15), transparent 80%)`
+        spotlightRef.current.style.background = `radial-gradient(140px at ${e.clientX}px ${e.clientY}px, rgba(147, 51, 234, 0.02), transparent 55%)`
       }
     }
 

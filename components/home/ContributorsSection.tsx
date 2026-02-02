@@ -1,95 +1,44 @@
 "use client"
 
-import Link from "next/link"
-import { Card, CardContent } from "@/components/ui/card"
-import { Users, Heart, Code2, Sparkles, ArrowRight } from "lucide-react"
-import { cn } from "@/lib/utils"
+import { AnimatedTestimonials, type Testimonial } from "@/components/ui/animated-testimonials"
 
-const CONTRIBUTORS = [
+const TESTIMONIALS: Testimonial[] = [
   {
-    label: "CodeCrafters Topluluk",
-    description: "Geliştiriciler ve işverenlerin buluştuğu topluluk.",
-    icon: Users,
-    href: "/topluluk",
-    gradient: "from-violet-500/20 via-primary/10 to-transparent",
-    iconBg: "bg-violet-500/20",
+    quote:
+      "The attention to detail and innovative features have completely transformed our workflow. This is exactly what we've been looking for.",
+    name: "Sarah Chen",
+    designation: "Product Manager at TechFlow",
+    src: "https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?q=80&w=3560&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
   },
   {
-    label: "Açık Kaynak Katkıcıları",
-    description: "Projelerini paylaşan ve işbirliği yapan geliştiriciler.",
-    icon: Code2,
-    href: "/projeler",
-    gradient: "from-emerald-500/20 via-primary/10 to-transparent",
-    iconBg: "bg-emerald-500/20",
+    quote:
+      "Implementation was seamless and the results exceeded our expectations. The platform's flexibility is remarkable.",
+    name: "Michael Rodriguez",
+    designation: "CTO at InnovateSphere",
+    src: "https://images.unsplash.com/photo-1438761681033-6461ffad8d80?q=80&w=3540&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
   },
   {
-    label: "Destek Verenler",
-    description: "Canlı destek ve yardım talepleriyle yanımızda olanlar.",
-    icon: Heart,
-    href: "/destek",
-    gradient: "from-rose-500/20 via-primary/10 to-transparent",
-    iconBg: "bg-rose-500/20",
+    quote:
+      "This solution has significantly improved our team's productivity. The intuitive interface makes complex tasks simple.",
+    name: "Emily Watson",
+    designation: "Operations Director at CloudScale",
+    src: "https://images.unsplash.com/photo-1623582854588-d60de57fa33f?q=80&w=3540&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
   },
   {
-    label: "Geliştirici Ekibi",
-    description: "CodeCrafters'ı inşa eden ve sürekli geliştiren ekip.",
-    icon: Sparkles,
-    href: "/hakkimizda",
-    gradient: "from-amber-500/20 via-primary/10 to-transparent",
-    iconBg: "bg-amber-500/20",
+    quote:
+      "Outstanding support and robust features. It's rare to find a product that delivers on all its promises.",
+    name: "James Kim",
+    designation: "Engineering Lead at DataPro",
+    src: "https://images.unsplash.com/photo-1636041293178-808a6762ab39?q=80&w=3464&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
+  },
+  {
+    quote:
+      "The scalability and performance have been game-changing for our organization. Highly recommend to any growing business.",
+    name: "Lisa Thompson",
+    designation: "VP of Technology at FutureNet",
+    src: "https://images.unsplash.com/photo-1624561172888-ac93c696e10c?q=80&w=2592&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
   },
 ]
-
-function ContributorCard({
-  label,
-  description,
-  icon: Icon,
-  href,
-  gradient,
-  iconBg,
-}: {
-  label: string
-  description: string
-  icon: React.ComponentType<{ className?: string }>
-  href: string
-  gradient: string
-  iconBg: string
-}) {
-  return (
-    <Link href={href} className="block h-full group">
-      <Card
-        className={cn(
-          "relative h-full overflow-hidden border-border/60 bg-card/50 backdrop-blur-sm",
-          "transition-all duration-300 hover:shadow-lg hover:shadow-primary/5 hover:border-primary/30",
-          "hover:-translate-y-0.5"
-        )}
-      >
-        <div className={cn("absolute inset-0 bg-linear-to-br opacity-50 pointer-events-none", gradient)} />
-        <CardContent className="relative z-10 p-6 flex flex-col gap-4">
-          <div
-            className={cn(
-              "size-12 rounded-xl flex items-center justify-center shrink-0 transition-transform duration-300 group-hover:scale-110",
-              iconBg,
-              "text-primary"
-            )}
-          >
-            <Icon className="size-6" />
-          </div>
-          <div>
-            <h3 className="font-semibold text-lg text-foreground group-hover:text-primary transition-colors">
-              {label}
-            </h3>
-            <p className="text-sm text-muted-foreground mt-1 line-clamp-2">{description}</p>
-          </div>
-          <span className="mt-auto inline-flex items-center gap-1.5 text-sm font-medium text-primary group-hover:gap-2 transition-[gap]">
-            Keşfet
-            <ArrowRight className="size-4 group-hover:translate-x-0.5 transition-transform" />
-          </span>
-        </CardContent>
-      </Card>
-    </Link>
-  )
-}
 
 export function ContributorsSection() {
   return (
@@ -103,10 +52,8 @@ export function ContributorsSection() {
             CodeCrafters topluluğu ve platforma destek veren herkes.
           </p>
         </div>
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
-          {CONTRIBUTORS.map((item) => (
-            <ContributorCard key={item.label} {...item} />
-          ))}
+        <div className="rounded-2xl border border-border bg-card/50 dark:bg-zinc-900/90 backdrop-blur-sm overflow-hidden">
+          <AnimatedTestimonials testimonials={TESTIMONIALS} autoplay />
         </div>
       </div>
     </section>

@@ -1,3 +1,13 @@
+import type { Metadata } from "next"
+import { CONTACT } from "@/lib/constants"
+import { buildPageMetadata, getSiteTitle } from "@/lib/seo"
+
+export const metadata: Metadata = buildPageMetadata({
+  title: getSiteTitle("KVKK Aydınlatma Metni"),
+  description: "Codecrafters KVKK aydınlatma metni. Kişisel verilerin işlenmesi ve haklarınız.",
+  path: "/kvkk",
+})
+
 export default function KVKKPage() {
   return (
     <div className="min-h-screen bg-background">
@@ -115,7 +125,7 @@ export default function KVKKPage() {
               <a href="/iletisim" className="text-primary hover:underline">
                 iletişim sayfamızdan
               </a>{" "}
-              veya hello@codecrafters.com adresine e-posta ile iletebilirsiniz.
+              veya {CONTACT.email} adresine e-posta ile iletebilirsiniz.
             </p>
             <p className="text-muted-foreground mt-3">
               Başvurularınız, talebin niteliğine göre en kısa sürede ve en geç 30 (otuz) gün içinde ücretsiz olarak
@@ -131,10 +141,10 @@ export default function KVKKPage() {
             </p>
             <div className="bg-muted/50 p-4 rounded-lg mt-3">
               <p className="text-muted-foreground">
-                <strong>E-posta:</strong> kvkk@codecrafters.com
+                <strong>E-posta:</strong> {CONTACT.kvkkEmail}
               </p>
               <p className="text-muted-foreground">
-                <strong>Adres:</strong> 123 İnovasyon Caddesi, Teknoloji Şehri, TC 12345
+                <strong>Adres:</strong> {CONTACT.address}
               </p>
             </div>
           </section>

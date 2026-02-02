@@ -1,10 +1,18 @@
+import type { Metadata } from "next"
 import Link from "next/link"
+import { buildPageMetadata, getSiteTitle } from "@/lib/seo"
 import { createServerClient } from "@/lib/supabase/server"
 import { Card, CardContent, CardHeader } from "@/components/ui/card"
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
 import { MessageSquare, LogIn } from "lucide-react"
 import { TestimonialForm } from "./_components/TestimonialForm"
 import { Button } from "@/components/ui/button"
+
+export const metadata: Metadata = buildPageMetadata({
+  title: getSiteTitle("Yorumlar"),
+  description: "Codecrafters kullanıcılarının deneyimleri ve görüşleri.",
+  path: "/yorumlar",
+})
 
 export default async function YorumlarPage() {
   const supabase = await createServerClient()

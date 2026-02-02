@@ -157,6 +157,10 @@ export default function CerezAyarlariPage() {
               platformun bazı özelliklerinin düzgün çalışmamasına neden olabilir.
             </p>
             <p className="text-muted-foreground mt-4">
+              Tercihleriniz tarayıcınızda kaydedilir. Analitik ve pazarlama çerezleri yakında devreye alınacaktır;
+              bu tarihten itibaren tercihleriniz platform genelinde uygulanacaktır.
+            </p>
+            <p className="text-muted-foreground mt-4">
               Daha fazla bilgi için{" "}
               <a href="/gizlilik-politikasi" className="text-primary hover:underline">
                 Gizlilik Politikamızı

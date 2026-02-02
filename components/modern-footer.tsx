@@ -4,6 +4,7 @@ import type React from "react"
 
 import Link from "next/link"
 import { MapPin, Mail, Facebook, Twitter, Instagram, Linkedin, Send, Heart } from "lucide-react"
+import { CONTACT } from "@/lib/constants"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { ThemeToggle } from "@/components/theme-toggle"
@@ -81,6 +82,8 @@ export function ModernFooter() {
               {[
                 { label: "Ana Sayfa", href: "/" },
                 { label: "Hakkımızda", href: "/hakkimizda" },
+                { label: "İş İlanları", href: "/is-ilanlari" },
+                { label: "İşveren", href: "/isveren" },
                 { label: "Blog", href: "/blog" },
                 { label: "Yorumlar", href: "/yorumlar" },
                 { label: "Haberler", href: "/haberler" },
@@ -88,7 +91,6 @@ export function ModernFooter() {
                 { label: "Projeler", href: "/projeler" },
                 { label: "Topluluk", href: "/topluluk" },
                 { label: "Etkinlikler", href: "/etkinlikler" },
-                { label: "İş İlanları", href: "/is-ilanlari" },
                 { label: "Destek", href: "/destek" },
                 { label: "İletişim", href: "/iletisim" },
               ].map((link) => (
@@ -112,15 +114,15 @@ export function ModernFooter() {
                 <MapPin className="h-5 w-5 text-muted-foreground shrink-0 mt-0.5" />
                 <div>
                   <p className="font-medium text-foreground">Adres</p>
-                  <p className="text-muted-foreground">Gürsu, Bursa</p>
+                  <p className="text-muted-foreground">{CONTACT.address}</p>
                 </div>
               </li>
               <li className="flex items-center gap-3 text-sm">
                 <Mail className="h-5 w-5 text-muted-foreground shrink-0" />
                 <div>
                   <p className="font-medium text-foreground">E-posta</p>
-                  <p className="text-muted-foreground">hello@codecrafters.xyz</p>
-                  <p className="text-muted-foreground">support@codecrafters.xyz</p>
+                  <p className="text-muted-foreground">{CONTACT.email}</p>
+                  <p className="text-muted-foreground">{CONTACT.supportEmail}</p>
                 </div>
               </li>
             </ul>

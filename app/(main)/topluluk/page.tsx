@@ -1,9 +1,18 @@
+import type { Metadata } from "next"
 import Link from "next/link"
 import { Button } from "@/components/ui/button"
+import { COMMUNITY_DISCORD_URL } from "@/lib/constants"
+import { buildPageMetadata, getSiteTitle } from "@/lib/seo"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import { Avatar, AvatarFallback } from "@/components/ui/avatar"
 import { Badge } from "@/components/ui/badge"
 import { MessageSquare, Users, Calendar, TrendingUp } from "lucide-react"
+
+export const metadata: Metadata = buildPageMetadata({
+  title: getSiteTitle("Topluluk"),
+  description: "Codecrafters topluluğu. Binlerce yazılımcıyla bilgi paylaşın ve birlikte öğrenin.",
+  path: "/topluluk",
+})
 
 export default function ToplulukPage() {
   const forumlar = [
@@ -97,8 +106,8 @@ export default function ToplulukPage() {
           <div className="max-w-5xl mx-auto">
             <div className="flex items-center justify-between mb-8">
               <h2 className="text-3xl font-bold">Popüler Konular</h2>
-              <Button variant="outline" asChild>
-                <Link href="#">Tümünü Gör</Link>
+              <Button variant="outline" disabled aria-disabled="true" className="cursor-not-allowed opacity-70">
+                Yakında
               </Button>
             </div>
             <div className="space-y-4">
@@ -152,9 +161,17 @@ export default function ToplulukPage() {
             <p className="text-xl text-muted-foreground mb-8">
               Discord sunucumuzda anlık olarak binlerce geliştiriciye ulaşın
             </p>
-            <Button size="lg" asChild>
-              <Link href="#">Discord'a Katıl</Link>
-            </Button>
+            {COMMUNITY_DISCORD_URL ? (
+              <Button size="lg" asChild>
+                <a href={COMMUNITY_DISCORD_URL} target="_blank" rel="noopener noreferrer">
+                  Discord&apos;a Katıl
+                </a>
+              </Button>
+            ) : (
+              <Button size="lg" variant="outline" disabled className="cursor-not-allowed opacity-70">
+                Discord&apos;a Katıl (Yakında)
+              </Button>
+            )}
           </div>
         </div>
       </section>

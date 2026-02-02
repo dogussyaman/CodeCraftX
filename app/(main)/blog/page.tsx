@@ -1,6 +1,14 @@
+import type { Metadata } from "next"
+import { buildPageMetadata, getSiteTitle } from "@/lib/seo"
 import { createServerClient } from "@/lib/supabase/server"
 import { AuroraBackground } from "@/components/ui/aurora-background"
 import { BlogListSearch } from "./_components/BlogListSearch"
+
+export const metadata: Metadata = buildPageMetadata({
+  title: getSiteTitle("Blog"),
+  description: "Kariyer ipuçları, teknoloji yazıları ve topluluk deneyimleri. Codecrafters blog.",
+  path: "/blog",
+})
 
 export default async function BlogPage() {
   const supabase = await createServerClient()

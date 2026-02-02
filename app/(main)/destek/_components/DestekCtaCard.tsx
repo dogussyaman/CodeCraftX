@@ -1,5 +1,6 @@
 import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
+import { CONTACT } from "@/lib/constants"
 import { Mail, ArrowRight } from "lucide-react"
 
 export function DestekCtaCard() {
@@ -22,7 +23,7 @@ export function DestekCtaCard() {
                 </a>
               </Button>
               <Button size="lg" variant="outline" asChild>
-                <a href="mailto:support@codecrafters.xyz">
+                <a href={`mailto:${CONTACT.supportEmail}`}>
                   <Mail className="mr-2 h-4 w-4" />
                   E-posta Gönderin
                 </a>

@@ -1,6 +1,7 @@
 import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import { Badge } from "@/components/ui/badge"
+import { CONTACT } from "@/lib/constants"
 import { Mail, Phone, MessageCircle, Clock, ArrowRight } from "lucide-react"
 
 export function DestekChannels() {
@@ -21,7 +22,7 @@ export function DestekChannels() {
               </CardHeader>
               <CardContent>
                 <p className="text-sm text-muted-foreground mb-4">
-                  support@codecrafters.xyz adresinden bize ulaşın.
+                  {CONTACT.supportEmail} adresinden bize ulaşın.
                 </p>
                 <div className="flex items-center gap-2 text-sm">
                   <Clock className="h-4 w-4 text-muted-foreground" />
@@ -40,7 +41,7 @@ export function DestekChannels() {
                 <CardDescription>Acil durumlar için</CardDescription>
               </CardHeader>
               <CardContent>
-                <p className="text-sm text-muted-foreground mb-4">hello@codecrafters.xyz ve support@codecrafters.xyz üzerinden iletişime geçin.</p>
+                <p className="text-sm text-muted-foreground mb-4">{CONTACT.email} ve {CONTACT.supportEmail} üzerinden iletişime geçin.</p>
                 <div className="flex items-center gap-2 text-sm">
                   <Clock className="h-4 w-4 text-muted-foreground" />
                   <span className="text-muted-foreground">09:00 - 18:00</span>

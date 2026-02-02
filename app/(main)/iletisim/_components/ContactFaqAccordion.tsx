@@ -1,6 +1,7 @@
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/components/ui/accordion"
 import { Badge } from "@/components/ui/badge"
+import { CONTACT } from "@/lib/constants"
 
 export function ContactFaqAccordion() {
   return (
@@ -69,7 +70,7 @@ export function ContactFaqAccordion() {
               </span>
             </AccordionTrigger>
             <AccordionContent className="text-sm text-muted-foreground pb-3">
-              E-posta desteğimiz 7/24 aktiftir. hello@codecrafters.xyz ve support@codecrafters.xyz adreslerinden bize ulaşabilirsiniz.
+              E-posta desteğimiz 7/24 aktiftir. {CONTACT.email} ve {CONTACT.supportEmail} adreslerinden bize ulaşabilirsiniz.
             </AccordionContent>
           </AccordionItem>
           <AccordionItem value="item-6" className="border rounded-lg px-3">

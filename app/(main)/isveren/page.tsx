@@ -18,6 +18,7 @@ export default function IsverenPage() {
   return (
     <div className="min-h-screen">
       <IsverenHero />
+      <Separator className="max-w-6xl mx-auto" />
       <IsverenBenefits />
       <Separator className="max-w-6xl mx-auto" />
       <IsverenHowItWorks />

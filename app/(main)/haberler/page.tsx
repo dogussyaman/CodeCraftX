@@ -1,11 +1,19 @@
+import type { Metadata } from "next"
 import Link from "next/link"
 import { Button } from "@/components/ui/button"
+import { buildPageMetadata, getSiteTitle } from "@/lib/seo"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import { Badge } from "@/components/ui/badge"
 import { ExternalLink, Rss } from "lucide-react"
 import { fetchRssFeeds } from "@/lib/rss"
 
 export const revalidate = 3600
+
+export const metadata: Metadata = buildPageMetadata({
+  title: getSiteTitle("Haberler"),
+  description: "Yazılım ve teknoloji haberleri. Gündemden seçilen kaynaklar.",
+  path: "/haberler",
+})
 
 export default async function HaberlerPage() {
   const items = await fetchRssFeeds(15)

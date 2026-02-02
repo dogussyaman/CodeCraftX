@@ -1,4 +1,6 @@
+import type { Metadata } from "next"
 import { redirect } from "next/navigation"
+import { buildPageMetadata, getSiteTitle } from "@/lib/seo"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import { BookOpen, ExternalLink } from "lucide-react"
 import ReactMarkdown from "react-markdown"
@@ -13,6 +15,12 @@ import {
 import { GlossarySearch } from "./_components/GlossarySearch"
 import { GlossaryPagination } from "./_components/GlossaryPagination"
 import { AlphabetFilterBar } from "@/components/ui/alphabet-filter-bar"
+
+export const metadata: Metadata = buildPageMetadata({
+  title: getSiteTitle("Terimler"),
+  description: "Yazılım ve teknoloji terimleri sözlüğü. Codecrafters terimler rehberi.",
+  path: "/terimler",
+})
 
 const DEFAULT_PER_PAGE = 20
 const DEFAULT_LETTER = "a"
