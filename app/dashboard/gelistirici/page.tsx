@@ -2,6 +2,7 @@ import { createClient } from "@/lib/supabase/server"
 import { DeveloperHeader } from "./_components/DeveloperHeader"
 import { DeveloperStats } from "./_components/DeveloperStats"
 import { DeveloperRecentMatches } from "./_components/DeveloperRecentMatches"
+import { DeveloperRecentPosts } from "./_components/DeveloperRecentPosts"
 import { DeveloperSidebar } from "./_components/DeveloperSidebar"
 
 export default async function DeveloperDashboardPage() {
@@ -54,12 +55,21 @@ export default async function DeveloperDashboardPage() {
     .order("created_at", { ascending: false })
     .limit(5)
 
+  // Son blog yazılarını al
+  const { data: recentPosts } = await supabase
+    .from("blog_posts")
+    .select("id, title, slug, status, published_at, created_at, cover_image_url")
+    .eq("author_id", user.id)
+    .order("updated_at", { ascending: false })
+    .limit(5)
+
   return (
     <div className="container mx-auto px-4 py-8 space-y-8 min-h-screen animate-in fade-in duration-500">
       <DeveloperHeader fullName={profile?.full_name ?? null} />
       <DeveloperStats cvCount={cvCount ?? 0} matchCount={matchCount ?? 0} applicationCount={applicationCount ?? 0} />
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
         <DeveloperRecentMatches cvCount={cvCount ?? 0} recentMatches={recentMatches ?? null} />
+        <DeveloperRecentPosts recentPosts={recentPosts ?? null} />
         <DeveloperSidebar />
       </div>
     </div>

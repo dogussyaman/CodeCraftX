@@ -12,6 +12,7 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { ArrowLeft, Loader2 } from "lucide-react"
 import { createBlogPost, updateBlogPost, type BlogFormState } from "../actions"
 import { toast } from "sonner"
+import { Select, SelectContent, SelectGroup, SelectItem, SelectLabel, SelectTrigger, SelectValue } from "@/components/ui/select"
 
 interface BlogPostFormProps {
   mode: "create" | "edit"
@@ -21,6 +22,7 @@ interface BlogPostFormProps {
     slug: string
     body: string
     status: string
+    cover_image_url?: string
   }
   /** Geri / İptal linki (varsayılan: admin blog) */
   backHref?: string
@@ -106,6 +108,17 @@ export function BlogPostForm({
             <p className="text-xs text-muted-foreground">Sadece küçük harf, rakam ve tire. Örn: kariyer-ipuclari</p>
           </div>
           <div className="space-y-2">
+            <Label htmlFor="cover_image_url">Kapak resmi URL</Label>
+            <Input
+              id="cover_image_url"
+              name="cover_image_url"
+              type="url"
+              placeholder="https://..."
+              defaultValue={initialValues?.cover_image_url ?? ""}
+            />
+            <p className="text-xs text-muted-foreground">İsteğe bağlı. Yazı detayında görünecek kapak görseli.</p>
+          </div>
+          <div className="space-y-2">
             <Label htmlFor="body">İçerik *</Label>
             <Textarea
               id="body"
@@ -117,16 +130,18 @@ export function BlogPostForm({
             />
           </div>
           <div className="space-y-2">
-            <Label htmlFor="status">Durum</Label>
-            <select
-              id="status"
-              name="status"
-              defaultValue={initialValues?.status ?? "draft"}
-              className="flex h-9 w-full rounded-md border border-input bg-transparent px-3 py-1 text-sm shadow-sm focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring"
-            >
-              <option value="draft">Taslak</option>
-              <option value="published">Yayınla</option>
-            </select>
+            <Label htmlFor="status"></Label>
+            <Select>
+              <SelectTrigger className="w-full max-w-48">
+                <SelectValue placeholder="Durum" />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectGroup>
+                  <SelectItem id="status" value="draft">Taslak</SelectItem>
+                  <SelectItem id="status" value="published">Yayınla</SelectItem>
+                </SelectGroup>
+              </SelectContent>
+            </Select>
           </div>
           <div className="flex gap-2">
             <SubmitButton />

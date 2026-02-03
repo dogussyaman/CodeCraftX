@@ -4,7 +4,7 @@ import { createServerClient } from "@/lib/supabase/server"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import { Badge } from "@/components/ui/badge"
-import { Plus, Pencil, FileText, ExternalLink } from "lucide-react"
+import { Plus, Pencil, FileText, ExternalLink, BookOpen } from "lucide-react"
 import { BlogPostDeleteButton } from "@/app/dashboard/admin/blog/_components/BlogPostDeleteButton"
 
 export default async function YazilarimPage() {
@@ -16,7 +16,7 @@ export default async function YazilarimPage() {
 
   const { data: posts } = await supabase
     .from("blog_posts")
-    .select("id, title, slug, status, published_at, created_at")
+    .select("id, title, slug, body, status, published_at, created_at, cover_image_url")
     .eq("author_id", user.id)
     .order("updated_at", { ascending: false })
 
@@ -49,42 +49,65 @@ export default async function YazilarimPage() {
           </CardContent>
         </Card>
       ) : (
-        <div className="space-y-4">
-          {posts.map((post) => (
-            <Card key={post.id}>
-              <CardHeader className="flex flex-row items-start justify-between gap-4">
-                <div className="min-w-0 flex-1">
-                  <CardTitle className="truncate">{post.title}</CardTitle>
-                  <CardDescription>
-                    /blog/{post.slug} ·{" "}
-                    {post.published_at
-                      ? new Date(post.published_at).toLocaleDateString("tr-TR")
-                      : new Date(post.created_at).toLocaleDateString("tr-TR")}
-                  </CardDescription>
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+          {posts.map((post) => {
+            const coverImageUrl = (post as { cover_image_url?: string | null }).cover_image_url
+            const bodyText = typeof (post as { body?: string }).body === "string" ? (post as { body: string }).body : ""
+            const excerpt = bodyText.replace(/\n/g, " ").trim().slice(0, 120) + (bodyText.length > 120 ? "..." : "")
+            return (
+              <Card key={post.id} className="flex flex-col overflow-hidden pt-0">
+                <div className="aspect-video w-full overflow-hidden bg-muted border-b border-border">
+                  {coverImageUrl ? (
+                    <img src={coverImageUrl} alt="" className="size-full object-cover" />
+                  ) : (
+                    <div className="size-full flex items-center justify-center text-muted-foreground/50">
+                      <BookOpen className="size-12" />
+                    </div>
+                  )}
                 </div>
-                <Badge variant={post.status === "published" ? "default" : "secondary"}>
-                  {post.status === "published" ? "Yayında" : "Taslak"}
-                </Badge>
-              </CardHeader>
-              <CardContent className="flex flex-wrap gap-2">
+                <CardHeader className="flex flex-row items-start justify-between gap-2 pb-2">
+                  <div className="min-w-0 flex-1">
+                    <CardTitle className="truncate text-base">{post.title}</CardTitle>
+                    <CardDescription className="mt-1">
+                      /blog/{post.slug} ·{" "}
+                      {post.published_at
+                        ? new Date(post.published_at).toLocaleDateString("tr-TR")
+                        : new Date(post.created_at).toLocaleDateString("tr-TR")}
+                    </CardDescription>
+                    {excerpt ? (
+                      <p className="text-sm text-muted-foreground mt-2 line-clamp-2">{excerpt}</p>
+                    ) : null}
+                  </div>
+                  <Badge variant={post.status === "published" ? "default" : "secondary"} className="shrink-0">
+                    {post.status === "published" ? "Yayında" : "Taslak"}
+                  </Badge>
+                </CardHeader>
+                <CardContent className="flex flex-wrap gap-2 pt-0">
                 <Button variant="outline" size="sm" asChild>
-                  <Link href={`/dashboard/gelistirici/yazilarim/${post.id}/duzenle`} className="gap-1">
-                    <Pencil className="size-3.5" />
-                    Düzenle
-                  </Link>
-                </Button>
-                {post.status === "published" && (
-                  <Button variant="ghost" size="sm" asChild>
                     <Link href={`/blog/${post.slug}`} target="_blank" className="gap-1">
                       <ExternalLink className="size-3.5" />
                       Görüntüle
                     </Link>
                   </Button>
-                )}
-                <BlogPostDeleteButton postId={post.id} postTitle={post.title} />
-              </CardContent>
-            </Card>
-          ))}
+                  <Button variant="outline" size="sm" asChild>
+                    <Link href={`/dashboard/gelistirici/yazilarim/${post.id}/duzenle`} className="gap-1">
+                      <Pencil className="size-3.5" />
+                      Düzenle
+                    </Link>
+                  </Button>
+                  {post.status === "published" && (
+                    <Button variant="ghost" size="sm" asChild>
+                      <Link href={`/blog/${post.slug}`} target="_blank" className="gap-1">
+                        <ExternalLink className="size-3.5" />
+                        Görüntüle
+                      </Link>
+                    </Button>
+                  )}
+                  <BlogPostDeleteButton postId={post.id} postTitle={post.title} />
+                </CardContent>
+              </Card>
+            )
+          })}
         </div>
       )}
     </div>

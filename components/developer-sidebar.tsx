@@ -35,7 +35,7 @@ const menuItems = [
   { title: "Eşleşmeler", href: "/dashboard/gelistirici/eslesmeler", icon: Star },
   { title: "Başvurularım", href: "/dashboard/gelistirici/basvurular", icon: Briefcase },
   { title: "Projelerim", href: "/dashboard/gelistirici/projelerim", icon: Code2 },
-  { title: "Yazılarım", href: "/dashboard/gelistirici/yazilarim", icon: BookOpen },
+  { title: "Blog Yazılarım", href: "/dashboard/gelistirici/yazilarim", icon: BookOpen },
   { title: "Bildirimler", href: "/dashboard/gelistirici/bildirimler", icon: Bell },
   { title: "Destek Taleplerim", href: "/dashboard/gelistirici/destek", icon: Ticket },
   { title: "Canlı Sohbet", href: "/dashboard/gelistirici/destek-sohbet", icon: MessageCircle },

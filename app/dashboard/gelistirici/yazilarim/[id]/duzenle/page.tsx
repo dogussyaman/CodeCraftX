@@ -33,6 +33,7 @@ export default async function YazilarimDuzenlePage({
           slug: post.slug,
           body: post.body,
           status: post.status ?? "draft",
+          cover_image_url: post.cover_image_url ?? undefined,
         }}
         backHref="/dashboard/gelistirici/yazilarim"
         successRedirect="/dashboard/gelistirici/yazilarim"
