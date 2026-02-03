@@ -25,6 +25,7 @@ import {
   SidebarMenuButton,
   SidebarMenuItem,
 } from "@/components/ui/sidebar"
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
 import { cn } from "@/lib/utils"
 
 const menuItems = [
@@ -43,7 +44,7 @@ const menuItems = [
 ]
 
 interface DeveloperSidebarProps {
-  profile?: { full_name?: string; email?: string } | null
+  profile?: { full_name?: string; email?: string; avatar_url?: string | null } | null
 }
 
 export function DeveloperSidebar({ profile }: DeveloperSidebarProps) {
@@ -55,8 +56,22 @@ export function DeveloperSidebar({ profile }: DeveloperSidebarProps) {
         <SidebarMenu>
           <SidebarMenuItem>
             <SidebarMenuButton size="lg" asChild>
-              <Link href="/dashboard/gelistirici">
-                <div className="grid flex-1 text-left text-sm leading-tight">
+              <Link href="/dashboard/gelistirici" className="flex items-center gap-3">
+                {profile?.avatar_url != null || profile?.full_name ? (
+                  <Avatar className="size-9 shrink-0 border border-sidebar-border">
+                    <AvatarImage src={profile?.avatar_url ?? undefined} alt={profile?.full_name ?? ""} className="object-cover" />
+                    <AvatarFallback className="bg-primary/10 text-primary text-xs font-bold">
+                      {(profile?.full_name ?? "Geliştirici")
+                        .split(" ")
+                        .filter(Boolean)
+                        .map((n) => n[0])
+                        .join("")
+                        .toUpperCase()
+                        .slice(0, 2)}
+                    </AvatarFallback>
+                  </Avatar>
+                ) : null}
+                <div className="grid flex-1 text-left text-sm leading-tight min-w-0">
                   <span className="truncate font-semibold text-base">CodeCrafters</span>
                   <span className="truncate text-xs text-muted-foreground">Geliştirici</span>
                 </div>
@@ -102,9 +117,23 @@ export function DeveloperSidebar({ profile }: DeveloperSidebarProps) {
         {profile && (
           <SidebarMenu>
             <SidebarMenuItem>
-              <div className="flex flex-col gap-0.5 rounded-lg px-3 py-2 text-sm">
-                <span className="truncate font-medium">{profile.full_name ?? "Geliştirici"}</span>
-                <span className="truncate text-xs text-muted-foreground">{profile.email}</span>
+              <div className="flex items-center gap-3 rounded-lg px-3 py-2 text-sm min-w-0">
+                <Avatar className="size-9 shrink-0 border border-sidebar-border">
+                  <AvatarImage src={profile.avatar_url ?? undefined} alt={profile.full_name ?? ""} className="object-cover" />
+                  <AvatarFallback className="bg-primary/10 text-primary text-xs font-bold">
+                    {(profile.full_name ?? "Geliştirici")
+                      .split(" ")
+                      .filter(Boolean)
+                      .map((n) => n[0])
+                      .join("")
+                      .toUpperCase()
+                      .slice(0, 2)}
+                  </AvatarFallback>
+                </Avatar>
+                <div className="flex flex-col gap-0.5 min-w-0 flex-1">
+                  <span className="truncate font-medium">{profile.full_name ?? "Geliştirici"}</span>
+                  <span className="truncate text-xs text-muted-foreground">{profile.email}</span>
+                </div>
               </div>
             </SidebarMenuItem>
           </SidebarMenu>

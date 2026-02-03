@@ -1,7 +1,7 @@
 "use client"
 
 import { cn } from "@/lib/utils"
-import { Avatar, AvatarFallback } from "@/components/ui/avatar"
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
 import type { ChatMessage } from "@/lib/types"
 import { format } from "date-fns"
 import { tr } from "date-fns/locale"
@@ -12,9 +12,12 @@ interface ChatMessageListProps {
   loading?: boolean
   /** Scroll container parent'ta; sadece içerik render edilir (scroll sorununu önlemek için) */
   contentOnly?: boolean
+  /** Profil fotoğrafı ve adı — kullanıcının kendi mesajlarında gösterilir */
+  currentUserAvatarUrl?: string
+  currentUserFullName?: string
 }
 
-export function ChatMessageList({ messages, currentUserId, loading, contentOnly }: ChatMessageListProps) {
+export function ChatMessageList({ messages, currentUserId, loading, contentOnly, currentUserAvatarUrl, currentUserFullName }: ChatMessageListProps) {
   if (loading) {
     return (
       <div className="flex flex-1 items-center justify-center p-4">
@@ -52,9 +55,24 @@ export function ChatMessageList({ messages, currentUserId, loading, contentOnly 
               className={cn("flex gap-3", isOwn && "flex-row-reverse")}
             >
               <Avatar className="size-8 shrink-0">
-                <AvatarFallback className="text-xs">
-                  {isOwn ? "Siz" : "Destek"}
-                </AvatarFallback>
+                {isOwn ? (
+                  <>
+                    <AvatarImage src={currentUserAvatarUrl} alt={currentUserFullName ?? ""} className="object-cover" />
+                    <AvatarFallback className="text-xs bg-primary/10 text-primary">
+                      {(currentUserFullName ?? "Siz")
+                        .split(" ")
+                        .filter(Boolean)
+                        .map((n) => n[0])
+                        .join("")
+                        .toUpperCase()
+                        .slice(0, 2)}
+                    </AvatarFallback>
+                  </>
+                ) : (
+                  <AvatarFallback className="text-xs">
+                    <img src="/logo.svg" alt="" className="size-4" />
+                  </AvatarFallback>
+                )}
               </Avatar>
               <div
                 className={cn(
@@ -63,7 +81,7 @@ export function ChatMessageList({ messages, currentUserId, loading, contentOnly 
                 )}
               >
                 {m.content.trim() ? (
-                  <p className="whitespace-pre-wrap break-words text-sm">{m.content}</p>
+                  <p className="whitespace-pre-wrap text-sm">{m.content}</p>
                 ) : null}
                 {m.attachment_urls?.length ? (
                   <div className="flex flex-wrap gap-1">

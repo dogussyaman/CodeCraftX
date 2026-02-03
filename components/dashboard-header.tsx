@@ -1,7 +1,7 @@
 "use client"
 
 import { Button } from "@/components/ui/button"
-import { Avatar, AvatarFallback } from "@/components/ui/avatar"
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -81,6 +81,7 @@ export function DashboardHeader({ profile }: DashboardHeaderProps) {
               >
                 <div className="relative">
                   <Avatar className="size-8 border-2 border-border group-hover:border-primary/50 transition-colors">
+                    <AvatarImage src={profile.avatar_url ?? undefined} alt={profile.full_name ?? ""} className="object-cover" />
                     <AvatarFallback className="bg-primary/10 text-primary text-xs font-bold">
                       {getInitials(profile.full_name || "")}
                     </AvatarFallback>

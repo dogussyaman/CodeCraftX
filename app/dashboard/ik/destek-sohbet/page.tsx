@@ -19,7 +19,8 @@ export default async function IKDestekSohbetPage() {
       <p className="mb-2 shrink-0 text-sm text-muted-foreground">
         Destek ekibimizle anlık sohbet edebilirsiniz. Mesajlarınız canlı iletilir.
       </p>
-      <div className="min-h-0 flex-1 overflow-hidden">
+      {/* Sabit max yükseklik: chat alanı büyümez, scroll container içinde kayar (gelistirici ile aynı yapı) */}
+      <div className="flex min-h-[320px] max-h-[calc(100vh-8rem)] flex-1 flex-col overflow-hidden">
         <ChatPanel userId={user.id} />
       </div>
     </div>

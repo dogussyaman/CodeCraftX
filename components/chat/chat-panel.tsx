@@ -7,9 +7,12 @@ import { ChatConversationList } from "./chat-conversation-list"
 import { ChatMessageList } from "./chat-message-list"
 import { ChatMessageInput } from "./chat-message-input"
 import { Button } from "@/components/ui/button"
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
 
 interface ChatPanelProps {
   userId: string
+  userAvatarUrl?: string
+  userFullName?: string
 }
 
 const suggestions = [
@@ -20,7 +23,7 @@ const suggestions = [
   "Hesap ayarlarımı değiştirmek istiyorum",
 ]
 
-export function ChatPanel({ userId }: ChatPanelProps) {
+export function ChatPanel({ userId, userAvatarUrl, userFullName }: ChatPanelProps) {
   const scrollContainerRef = useRef<HTMLDivElement>(null)
   const [showScrollButton, setShowScrollButton] = useState(false)
   const prevLastIdRef = useRef<string | null>(null)
@@ -92,7 +95,19 @@ export function ChatPanel({ userId }: ChatPanelProps) {
         {selectedConversationId ? (
           <>
             {/* Header - shrink-0 */}
-            <div className="shrink-0 border-b border-border px-4 py-2">
+            <div className="shrink-0 border-b border-border px-4 py-2 flex items-center gap-3">
+              <Avatar className="size-8 shrink-0 border border-border">
+                <AvatarImage src={userAvatarUrl} alt={userFullName ?? ""} className="object-cover" />
+                <AvatarFallback className="bg-primary/10 text-primary text-xs font-bold">
+                  {(userFullName ?? "Siz")
+                    .split(" ")
+                    .filter(Boolean)
+                    .map((n) => n[0])
+                    .join("")
+                    .toUpperCase()
+                    .slice(0, 2)}
+                </AvatarFallback>
+              </Avatar>
               <p className="text-sm font-medium text-muted-foreground">
                 Canlı destek sohbeti — mesajlar anlık iletilir.
               </p>
@@ -111,6 +126,8 @@ export function ChatPanel({ userId }: ChatPanelProps) {
                   currentUserId={userId}
                   loading={loadingMessages}
                   contentOnly
+                  currentUserAvatarUrl={userAvatarUrl}
+                  currentUserFullName={userFullName}
                 />
               </div>
               {/* Scroll to bottom - demo'daki ConversationScrollButton gibi */}

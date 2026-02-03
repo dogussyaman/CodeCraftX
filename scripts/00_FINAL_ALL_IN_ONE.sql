@@ -22,11 +22,14 @@ CREATE TABLE IF NOT EXISTS public.profiles (
   social_links JSONB DEFAULT '{}',
   website TEXT,
   avatar_url TEXT,
+  profile_bg_url TEXT,
   company_id UUID,
   must_change_password BOOLEAN DEFAULT FALSE,
   created_at TIMESTAMP WITH TIME ZONE DEFAULT NOW(),
   updated_at TIMESTAMP WITH TIME ZONE DEFAULT NOW()
 );
+
+ALTER TABLE public.profiles ADD COLUMN IF NOT EXISTS profile_bg_url TEXT;
 
 -- Companies (plan dahil)
 CREATE TABLE IF NOT EXISTS public.companies (
@@ -1070,6 +1073,16 @@ DROP POLICY IF EXISTS "project-images insert own folder" ON storage.objects;
 CREATE POLICY "project-images insert own folder" ON storage.objects FOR INSERT TO authenticated WITH CHECK (bucket_id = 'project-images' AND (storage.foldername(name))[1] = auth.uid()::text);
 DROP POLICY IF EXISTS "project-images delete own" ON storage.objects;
 CREATE POLICY "project-images delete own" ON storage.objects FOR DELETE TO authenticated USING (bucket_id = 'project-images' AND (storage.foldername(name))[1] = auth.uid()::text);
+
+INSERT INTO storage.buckets (id, name, public) VALUES ('avatars', 'avatars', true) ON CONFLICT (id) DO UPDATE SET public = EXCLUDED.public;
+DROP POLICY IF EXISTS "avatars public read" ON storage.objects;
+CREATE POLICY "avatars public read" ON storage.objects FOR SELECT USING (bucket_id = 'avatars');
+DROP POLICY IF EXISTS "avatars insert own folder" ON storage.objects;
+CREATE POLICY "avatars insert own folder" ON storage.objects FOR INSERT TO authenticated WITH CHECK (bucket_id = 'avatars' AND (storage.foldername(name))[1] = auth.uid()::text);
+DROP POLICY IF EXISTS "avatars update own" ON storage.objects;
+CREATE POLICY "avatars update own" ON storage.objects FOR UPDATE TO authenticated USING (bucket_id = 'avatars' AND (storage.foldername(name))[1] = auth.uid()::text);
+DROP POLICY IF EXISTS "avatars delete own" ON storage.objects;
+CREATE POLICY "avatars delete own" ON storage.objects FOR DELETE TO authenticated USING (bucket_id = 'avatars' AND (storage.foldername(name))[1] = auth.uid()::text);
 
 -- ============================================
 -- SEED (temel yetenekler + örnek blog + test projesi)
