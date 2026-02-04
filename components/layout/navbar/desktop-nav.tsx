@@ -70,7 +70,7 @@ export function DesktopNav({
                   focus-visible:text-primary focus-visible:outline-none
                   ${isHighlight
                     ? "text-foreground dark:text-white"
-                    : "text-muted-foreground hover:text-primary"
+                    : "text-muted-foreground hover:text-white"
                   }
                 `}
               >
