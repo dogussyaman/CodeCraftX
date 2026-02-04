@@ -12,13 +12,13 @@ export function IsverenPricingCta() {
             İşe alım süreçlerinizi optimize etmek için bugün kaydolun
           </p>
           <div className="flex flex-col sm:flex-row gap-4 justify-center">
-            <Button size="lg" asChild className="group">
+            <Button size="lg" asChild className="group text-base font-semibold">
               <Link href="/auth/kayit">
                 Ücretsiz Kaydol
                 <ArrowRight className="ml-2 size-4 transition-transform group-hover:translate-x-1" />
               </Link>
             </Button>
-            <Button size="lg" variant="outline" asChild>
+            <Button size="lg" variant="outline" asChild className="text-base font-semibold">
               <Link href="/iletisim">Demo Talep Edin</Link>
             </Button>
           </div>

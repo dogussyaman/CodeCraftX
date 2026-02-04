@@ -102,7 +102,7 @@ export function ContactFormCard() {
             <Textarea id="mesaj" {...register("mesaj")} placeholder="Mesajınızı buraya yazın..." rows={4} className={errors.mesaj ? "border-destructive" : ""} />
             {errors.mesaj && <p className="text-sm text-destructive">{errors.mesaj.message}</p>}
           </div>
-          <Button type="submit" className="w-full" disabled={isSubmitting}>
+          <Button type="submit" className="w-full text-base font-semibold" disabled={isSubmitting}>
             {isSubmitting ? (
               <>
                 <div className="mr-2 h-4 w-4 animate-spin rounded-full border-2 border-background border-t-transparent" />

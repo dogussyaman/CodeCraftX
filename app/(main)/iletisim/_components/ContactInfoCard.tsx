@@ -6,9 +6,10 @@ export function ContactInfoCard() {
   return (
     <Card>
       <CardHeader>
-        <CardTitle>İletişim Bilgileri</CardTitle>
+        <CardTitle>İletişim Kanalları</CardTitle>
         <CardDescription>
-          Size en hızlı şekilde dönüş yapabilmemiz için aşağıdaki kanalları kullanabilirsiniz
+          Size en hızlı şekilde dönüş yapabilmemiz için aşağıdaki kanalları kullanabilirsiniz. Ortalama yanıt
+          süresi 24 saattir.
         </CardDescription>
       </CardHeader>
       <CardContent className="space-y-4">

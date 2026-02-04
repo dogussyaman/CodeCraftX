@@ -1,7 +1,9 @@
+import Link from "next/link"
 import type { Metadata } from "next"
+import { AuroraBackground } from "@/components/ui/aurora-background"
+import { Button } from "@/components/ui/button"
 import { buildPageMetadata, getSiteTitle } from "@/lib/seo"
 import { createServerClient } from "@/lib/supabase/server"
-import { AuroraBackground } from "@/components/ui/aurora-background"
 import { BlogListSearch } from "./_components/BlogListSearch"
 
 export const metadata: Metadata = buildPageMetadata({
@@ -23,13 +25,19 @@ export default async function BlogPage() {
     <div className="min-h-screen bg-background">
       <AuroraBackground className="min-h-[42vh] pt-24 pb-16 md:pt-28 md:pb-20">
         <div className="container mx-auto px-4 max-w-6xl">
-          <header className="mb-12 text-center max-w-2xl mx-auto">
-            <h1 className="text-4xl md:text-5xl font-bold tracking-tight mb-4">
-              Blog
-            </h1>
-            <p className="text-lg text-muted-foreground">
-              Kariyer ipuçları, teknoloji yazıları ve topluluk deneyimleri.
+          <header className="mb-12 text-center max-w-3xl mx-auto">
+            <h1 className="text-4xl md:text-5xl font-bold tracking-tight mb-4">Blog</h1>
+            <p className="text-lg text-muted-foreground text-pretty">
+              Kariyer ipuçları, teknoloji yazıları ve topluluk deneyimleri. Öğrenmek, ilham almak ve paylaşmak için.
             </p>
+            <div className="mt-8 flex flex-col sm:flex-row gap-4 justify-center">
+              <Button size="lg" asChild className="text-base font-semibold">
+                <Link href="/auth/kayit">Topluluğa Katıl</Link>
+              </Button>
+              <Button size="lg" variant="outline" asChild className="text-base font-semibold">
+                <Link href="/iletisim">Yazı Öner</Link>
+              </Button>
+            </div>
           </header>
         </div>
       </AuroraBackground>

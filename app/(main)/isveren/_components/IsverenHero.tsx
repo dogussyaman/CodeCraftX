@@ -28,7 +28,7 @@ export function IsverenHero() {
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.5 }}
-          className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-primary/10 border border-primary/20 text-primary text-sm font-medium mb-6 backdrop-blur-sm"
+          className="inline-flex items-center gap-2 rounded-full border border-primary/20 bg-primary/10 px-4 py-2 text-sm font-medium text-primary backdrop-blur-sm"
         >
           <Building2 className="size-4" />
           <span>İşverenler İçin Akıllı İşe Alım Platformu</span>
@@ -38,7 +38,7 @@ export function IsverenHero() {
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.5, delay: 0.1 }}
-          className="text-5xl md:text-7xl font-bold mb-6 text-balance leading-tight"
+          className="mt-6 text-5xl md:text-7xl font-bold text-balance leading-tight"
         >
           <span className="gradient-text">En İyi Geliştiricileri</span>
           <br />
@@ -49,7 +49,7 @@ export function IsverenHero() {
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.5, delay: 0.2 }}
-          className="text-xl md:text-2xl text-muted-foreground mb-10 max-w-3xl mx-auto leading-relaxed min-h-12 flex items-center justify-center"
+          className="mt-6 flex min-h-12 items-center justify-center text-xl text-muted-foreground md:text-2xl"
         >
           <TypewriterEffect
             words={TYPEWRITER_WORDS}
@@ -64,18 +64,18 @@ export function IsverenHero() {
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.5, delay: 0.25 }}
-          className="text-lg text-muted-foreground mb-10 text-pretty max-w-2xl mx-auto"
+          className="mt-4 text-lg text-muted-foreground text-pretty max-w-2xl mx-auto"
         >
-          CV analizi ve beceri eşleştirme ile ihtiyacınız olan yazılımcıya hızlıca ulaşın
+          CV analizi, beceri eşleştirme ve otomatik aday taraması ile ihtiyacınız olan yazılımcıya hızlıca ulaşın.
         </motion.p>
 
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.5, delay: 0.3 }}
-          className="flex flex-col sm:flex-row gap-4 justify-center"
+          className="mt-8 flex flex-col sm:flex-row gap-4 justify-center"
         >
-          <Button size="lg" asChild className="text-base relative overflow-hidden group glow-effect">
+          <Button size="lg" asChild className="text-base font-semibold relative overflow-hidden group glow-effect">
             <Link href="/isveren#sirket-talebi">
               <span className="relative z-10 flex items-center gap-2">
                 Şirket Talebi Oluştur
@@ -88,7 +88,7 @@ export function IsverenHero() {
             size="lg"
             variant="outline"
             asChild
-            className="text-base border-border/50 hover:border-primary/50 bg-background/50 backdrop-blur-sm"
+            className="text-base font-semibold border-border/50 hover:border-primary/50 bg-background/50 backdrop-blur-sm"
           >
             <Link href="#ozellikler">Nasıl Çalışır?</Link>
           </Button>

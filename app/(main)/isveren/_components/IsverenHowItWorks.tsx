@@ -13,8 +13,11 @@ export function IsverenHowItWorks() {
       <div className="container mx-auto px-4">
         <div className="max-w-6xl mx-auto">
           <div className="text-center mb-12">
-            <h2 className="text-4xl font-bold mb-4">Nasıl Çalışır?</h2>
-            <p className="text-xl text-muted-foreground">Basit ve etkili işe alım süreci</p>
+            <span className="inline-flex items-center gap-2 rounded-full border border-secondary/20 bg-secondary/10 px-4 py-2 text-sm font-medium text-secondary">
+              Süreç
+            </span>
+            <h2 className="text-4xl font-bold mt-5 mb-4">Nasıl Çalışır?</h2>
+            <p className="text-xl text-muted-foreground">Basit ve etkili işe alım süreci.</p>
           </div>
           <div className="grid md:grid-cols-4 gap-8">
             {steps.map((item, idx) => (

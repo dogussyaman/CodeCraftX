@@ -7,9 +7,12 @@ export function IsverenBenefits() {
       <div className="container mx-auto px-4">
         <div className="max-w-6xl mx-auto">
           <div className="text-center mb-12">
-            <h2 className="text-4xl font-bold mb-4">Neden Codecrafters?</h2>
-            <p className="text-xl text-muted-foreground">
-              İşe alım süreçlerinizi %90 daha hızlı ve verimli hale getirin
+            <span className="inline-flex items-center gap-2 rounded-full border border-primary/20 bg-primary/10 px-4 py-2 text-sm font-medium text-primary">
+              Avantajlar
+            </span>
+            <h2 className="text-4xl font-bold mt-5 mb-4">Neden Codecrafters?</h2>
+            <p className="text-xl text-muted-foreground text-pretty">
+              İşe alım süreçlerinizi %90 daha hızlı ve verimli hale getirin.
             </p>
           </div>
           <div className="grid md:grid-cols-3 gap-8">

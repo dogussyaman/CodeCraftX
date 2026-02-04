@@ -16,8 +16,13 @@ export function IsverenFeatures() {
       <div className="container mx-auto px-4">
         <div className="max-w-6xl mx-auto">
           <div className="text-center mb-12">
-            <h2 className="text-4xl font-bold mb-4">Özellikler</h2>
-            <p className="text-xl text-muted-foreground">İşe alım süreçlerinizi kolaylaştıran güçlü araçlar</p>
+            <span className="inline-flex items-center gap-2 rounded-full border border-primary/20 bg-primary/10 px-4 py-2 text-sm font-medium text-primary">
+              Özellikler
+            </span>
+            <h2 className="text-4xl font-bold mt-5 mb-4">Öne Çıkan Özellikler</h2>
+            <p className="text-xl text-muted-foreground text-pretty">
+              İşe alım süreçlerinizi kolaylaştıran güçlü araçlar.
+            </p>
           </div>
           <div className="grid md:grid-cols-2 gap-6">
             {features.map((f, idx) => (

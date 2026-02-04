@@ -6,7 +6,12 @@ export function OfficeVisitSection() {
     <section className="py-20">
       <div className="container mx-auto px-4">
         <div className="max-w-6xl mx-auto">
-          <h2 className="text-3xl font-bold mb-8 text-center">Ofisimizi Ziyaret Edin</h2>
+          <div className="text-center mb-8">
+            <h2 className="text-3xl font-bold mb-3">Ofisimizi Ziyaret Edin</h2>
+            <p className="text-muted-foreground">
+              Randevu alarak ekiplerimizle yüz yüze görüşebilir, ihtiyaçlarınızı paylaşabilirsiniz.
+            </p>
+          </div>
           <div className="aspect-video rounded-xl bg-muted border border-border overflow-hidden">
             <div className="w-full h-full flex items-center justify-center">
               <div className="text-center">

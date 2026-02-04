@@ -37,25 +37,45 @@ export function BlogListSearch({ initialPosts, render }: BlogListSearchProps) {
     )
   }, [initialPosts, q])
 
+  const searchInput = (
+    <div className="w-full md:max-w-md">
+      <Label htmlFor="blog-search" className="sr-only">
+        Yazı ara
+      </Label>
+      <div className="relative">
+        <Search className="absolute left-3 top-1/2 -translate-y-1/2 size-4 text-muted-foreground" />
+        <Input
+          id="blog-search"
+          type="search"
+          placeholder="Başlık veya içerik ara..."
+          value={q}
+          onChange={(e) => setQ(e.target.value)}
+          className="pl-9"
+        />
+      </div>
+    </div>
+  )
+
+  const resultSummary = (
+    <div className="space-y-1">
+      <h2 className="text-lg font-semibold">Tüm Yazılar</h2>
+      <p className="text-sm text-muted-foreground">
+        {filteredPosts.length} yazı listeleniyor
+      </p>
+    </div>
+  )
+
+  const searchBlock = (
+    <div className="mb-8 flex flex-col gap-4 md:flex-row md:items-center md:justify-between">
+      {resultSummary}
+      {searchInput}
+    </div>
+  )
+
   if (render) {
     return (
       <>
-        <div className="mb-8 max-w-md">
-          <Label htmlFor="blog-search" className="sr-only">
-            Yazı ara
-          </Label>
-          <div className="relative">
-            <Search className="absolute left-3 top-1/2 -translate-y-1/2 size-4 text-muted-foreground" />
-            <Input
-              id="blog-search"
-              type="search"
-              placeholder="Başlık veya içerik ara..."
-              value={q}
-              onChange={(e) => setQ(e.target.value)}
-              className="pl-9"
-            />
-          </div>
-        </div>
+        {searchBlock}
         {render(filteredPosts)}
       </>
     )
@@ -64,22 +84,7 @@ export function BlogListSearch({ initialPosts, render }: BlogListSearchProps) {
   if (!filteredPosts.length) {
     return (
       <>
-        <div className="mb-8 max-w-md">
-          <Label htmlFor="blog-search" className="sr-only">
-            Yazı ara
-          </Label>
-          <div className="relative">
-            <Search className="absolute left-3 top-1/2 -translate-y-1/2 size-4 text-muted-foreground" />
-            <Input
-              id="blog-search"
-              type="search"
-              placeholder="Başlık veya içerik ara..."
-              value={q}
-              onChange={(e) => setQ(e.target.value)}
-              className="pl-9"
-            />
-          </div>
-        </div>
+        {searchBlock}
         <Card>
           <CardContent className="flex flex-col items-center justify-center py-16">
             <FileText className="size-12 text-muted-foreground mb-4" />
@@ -94,22 +99,7 @@ export function BlogListSearch({ initialPosts, render }: BlogListSearchProps) {
 
   return (
     <>
-      <div className="mb-8 max-w-md">
-        <Label htmlFor="blog-search" className="sr-only">
-          Yazı ara
-        </Label>
-        <div className="relative">
-          <Search className="absolute left-3 top-1/2 -translate-y-1/2 size-4 text-muted-foreground" />
-          <Input
-            id="blog-search"
-            type="search"
-            placeholder="Başlık veya içerik ara..."
-            value={q}
-            onChange={(e) => setQ(e.target.value)}
-            className="pl-9"
-          />
-        </div>
-      </div>
+      {searchBlock}
       <ul className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
         {filteredPosts.map((post) => {
           const authorName = post.profiles?.full_name ?? "CodeCrafters"

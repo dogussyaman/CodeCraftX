@@ -30,9 +30,15 @@ export function JobsHero() {
   }
 
   return (
-    <section className="pb-5 md:pb-6 overflow-hidden">
+    <section className="pb-6 md:pb-8 overflow-hidden">
       <div className="relative mx-auto z-10 sm:p-5 md:p-6">
-        <div className="max-w-2xl mx-auto">
+        <div className="max-w-3xl mx-auto space-y-6">
+          <div className="text-center space-y-3">
+            <h1 className="text-3xl md:text-4xl font-bold">İş İlanları</h1>
+            <p className="text-base md:text-lg text-muted-foreground text-pretty">
+              Hedefinize uygun pozisyonları filtreleyin, tek panelden başvurularınızı takip edin.
+            </p>
+          </div>
           <form
             onSubmit={(e) => {
               e.preventDefault()
@@ -69,10 +75,13 @@ export function JobsHero() {
                 </button>
               )}
             </div>
-            <Button type="submit" size="lg" className="h-[42px] shrink-0 sm:h-auto">
+            <Button type="submit" size="lg" className="h-[42px] shrink-0 text-base font-semibold sm:h-auto">
               İş Ara
             </Button>
           </form>
+          <p className="text-xs text-muted-foreground text-center">
+            İpucu: Pozisyon adı, teknoloji veya şirket ismiyle arama yapabilirsiniz.
+          </p>
         </div>
       </div>
     </section>
