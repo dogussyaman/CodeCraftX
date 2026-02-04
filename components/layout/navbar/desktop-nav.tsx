@@ -33,7 +33,7 @@ export function DesktopNav({
 
   return (
     <ul
-      className="relative flex w-fit list-none rounded-full border border-border/70 p-1"
+      className="relative flex w-fit items-center gap-1 list-none rounded-full border border-border/70 p-1"
       role="list"
     >
       {showPill && (

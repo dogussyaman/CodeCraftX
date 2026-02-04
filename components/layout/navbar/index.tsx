@@ -83,7 +83,7 @@ export function ModernNavbar() {
           </div>
 
           <nav
-            className="hidden md:flex items-center justify-center flex-1 min-w-0"
+            className="hidden md:flex h-full flex-1 items-center justify-center min-w-0"
             aria-label="Ana menü"
           >
             <DesktopNav isActive={isActive} />
