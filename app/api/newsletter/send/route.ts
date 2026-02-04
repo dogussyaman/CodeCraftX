@@ -37,7 +37,7 @@ export async function POST(request: Request) {
 
     const { data: campaign, error: fetchError } = await supabase
       .from("newsletter_campaigns")
-      .select("id, sent_at")
+      .select("id, title, image_url, body_html, sent_at")
       .eq("id", campaignId)
       .single()
 
@@ -47,6 +47,54 @@ export async function POST(request: Request) {
 
     if (campaign.sent_at) {
       return NextResponse.json({ error: "Bu kampanya zaten gönderilmiş" }, { status: 400 })
+    }
+
+    const { data: subscribers, error: subscribersError } = await supabase
+      .from("newsletter_subscribers")
+      .select("email")
+      .is("unsubscribed_at", null)
+
+    if (subscribersError) {
+      console.error("Newsletter subscribers fetch error:", subscribersError)
+      return NextResponse.json(
+        { error: "Aboneler alınamadı" },
+        { status: 500 },
+      )
+    }
+
+    if (!subscribers?.length) {
+      console.warn("Newsletter send skipped: no subscribers found", { campaignId })
+      return NextResponse.json(
+        { error: "Gönderilecek abone bulunamadı, bülten henüz gönderilmedi" },
+        { status: 400 },
+      )
+    }
+
+    const htmlContent = [
+      campaign.image_url ? `<p><img src="${campaign.image_url}" alt="" /></p>` : "",
+      campaign.body_html ?? "",
+    ]
+      .filter(Boolean)
+      .join("\n")
+
+    const queuePayload = subscribers.map((subscriber) => ({
+      recipient_email: subscriber.email,
+      subject: campaign.title,
+      html_content: htmlContent || undefined,
+      email_type: "custom" as const,
+      metadata: { campaign_id: campaign.id },
+    }))
+
+    const { error: queueError } = await supabase
+      .from("email_queue")
+      .insert(queuePayload)
+
+    if (queueError) {
+      console.error("Newsletter queue insert error:", queueError)
+      return NextResponse.json(
+        { error: "Bülten kuyruğa alınamadı" },
+        { status: 500 },
+      )
     }
 
     const { error: updateError } = await supabase
@@ -62,11 +110,11 @@ export async function POST(request: Request) {
       )
     }
 
-    // TODO: Queue actual email send to newsletter_subscribers (Resend / Edge Function / SMTP)
-    // - Fetch campaign title, image_url, body_html, links
-    // - Fetch subscribers from newsletter_subscribers where unsubscribed_at IS NULL
-    // - Send HTML email per subscriber
-    return NextResponse.json({ success: true, message: "Bülten gönderildi (e-posta kuyruğa alındı)" })
+    return NextResponse.json({
+      success: true,
+      queued: subscribers.length,
+      message: "Bülten kuyruğa alındı",
+    })
   } catch (err: unknown) {
     console.error("Newsletter send unexpected error:", err)
     return NextResponse.json(
