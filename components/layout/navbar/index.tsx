@@ -77,26 +77,27 @@ export function ModernNavbar() {
       }`}
     >
       <div className="container mx-auto px-4 sm:px-6 lg:px-8 max-w-7xl">
-        <div className="flex items-center justify-between h-14 sm:h-16 gap-2 min-w-0 min-h-[44px] sm:min-h-0">
-          <div className="shrink-0">
+        <div className="grid grid-cols-3 items-center h-14 sm:h-16 gap-2 min-w-0 min-h-[44px] sm:min-h-0">
+          <div className="flex items-center justify-start min-w-0">
             <Logo />
           </div>
 
           <nav
-            className="hidden md:flex items-center justify-center flex-1 min-w-0"
+            className="hidden md:flex items-center justify-center min-w-0"
             aria-label="Ana menü"
           >
             <DesktopNav isActive={isActive} />
           </nav>
 
-          <DesktopActions
-            loading={loading}
-            user={user}
-            getDashboardLink={getDashboardLink}
-            onLogout={handleLogout}
-          />
-
-          <MobileMenuToggle isOpen={isMobileMenuOpen} onToggle={() => setIsMobileMenuOpen(!isMobileMenuOpen)} />
+          <div className="flex items-center justify-end gap-2 min-w-0">
+            <DesktopActions
+              loading={loading}
+              user={user}
+              getDashboardLink={getDashboardLink}
+              onLogout={handleLogout}
+            />
+            <MobileMenuToggle isOpen={isMobileMenuOpen} onToggle={() => setIsMobileMenuOpen(!isMobileMenuOpen)} />
+          </div>
         </div>
       </div>
 

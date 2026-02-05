@@ -12,25 +12,26 @@ export function Logo({ className, showText = true, href = "/" }: LogoProps) {
     return (
         <Link
             href={href}
-            className={cn("flex items-center gap-2 select-none", className)}
+            className={cn(
+                "flex items-center gap-2 select-none h-9",
+                className
+            )}
         >
-            {/* Icon (symbol-only logo from public) */}
+            {/* Icon – logo ile yazı oranı uyumlu */}
             <Image
                 src="/logo.png"
                 alt="CodeCraftX logo"
-                width={32}
-                height={32}
-                className="block shrink-0 h-8 w-8"
+                width={28}
+                height={28}
+                className="block shrink-0 h-7 w-7 object-contain"
                 priority={false}
             />
 
-            {/* Text */}
+            {/* Text – logo ile aynı hizada */}
             {showText && (
-                <div className="relative">
-                    <span className="absolute -mt-1 text-xl font-semibold tracking-tight text-foreground leading-none flex items-center">
-                        Code<span className="font-bold">CraftX</span>
-                    </span>
-                </div>
+                <span className="text-lg font-semibold tracking-tight text-foreground leading-none align-middle">
+                    Code<span className="font-bold">CraftX</span>
+                </span>
             )}
         </Link>
     )

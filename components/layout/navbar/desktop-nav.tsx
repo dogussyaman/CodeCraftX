@@ -33,7 +33,7 @@ export function DesktopNav({
 
   return (
     <ul
-      className="relative flex w-fit list-none rounded-full border border-border/70 p-1"
+      className="relative flex w-fit list-none rounded-full border border-border/70 px-2 py-1.5 flex-nowrap"
       role="list"
     >
       {showPill && (
@@ -65,7 +65,7 @@ export function DesktopNav({
               <Link
                 href={item.href}
                 className={`
-                  block text-[15px] font-medium tracking-tight
+                  block text-[15px] font-medium tracking-tight whitespace-nowrap
                   transition-colors duration-300 ease-out
                   focus-visible:text-primary focus-visible:outline-none
                   ${isHighlight
