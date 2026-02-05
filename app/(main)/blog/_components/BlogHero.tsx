@@ -79,7 +79,7 @@ export function BlogHero() {
           </p>
           <div className="mt-6 flex items-center gap-3">
             <div className="h-0.5 w-16 rounded-full bg-cyan-300/50" />
-            <span className="text-xs font-medium uppercase tracking-wider text-cyan-200/70">CodeCrafters</span>
+            <span className="text-xs font-medium uppercase tracking-wider text-cyan-200/70">CodeCraftX</span>
           </div>
         </header>
       </div>

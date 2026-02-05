@@ -19,7 +19,7 @@ import { JobsCta } from "./_components/JobsCta"
 
 export const metadata: Metadata = buildPageMetadata({
   title: getSiteTitle("İş İlanları"),
-  description: "Yazılım ve teknoloji iş ilanları. Codecrafters ile doğru iş fırsatını bulun.",
+  description: "Yazılım ve teknoloji iş ilanları. CodeCraftX ile doğru iş fırsatını bulun.",
   path: "/is-ilanlari",
 })
 

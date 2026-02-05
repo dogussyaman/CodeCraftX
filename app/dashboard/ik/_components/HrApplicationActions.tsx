@@ -121,7 +121,16 @@ export function HrApplicationActions({
         }
       }
 
-      // 4) Geliştiriciye bildirim gönder
+      // 4) Geliştiriciye email bildirimi gönder
+      void fetch("/api/email/application-status-changed", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ applicationId, status: newStatus }),
+      }).catch((err) => {
+        console.error("Application status email trigger failed", err)
+      })
+
+      // 5) Geliştiriciye bildirim gönder
       const notificationMessages: Record<string, { title: string; body: string }> = {
         pending: {
           title: "Başvurunuz değerlendiriliyor",

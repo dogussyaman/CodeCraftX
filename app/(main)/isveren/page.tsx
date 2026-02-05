@@ -10,8 +10,9 @@ import { IsverenCompanyRequest } from "./_components/IsverenCompanyRequest"
 import { IsverenPricingCta } from "./_components/IsverenPricingCta"
 
 export const metadata: Metadata = {
-  title: "İşverenler İçin | Codecrafters",
-  description: "Yapay zeka destekli işe alım platformu ile doğru yetenekleri bulun. Codecrafters ile işe alım süreçlerinizi optimize edin.",
+  title: "İşverenler İçin | CodeCraftX",
+  description:
+    "Yapay zeka destekli işe alım platformu ile doğru yetenekleri bulun. CodeCraftX ile işe alım süreçlerinizi optimize edin.",
 }
 
 export default function IsverenPage() {

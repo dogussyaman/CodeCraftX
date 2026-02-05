@@ -49,7 +49,7 @@ export function ContributorsSection() {
             Katkıda Bulunanlar
           </h2>
           <p className="text-muted-foreground mt-3 max-w-xl mx-auto">
-            CodeCrafters topluluğu ve platforma destek veren herkes.
+            CodeCraftX topluluğu ve platforma destek veren herkes.
           </p>
         </div>
         <div className="rounded-2xl border border-border bg-card/50 backdrop-blur-sm overflow-hidden">

@@ -86,6 +86,13 @@ export function ResetPasswordForm() {
 
                 if (updateError) throw updateError
 
+                // Şifre değişikliği emailini arka planda tetikle
+                void fetch("/api/email/password-changed", {
+                    method: "POST",
+                }).catch((err) => {
+                    console.error("Password changed email trigger failed", err)
+                })
+
                 setSuccess(true)
 
                 // 2 saniye sonra giriş sayfasına yönlendir

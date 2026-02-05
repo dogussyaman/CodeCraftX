@@ -10,7 +10,7 @@ import { MessageSquare, Users, Calendar, TrendingUp } from "lucide-react"
 
 export const metadata: Metadata = buildPageMetadata({
   title: getSiteTitle("Topluluk"),
-  description: "Codecrafters topluluğu. Binlerce yazılımcıyla bilgi paylaşın ve birlikte öğrenin.",
+  description: "CodeCraftX topluluğu. Binlerce yazılımcıyla bilgi paylaşın ve birlikte öğrenin.",
   path: "/topluluk",
 })
 
@@ -71,7 +71,7 @@ export default function ToplulukPage() {
         <div className="container mx-auto px-4 relative z-10">
           <div className="max-w-4xl mx-auto text-center">
             <h1 className="text-5xl md:text-6xl font-bold mb-6 text-balance">
-              Codecrafters <span className="gradient-text">Topluluğu</span>
+              CodeCraftX <span className="gradient-text">Topluluğu</span>
             </h1>
             <p className="text-xl text-muted-foreground mb-8 text-pretty">
               Binlerce yazılımcının bilgi paylaştığı, birlikte öğrendiği platform

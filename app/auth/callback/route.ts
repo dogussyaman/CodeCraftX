@@ -77,7 +77,7 @@ export async function GET(request: Request) {
 
     const role = profile?.role || user.user_metadata?.role || "developer"
 
-    // MT kullanıcıları CodeCrafters'da oturum açmasın; MT Dashboard'a yönlendir
+    // MT kullanıcıları CodeCraftX'de oturum açmasın; MT Dashboard'a yönlendir
     if (role === "mt") {
       await supabase.auth.signOut()
       return NextResponse.redirect(MT_DASHBOARD_LOGIN_URL)

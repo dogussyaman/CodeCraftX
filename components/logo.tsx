@@ -1,4 +1,5 @@
 import Link from "next/link"
+import Image from "next/image"
 import { cn } from "@/lib/utils"
 
 interface LogoProps {
@@ -13,35 +14,21 @@ export function Logo({ className, showText = true, href = "/" }: LogoProps) {
             href={href}
             className={cn("flex items-center gap-2 select-none", className)}
         >
-            {/* Icon */}
-            <svg
-                width="32"
-                height="32"
-                viewBox="0 0 32 32"
-                fill="none"
-                xmlns="http://www.w3.org/2000/svg"
-                className="block text-primary shrink-0"
-            >
-                <path
-                    d="M6 28L14 6"
-                    stroke="currentColor"
-                    strokeWidth="5"
-                    strokeLinecap="round"
-                />
-                <path
-                    d="M13 28L19 12"
-                    stroke="currentColor"
-                    strokeWidth="5"
-                    strokeLinecap="round"
-                />
-                <circle cx="22" cy="27" r="3" className="fill-current" />
-            </svg>
+            {/* Icon (symbol-only logo from public) */}
+            <Image
+                src="/logo.png"
+                alt="CodeCraftX logo"
+                width={32}
+                height={32}
+                className="block shrink-0 h-8 w-8"
+                priority={false}
+            />
 
             {/* Text */}
             {showText && (
                 <div className="relative">
                     <span className="absolute -mt-1 text-xl font-semibold tracking-tight text-foreground leading-none flex items-center">
-                        Code<span className="font-bold">Crafters</span>
+                        Code<span className="font-bold">CraftX</span>
                     </span>
                 </div>
             )}

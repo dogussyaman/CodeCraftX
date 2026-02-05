@@ -1,6 +1,6 @@
 /**
  * MT Dashboard (Müşteri Temsilcisi) giriş sayfası.
- * CodeCrafters'da MT rolüyle giriş yapan kullanıcılar bu URL'e yönlendirilir.
+ * CodeCraftX'de MT rolüyle giriş yapan kullanıcılar bu URL'e yönlendirilir.
  */
 export const MT_DASHBOARD_LOGIN_URL =
   process.env.NEXT_PUBLIC_MT_DASHBOARD_LOGIN_URL ||

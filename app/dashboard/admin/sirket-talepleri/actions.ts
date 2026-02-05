@@ -2,6 +2,7 @@
 
 import { revalidatePath } from "next/cache"
 import { createClient } from "@/lib/supabase/server"
+import { sendCompanyApprovedEmailUsecase } from "@/lib/email/usecases"
 
 export type CompanyRequestStatus = "approved" | "rejected"
 
@@ -28,7 +29,7 @@ export async function updateCompanyRequestStatus(
 
   const { data: existing, error: fetchErr } = await supabase
     .from("company_requests")
-    .select("id, status")
+    .select("id, status, user_id, company_name")
     .eq("id", requestId)
     .single()
 
@@ -50,6 +51,25 @@ export async function updateCompanyRequestStatus(
 
   if (updateErr) {
     return { ok: false, error: updateErr.message }
+  }
+
+  // Onaylanan talepler için işverene bilgilendirme emaili gönder
+  if (status === "approved" && existing.user_id) {
+    const { data: requesterProfile } = await supabase
+      .from("profiles")
+      .select("full_name, email")
+      .eq("id", existing.user_id)
+      .maybeSingle()
+
+    const toEmail = requesterProfile?.email
+    if (toEmail) {
+      const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || "https://codecraftx.com"
+      await sendCompanyApprovedEmailUsecase(toEmail, {
+        companyName: existing.company_name,
+        contactName: requesterProfile?.full_name || toEmail,
+        dashboardUrl: `${siteUrl}/dashboard/company`,
+      })
+    }
   }
 
   revalidatePath("/dashboard/admin/sirket-talepleri")

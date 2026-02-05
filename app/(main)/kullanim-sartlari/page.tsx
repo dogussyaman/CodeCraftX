@@ -6,7 +6,7 @@ import { buildPageMetadata, getSiteTitle } from "@/lib/seo"
 
 export const metadata: Metadata = buildPageMetadata({
   title: getSiteTitle("Kullanım Şartları"),
-  description: "Codecrafters kullanım şartları. Platform kullanım koşulları ve sorumluluklar.",
+  description: "CodeCraftX kullanım şartları. Platform kullanım koşulları ve sorumluluklar.",
   path: "/kullanim-sartlari",
 })
 
@@ -45,7 +45,7 @@ export default function KullanimSartlariPage() {
             <section id="genel-hukumler" className="scroll-mt-24">
               <h2 className="text-2xl font-bold mb-4">1. Genel Hükümler</h2>
             <p className="text-muted-foreground">
-              Codecrafters platformunu kullanarak bu kullanım şartlarını kabul etmiş sayılırsınız. Platform üzerinden
+              CodeCraftX platformunu kullanarak bu kullanım şartlarını kabul etmiş sayılırsınız. Platform üzerinden
               sunulan tüm hizmetler bu şartlara tabidir.
             </p>
           </section>
@@ -97,7 +97,7 @@ export default function KullanimSartlariPage() {
             <section id="fikri-mulkiyet" className="scroll-mt-24">
               <h2 className="text-2xl font-bold mb-4">6. Fikri Mülkiyet Hakları</h2>
             <p className="text-muted-foreground">
-              Platform üzerindeki tüm içerik, tasarım, logo ve kodlar Codecrafters'ın mülkiyetindedir. İzinsiz
+              Platform üzerindeki tüm içerik, tasarım, logo ve kodlar CodeCraftX'in mülkiyetindedir. İzinsiz
               kopyalama, dağıtma veya ticari kullanım yasaktır.
             </p>
           </section>
@@ -105,7 +105,7 @@ export default function KullanimSartlariPage() {
             <section id="degisiklikler" className="scroll-mt-24">
               <h2 className="text-2xl font-bold mb-4">7. Hizmet Değişiklikleri ve Kesintiler</h2>
             <p className="text-muted-foreground">
-              Codecrafters, platformdaki hizmetleri önceden haber vermeksizin değiştirme, güncelleme veya geçici olarak
+              CodeCraftX, platformdaki hizmetleri önceden haber vermeksizin değiştirme, güncelleme veya geçici olarak
               durdurma hakkını saklı tutar. Bakım ve güncellemeler sırasında kesintiler yaşanabilir.
             </p>
           </section>
@@ -113,7 +113,7 @@ export default function KullanimSartlariPage() {
             <section id="sorumluluk-sinirlamasi" className="scroll-mt-24">
               <h2 className="text-2xl font-bold mb-4">8. Sorumluluk Sınırlaması</h2>
             <p className="text-muted-foreground">
-              Codecrafters, platform kullanımından kaynaklanan dolaylı zararlardan sorumlu değildir. Hizmetler "olduğu
+              CodeCraftX, platform kullanımından kaynaklanan dolaylı zararlardan sorumlu değildir. Hizmetler "olduğu
               gibi" sunulmaktadır ve herhangi bir garanti verilmemektedir.
             </p>
           </section>

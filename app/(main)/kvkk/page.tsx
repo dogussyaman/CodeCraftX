@@ -7,7 +7,7 @@ import { buildPageMetadata, getSiteTitle } from "@/lib/seo"
 
 export const metadata: Metadata = buildPageMetadata({
   title: getSiteTitle("KVKK Aydınlatma Metni"),
-  description: "Codecrafters KVKK aydınlatma metni. Kişisel verilerin işlenmesi ve haklarınız.",
+  description: "CodeCraftX KVKK aydınlatma metni. Kişisel verilerin işlenmesi ve haklarınız.",
   path: "/kvkk",
 })
 
@@ -45,7 +45,7 @@ export default function KVKKPage() {
               <h2 className="text-2xl font-bold mb-4">1. Veri Sorumlusu</h2>
             <p className="text-muted-foreground">
               6698 sayılı Kişisel Verilerin Korunması Kanunu ("KVKK") uyarınca, kişisel verileriniz; veri sorumlusu
-              sıfatıyla Codecrafters tarafından aşağıda açıklanan kapsamda işlenebilecektir.
+              sıfatıyla CodeCraftX tarafından aşağıda açıklanan kapsamda işlenebilecektir.
             </p>
           </section>
 

@@ -49,7 +49,7 @@ export function HRSidebar({ profile }: HRSidebarProps) {
             <SidebarMenuButton size="lg" asChild>
               <Link href="/dashboard/ik">
                 <div className="grid flex-1 text-left text-sm leading-tight">
-                  <span className="truncate font-semibold text-base">CodeCrafters</span>
+                  <span className="truncate font-semibold text-base">CodeCraftX</span>
                   <span className="truncate text-xs text-muted-foreground">İK</span>
                 </div>
               </Link>

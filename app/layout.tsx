@@ -10,7 +10,7 @@ import "./globals.css"
 const inter = Inter({ subsets: ["latin"], variable: "--font-sans" })
 const jetbrainsMono = JetBrains_Mono({ subsets: ["latin"], variable: "--font-mono" })
 
-const siteTitle = "Codecrafters - Yetenek ve Fırsatları Buluşturan Platform"
+const siteTitle = "CodeCraftX - Yetenek ve Fırsatları Buluşturan Platform"
 const siteDescription =
   "CV analizi ve beceri eşleştirme algoritması ile geliştiricileri en uygun kariyer fırsatlarıyla buluşturan HR platformu"
 const metadataBase =
@@ -28,7 +28,7 @@ export const metadata: Metadata = {
     title: siteTitle,
     description: siteDescription,
     type: "website",
-    siteName: "Codecrafters",
+    siteName: "CodeCraftX",
     ...(metadataBase && { url: metadataBase.origin }),
   },
   twitter: {

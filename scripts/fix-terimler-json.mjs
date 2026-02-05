@@ -33,7 +33,7 @@ async function readInput() {
 
 let raw = await readInput()
 if (!raw || raw.length < 100) {
-  console.error("Input too short (length:", raw?.length ?? 0, "). Run from CodeCrafters dir or pipe: Get-Content terimler.json -Raw | node scripts/fix-terimler-json.mjs")
+  console.error("Input too short (length:", raw?.length ?? 0, "). Run from CodeCraftX dir or pipe: Get-Content terimler.json -Raw | node scripts/fix-terimler-json.mjs")
   process.exit(1)
 }
 // If file has multiple arrays ( "]  [" ), merge them first

@@ -6,7 +6,7 @@ import { buildPageMetadata, getSiteTitle } from "@/lib/seo"
 
 export const metadata: Metadata = buildPageMetadata({
   title: getSiteTitle("Gizlilik Politikası"),
-  description: "Codecrafters gizlilik politikası. Kişisel verilerinizin nasıl toplandığı, kullanıldığı ve korunduğu.",
+  description: "CodeCraftX gizlilik politikası. Kişisel verilerinizin nasıl toplandığı, kullanıldığı ve korunduğu.",
   path: "/gizlilik-politikasi",
 })
 
@@ -43,7 +43,7 @@ export default function GizlilikPolitikasiPage() {
             <section id="giris" className="scroll-mt-24">
               <h2 className="text-2xl font-bold mb-4">1. Giriş</h2>
             <p className="text-muted-foreground">
-              Codecrafters olarak, kullanıcılarımızın gizliliğini korumayı öncelikli hedeflerimizden biri olarak
+              CodeCraftX olarak, kullanıcılarımızın gizliliğini korumayı öncelikli hedeflerimizden biri olarak
               görüyoruz. Bu gizlilik politikası, kişisel verilerinizin nasıl toplandığını, kullanıldığını ve korunduğunu
               açıklamaktadır.
             </p>

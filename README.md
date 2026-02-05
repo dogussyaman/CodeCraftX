@@ -1,38 +1,38 @@
 <p align="center">
-  <img src="public/logo.svg" alt="CodeCrafters" width="96" height="96" />
+  <img src="public/logo.png" alt="CodeCraftX" width="96" height="96" />
 </p>
 
-<h1 align="center">CodeCrafters</h1>
+<h1 align="center">CodeCraftX</h1>
 
 <p align="center">
   <strong>Yetenek ve Fırsatları Akıllıca Buluşturan Yeni Nesil HR Platformu</strong>
 </p>
 
 <p align="center">
-  <img src="public/hero.png" alt="CodeCrafters ana sayfa" width="100%" />
+  <img src="public/hero.png" alt="CodeCraftX ana sayfa" width="100%" />
 </p>
 
 <p align="center">
-  <em>CodeCrafters ana sayfa — Yetenek ve Fırsatları Akıllıca Buluşturun</em>
+  <em>CodeCraftX ana sayfa — Yetenek ve Fırsatları Akıllıca Buluşturun</em>
 </p>
 
 ---
 
-# CodeCrafters
+# CodeCraftX
 
 **Yetenek ve Fırsatları Akıllıca Buluşturan Yeni Nesil HR Platformu**
 
-CodeCrafters, geliştiricileri CV analizi ve beceri eşleştirme algoritması ile en uygun kariyer fırsatlarıyla buluşturan, yapay zeka destekli eşleştirme sistemi sunan bir kariyer ve işe alım platformudur.
+CodeCraftX, geliştiricileri CV analizi ve beceri eşleştirme algoritması ile en uygun kariyer fırsatlarıyla buluşturan, yapay zeka destekli eşleştirme sistemi sunan bir kariyer ve işe alım platformudur.
 
 ---
 
-## 🎯 CodeCrafters Hakkında
+## 🎯 CodeCraftX Hakkında
 
 ### 💡 Değer Önerimiz
 
-CodeCrafters, yetenek ile fırsatı doğru eşleştirmeyi hedefler. Geliştiricilerin becerileri ve deneyimi, işverenlerin aradığı profillerle otomatik ve şeffaf biçimde eşleştirilir. Böylece hem adaylar en uygun iş ilanlarına kısa sürede ulaşır hem de işverenler doğru yeteneklere daha verimli erişir.
+CodeCraftX, yetenek ile fırsatı doğru eşleştirmeyi hedefler. Geliştiricilerin becerileri ve deneyimi, işverenlerin aradığı profillerle otomatik ve şeffaf biçimde eşleştirilir. Böylece hem adaylar en uygun iş ilanlarına kısa sürede ulaşır hem de işverenler doğru yeteneklere daha verimli erişir.
 
-Platform, geliştirici, işveren ve insan kaynakları ekipleri için tek bir merkez sunar. Yapay zeka destekli eşleştirme sayesinde süreç hızlanır, başvuru kalitesi artar ve taraflar zaman kaybetmeden birbirine ulaşır. Doğru yetenek–fırsat eşleşmesi, zaman tasarrufu ve şeffaf süreçler CodeCrafters’ın temel çıktılarıdır.
+Platform, geliştirici, işveren ve insan kaynakları ekipleri için tek bir merkez sunar. Yapay zeka destekli eşleştirme sayesinde süreç hızlanır, başvuru kalitesi artar ve taraflar zaman kaybetmeden birbirine ulaşır. Doğru yetenek–fırsat eşleşmesi, zaman tasarrufu ve şeffaf süreçler CodeCraftX'in temel çıktılarıdır.
 
 Bu bölümde teknik detaylara girilmez; odak noktamız ürünün hedefi ve kullanıcıya sağladığı faydadır.
 
@@ -42,15 +42,15 @@ Bu bölümde teknik detaylara girilmez; odak noktamız ürünün hedefi ve kulla
 
 ### 👩‍💻 Geliştiriciler
 
-CodeCrafters, yazılım geliştiricilerin kariyer yolculuğunu kolaylaştırır. Platformda profil ve CV oluşturabilir, yeteneklerinizi ekleyebilir ve eşleşen iş ilanlarını tek ekrandan takip edebilirsiniz. Yapay zeka destekli eşleştirme, sizin için uygun fırsatları öne çıkarır. İş ilanlarına tek tıkla başvurabilir, projelerinizi paylaşabilir ve blog yazılarıyla görünürlüğünüzü artırabilirsiniz. Başvurularınız ve eşleşmeleriniz merkezi bir panelden yönetilir.
+CodeCraftX, yazılım geliştiricilerin kariyer yolculuğunu kolaylaştırır. Platformda profil ve CV oluşturabilir, yeteneklerinizi ekleyebilir ve eşleşen iş ilanlarını tek ekrandan takip edebilirsiniz. Yapay zeka destekli eşleştirme, sizin için uygun fırsatları öne çıkarır. İş ilanlarına tek tıkla başvurabilir, projelerinizi paylaşabilir ve blog yazılarıyla görünürlüğünüzü artırabilirsiniz. Başvurularınız ve eşleşmeleriniz merkezi bir panelden yönetilir.
 
 ### 🏢 İşverenler ve İnsan Kaynakları
 
-Şirketler ve İK ekipleri CodeCrafters üzerinden şirket kaydı oluşturup iş ilanı açabilir. Platform, ilan kriterlerinize uygun adayları beceri ve deneyim bazında eşleştirir. Eşleşen adayları liste halinde görür, başvuruları tek yerden değerlendirir ve süreci hızlandırırsınız. Rol bazlı yetkilendirme ile farklı ekip üyeleri kendi alanlarına uygun işlemleri yapabilir.
+Şirketler ve İK ekipleri CodeCraftX üzerinden şirket kaydı oluşturup iş ilanı açabilir. Platform, ilan kriterlerinize uygun adayları beceri ve deneyim bazında eşleştirir. Eşleşen adayları liste halinde görür, başvuruları tek yerden değerlendirir ve süreci hızlandırırsınız. Rol bazlı yetkilendirme ile farklı ekip üyeleri kendi alanlarına uygun işlemleri yapabilir.
 
 ### ⚙️ Platform Yönetimi
 
-CodeCrafters, geliştirici, İK, şirket ve platform yöneticisi rolleriyle çok katmanlı bir yapı sunar. Her rol kendi paneline erişir; canlı destek sohbeti ve destek talepleri ile kullanıcılar yardım alabilir. Güvenlik ve gizlilik, rol bazlı erişim ve güvenli kimlik doğrulama ile sağlanır.
+CodeCraftX, geliştirici, İK, şirket ve platform yöneticisi rolleriyle çok katmanlı bir yapı sunar. Her rol kendi paneline erişir; canlı destek sohbeti ve destek talepleri ile kullanıcılar yardım alabilir. Güvenlik ve gizlilik, rol bazlı erişim ve güvenli kimlik doğrulama ile sağlanır.
 
 ---
 
@@ -70,7 +70,7 @@ CodeCrafters, geliştirici, İK, şirket ve platform yöneticisi rolleriyle çok
 
 ## 🔄 Nasıl Çalışır
 
-CodeCrafters’ta akış iki ana taraf etrafında şekillenir: **geliştirici** ve **işveren**. Geliştirici kayıt olur, CV ve profilini doldurur, yeteneklerini ekler. Platform bu bilgileri kullanarak uygun iş ilanlarıyla eşleştirme yapar. Geliştirici eşleşen ilanlara başvurabilir; ayrıca blog yazıları yazabilir ve projelerini paylaşabilir. İşveren tarafında şirket kaydı yapılır, iş ilanı açılır; platform eşleşen adayları listeler ve başvurular buradan yönetilir. Süreç özetle: **İş ilanı açma → Eşleşme → Başvuru → Değerlendirme**.
+CodeCraftX'te akış iki ana taraf etrafında şekillenir: **geliştirici** ve **işveren**. Geliştirici kayıt olur, CV ve profilini doldurur, yeteneklerini ekler. Platform bu bilgileri kullanarak uygun iş ilanlarıyla eşleştirme yapar. Geliştirici eşleşen ilanlara başvurabilir; ayrıca blog yazıları yazabilir ve projelerini paylaşabilir. İşveren tarafında şirket kaydı yapılır, iş ilanı açılır; platform eşleşen adayları listeler ve başvurular buradan yönetilir. Süreç özetle: **İş ilanı açma → Eşleşme → Başvuru → Değerlendirme**.
 
 Aşağıdaki diyagram ana akışı özetler:
 
@@ -101,7 +101,7 @@ flowchart LR
 
 ## 🛠️ Teknoloji
 
-CodeCrafters, modern web teknolojileri ile geliştirilmiştir. Ana mesaj ve ürün hedefi ön planda tutulmuş; aşağıda kullandığımız teknik altyapı özetlenmiştir.
+CodeCraftX, modern web teknolojileri ile geliştirilmiştir. Ana mesaj ve ürün hedefi ön planda tutulmuş; aşağıda kullandığımız teknik altyapı özetlenmiştir.
 
 <p align="center">
   <a href="https://nextjs.org"><img src="https://img.shields.io/badge/Next.js-16-000?style=flat-square&logo=next.js" alt="Next.js" /></a>
@@ -127,7 +127,7 @@ Projeyi yerel ortamda çalıştırmak için aşağıdaki adımları izleyin.
 
 ```bash
 git clone <repo-url>
-cd CodeCrafters
+cd CodeCraftX
 npm install
 cp .env.example .env.local   # Supabase URL ve anon key'i doldur
 npm run dev
@@ -159,7 +159,7 @@ Tarayıcıda **http://localhost:3000** adresini açın.
 ## 📁 Proje Yapısı
 
 ```
-CodeCrafters/
+CodeCraftX/
 ├── app/
 │   ├── (main)/          # Ana sayfa, landing, blog, projeler, terimler vb.
 │   ├── auth/            # Giriş, kayıt, şifre sıfırlama

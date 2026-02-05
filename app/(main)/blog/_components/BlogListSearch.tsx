@@ -145,7 +145,7 @@ export function BlogListSearch({
       </section>
       <ul className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3">
         {paginatedPosts.map((post) => {
-          const authorName = post.profiles?.full_name ?? "CodeCrafters"
+          const authorName = post.profiles?.full_name ?? "CodeCraftX"
           const avatarUrl = post.profiles?.avatar_url ?? null
           const dateStr = post.published_at
             ? new Date(post.published_at).toLocaleDateString("tr-TR", {

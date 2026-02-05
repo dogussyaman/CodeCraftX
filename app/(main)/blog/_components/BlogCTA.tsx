@@ -60,7 +60,7 @@ export function BlogCTA() {
             Geliştirme inovasyonunuzu harekete geçirmeye hazır mısınız?
           </h2>
           <p className="mt-3 text-base leading-relaxed text-white/85 md:text-lg">
-            CodeCrafters ile doğru yetenekleri bulun, eşleştirmenin gücünü deneyimleyin.
+            CodeCraftX ile doğru yetenekleri bulun, eşleştirmenin gücünü deneyimleyin.
           </p>
           <div className="mt-6 flex flex-wrap gap-3">
             <Button asChild size="lg" className="bg-cyan-400 text-[#0f2d3a] hover:bg-cyan-300">

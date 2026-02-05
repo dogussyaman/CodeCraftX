@@ -3,8 +3,8 @@ import type { Metadata } from "next"
 import { Button } from "@/components/ui/button"
 
 export const metadata: Metadata = {
-  title: "Hakkımızda | Codecrafters",
-  description: "Codecrafters - Geliştiricileri ve şirketleri yapay zeka destekli eşleştirme ile buluşturan kariyer platformu.",
+  title: "Hakkımızda | CodeCraftX",
+  description: "CodeCraftX - Geliştiricileri ve şirketleri yapay zeka destekli eşleştirme ile buluşturan kariyer platformu.",
 }
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/components/ui/accordion"
@@ -43,7 +43,7 @@ export default function HakkimizdaPage() {
         <div className="container mx-auto px-4 relative z-10">
           <div className="max-w-4xl mx-auto text-center">
             <h1 className="text-5xl md:text-6xl font-bold mb-6 text-balance">
-              <span className="gradient-text">Codecrafters</span> Hakkında
+              <span className="gradient-text">CodeCraftX</span> Hakkında
             </h1>
             <p className="text-xl text-muted-foreground mb-8 text-pretty">
               Türkiye'nin en yenilikçi yazılımcı-şirket eşleştirme platformu
@@ -77,7 +77,7 @@ export default function HakkimizdaPage() {
               </div>
               <h2 className="text-4xl font-bold mb-6">Doğru Yetenekle Doğru Fırsatı Buluşturuyoruz</h2>
               <p className="text-muted-foreground text-lg mb-4">
-                Codecrafters, yetenekli yazılım geliştiricilerini hayallerindeki işlerle buluşturan, yapay zeka destekli
+                CodeCraftX, yetenekli yazılım geliştiricilerini hayallerindeki işlerle buluşturan, yapay zeka destekli
                 uçtan uca bir İK ekosistemidir.
               </p>
               <p className="text-muted-foreground text-lg mb-4">
@@ -135,7 +135,7 @@ export default function HakkimizdaPage() {
                     </h3>
                     <div className="space-y-6 relative before:absolute before:left-2 before:top-2 before:bottom-2 before:w-px before:bg-border">
                       {[
-                        { year: "2024", title: "Kuruluş", desc: "CodeCrafters fikir olarak doğdu ve ilk tohumlar atıldı." },
+                        { year: "2024", title: "Kuruluş", desc: "CodeCraftX fikir olarak doğdu ve ilk tohumlar atıldı." },
                         { year: "2025", title: "Beta Lansmanı", desc: "1000'den fazla geliştirici ile beta sürecine başladık." },
                         { year: "2026", title: "Yapay Zeka V2", desc: "Yeni nesil eşleştirme algoritmasını yayına aldık." }
                       ].map((item, i) => (
@@ -324,7 +324,7 @@ export default function HakkimizdaPage() {
               <TabsContent value="team">
                 <div className="space-y-6">
                   <p className="text-center text-muted-foreground mb-8">
-                    Codecrafters, deneyimli yazılım mühendisleri, veri bilimcileri ve HR uzmanlarından oluşan tutkulu bir
+                    CodeCraftX, deneyimli yazılım mühendisleri, veri bilimcileri ve HR uzmanlarından oluşan tutkulu bir
                     ekip tarafından yönetilmektedir.
                   </p>
                   <div className="grid md:grid-cols-3 gap-6">

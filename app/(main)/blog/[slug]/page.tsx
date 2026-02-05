@@ -44,7 +44,7 @@ export default async function BlogPostPage({ params }: { params: Promise<{ slug:
   }
 
   const author = (post as { profiles?: { full_name?: string; avatar_url?: string } | null }).profiles
-  const authorName = author?.full_name ?? "CodeCrafters"
+  const authorName = author?.full_name ?? "CodeCraftX"
   const authorAvatar = author?.avatar_url ?? null
   const viewCount = (post as { view_count?: number }).view_count ?? 0
   const likeCount = (post as { like_count?: number }).like_count ?? 0

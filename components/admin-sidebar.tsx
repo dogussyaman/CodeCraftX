@@ -15,6 +15,7 @@ import {
   Mail,
   FileText,
   Code2,
+  TestTube2,
 } from "lucide-react"
 import {
   Sidebar,
@@ -39,6 +40,7 @@ const baseMenuItems = [
   { title: "Blog", href: "/dashboard/admin/blog", icon: FileText },
   { title: "Bülten", href: "/dashboard/admin/bulten", icon: Mail },
   { title: "Yetenekler", href: "/dashboard/admin/yetenekler", icon: Settings },
+  { title: "Email Test", href: "/dashboard/admin/email-test", icon: TestTube2 },
 ]
 
 const projelerItem = { title: "Projeler", href: "/dashboard/admin/projeler", icon: Code2 }
@@ -62,7 +64,7 @@ export function AdminSidebar({ profile }: AdminSidebarProps) {
             <SidebarMenuButton size="lg" asChild>
               <Link href="/dashboard/admin">
                 <div className="grid flex-1 text-left text-sm leading-tight">
-                  <span className="truncate font-semibold text-base">CodeCrafters</span>
+                  <span className="truncate font-semibold text-base">CodeCraftX</span>
                   <span className="truncate text-xs text-muted-foreground">Yönetici</span>
                 </div>
               </Link>

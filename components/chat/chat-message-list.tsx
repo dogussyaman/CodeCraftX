@@ -70,7 +70,7 @@ export function ChatMessageList({ messages, currentUserId, loading, contentOnly,
                   </>
                 ) : (
                   <AvatarFallback className="text-xs">
-                    <img src="/logo.svg" alt="" className="size-4" />
+                    <img src="/logo.png" alt="CodeCraftX" className="size-4" />
                   </AvatarFallback>
                 )}
               </Avatar>

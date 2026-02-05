@@ -10,7 +10,7 @@ import { Button } from "@/components/ui/button"
 
 export const metadata: Metadata = buildPageMetadata({
   title: getSiteTitle("Yorumlar"),
-  description: "Codecrafters kullanıcılarının deneyimleri ve görüşleri.",
+  description: "CodeCraftX kullanıcılarının deneyimleri ve görüşleri.",
   path: "/yorumlar",
 })
 
@@ -36,7 +36,7 @@ export default async function YorumlarPage() {
             Yorumlar
           </h1>
           <p className="text-lg text-muted-foreground">
-            CodeCrafters kullanıcılarının deneyimleri ve görüşleri.
+            CodeCraftX kullanıcılarının deneyimleri ve görüşleri.
           </p>
         </header>
 

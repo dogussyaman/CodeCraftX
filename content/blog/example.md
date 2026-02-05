@@ -47,7 +47,7 @@ function greet(name: string): string {
   return `Merhaba, ${name}!`
 }
 
-const message = greet("CodeCrafters")
+const message = greet("CodeCraftX")
 console.log(message)
 ```
 

@@ -72,6 +72,13 @@ export function FirstLoginChangePasswordPage() {
 
       if (updateError) throw updateError
 
+      // Şifre değişikliği emailini arka planda tetikle
+      void fetch("/api/email/password-changed", {
+        method: "POST",
+      }).catch((err) => {
+        console.error("Password changed email trigger failed", err)
+      })
+
       // Profilde must_change_password flag'ini kapat
       const {
         data: { user },

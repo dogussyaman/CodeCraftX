@@ -217,7 +217,7 @@ export interface BlogComment {
   created_at: string
 }
 
-/** Canlı destek sohbeti – CodeCrafters ↔ MT */
+/** Canlı destek sohbeti – CodeCraftX ↔ MT */
 export type ChatConversationStatus = "open" | "in_progress" | "closed"
 
 export interface ChatConversation {

@@ -72,7 +72,7 @@ export function DeveloperSidebar({ profile }: DeveloperSidebarProps) {
                   </Avatar>
                 ) : null}
                 <div className="grid flex-1 text-left text-sm leading-tight min-w-0">
-                  <span className="truncate font-semibold text-base">CodeCrafters</span>
+                  <span className="truncate font-semibold text-base">CodeCraftX</span>
                   <span className="truncate text-xs text-muted-foreground">Geliştirici</span>
                 </div>
               </Link>

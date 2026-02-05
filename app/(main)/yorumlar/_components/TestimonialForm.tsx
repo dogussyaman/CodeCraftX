@@ -44,7 +44,7 @@ export function TestimonialForm() {
           Yorum Bırak
         </CardTitle>
         <CardDescription>
-          CodeCrafters hakkındaki deneyimlerinizi paylaşın. Giriş yapmış olmanız gerekiyor.
+          CodeCraftX hakkındaki deneyimlerinizi paylaşın. Giriş yapmış olmanız gerekiyor.
         </CardDescription>
       </CardHeader>
       <CardContent>

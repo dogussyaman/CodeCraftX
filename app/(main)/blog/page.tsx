@@ -8,7 +8,7 @@ import { BlogListSearch } from "./_components/BlogListSearch"
 
 export const metadata: Metadata = buildPageMetadata({
   title: getSiteTitle("Blog"),
-  description: "Kariyer ipuçları, teknoloji yazıları ve topluluk deneyimleri. Codecrafters blog.",
+  description: "Kariyer ipuçları, teknoloji yazıları ve topluluk deneyimleri. CodeCraftX blog.",
   path: "/blog",
 })
 

@@ -114,18 +114,33 @@ export function CreateTicketForm({ user, ticketsPageHref }: CreateTicketFormProp
     try {
       const supabase = createClient()
       const attachment_urls = await uploadAttachments(supabase)
-      const { error } = await supabase.from("support_tickets").insert({
-        user_id: isLoggedIn ? user!.id : null,
-        email: isLoggedIn ? (user!.email ?? email) : email,
-        type: data.type,
-        subject: data.subject,
-        description: data.description,
-        status: "open",
-        priority: data.priority,
-        attachment_urls: attachment_urls,
-      })
+      const { data: ticket, error } = await supabase
+        .from("support_tickets")
+        .insert({
+          user_id: isLoggedIn ? user!.id : null,
+          email: isLoggedIn ? (user!.email ?? email) : email,
+          type: data.type,
+          subject: data.subject,
+          description: data.description,
+          status: "open",
+          priority: data.priority,
+          attachment_urls: attachment_urls,
+        })
+        .select("id")
+        .single()
 
       if (error) throw error
+
+      // Admin'e yeni destek talebi emaili gönder
+      if (ticket?.id) {
+        void fetch("/api/email/new-support-ticket", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ ticketId: ticket.id }),
+        }).catch((err) => {
+          console.error("New support ticket email trigger failed", err)
+        })
+      }
 
       toast.success("Destek talebiniz alındı.", {
         description: "En kısa sürede size dönüş yapacağız.",

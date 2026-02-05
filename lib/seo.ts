@@ -1,6 +1,6 @@
 import type { Metadata } from "next"
 
-const SITE_NAME = "Codecrafters"
+const SITE_NAME = "CodeCraftX"
 const BASE_URL = process.env.NEXT_PUBLIC_APP_URL ?? ""
 
 export interface PageSeoOptions {

@@ -159,7 +159,7 @@ export function ModernFooter() {
         {/* Bottom Section */}
         <div className="mt-12 pt-8 border-t border-border flex flex-col md:flex-row items-center justify-between gap-4">
           <p className="text-sm text-muted-foreground flex items-center gap-1">
-            © 2026 CodeCrafters. Tüm hakları saklıdır.
+            © 2026 CodeCraftX. Tüm hakları saklıdır.
             <Heart className="h-4 w-4 text-destructive inline fill-destructive" />
             ile Türkiye'de geliştirildi
           </p>

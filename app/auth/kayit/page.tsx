@@ -46,6 +46,20 @@ export default function SignUpPage() {
         },
       })
       if (authError) throw authError
+
+      // Hoş geldin emailini arka planda tetikle
+      void fetch("/api/email/welcome", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          name: data.fullName,
+          email: data.email,
+          role: "developer" as const,
+        }),
+      }).catch((err) => {
+        console.error("Welcome email trigger failed", err)
+      })
+
       router.push(`/auth/onay-bekliyor?email=${encodeURIComponent(data.email)}`)
     } catch (error: unknown) {
       if (error instanceof Error) {
@@ -88,7 +102,7 @@ export default function SignUpPage() {
   }
 
   return (
-    <AuthSplitLayout title="Hesap Oluştur" subtitle="Codecrafters topluluğuna katılın">
+    <AuthSplitLayout title="Hesap Oluştur" subtitle="CodeCraftX topluluğuna katılın">
       <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
         <div className="space-y-2">
           <Label htmlFor="fullName">

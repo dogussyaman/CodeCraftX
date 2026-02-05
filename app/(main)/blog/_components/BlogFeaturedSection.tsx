@@ -73,7 +73,7 @@ export function BlogFeaturedSection({ posts, commentCounts = {} }: BlogFeaturedS
 
       <div className="grid grid-cols-1 gap-5 md:grid-cols-2">
         {posts.map((post) => {
-          const authorName = post.profiles?.full_name ?? "CodeCrafters"
+          const authorName = post.profiles?.full_name ?? "CodeCraftX"
           const dateStr = post.published_at
             ? new Date(post.published_at).toLocaleDateString("tr-TR", {
                 day: "numeric",

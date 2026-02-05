@@ -18,7 +18,7 @@ interface PageProps {
 }
 
 const PAGE_TITLE_BASE = "Yazılım Terimleri"
-const SITE_NAME = "Codecrafters"
+const SITE_NAME = "CodeCraftX"
 
 export function generateStaticParams() {
   return TURKISH_ALPHABET.map((letter) => ({

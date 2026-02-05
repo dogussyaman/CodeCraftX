@@ -37,7 +37,7 @@ export function DashboardFooter({ role, company }: DashboardFooterProps) {
                     {company.name}
                   </Link>
                 ) : (
-                  "CodeCrafters"
+                  "CodeCraftX"
                 )}
               </p>
               <p className="text-xs text-muted-foreground">
@@ -67,7 +67,7 @@ export function DashboardFooter({ role, company }: DashboardFooterProps) {
           </nav>
         </div>
         <div className="mt-4 border-t pt-4 text-center text-xs text-muted-foreground">
-          © {currentYear} CodeCrafters
+          © {currentYear} CodeCraftX
         </div>
       </div>
     </footer>

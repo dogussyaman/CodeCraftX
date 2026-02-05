@@ -1,5 +1,5 @@
 -- ============================================
--- CodeCrafters Platform - TEK FİNAL ŞEMA
+-- CodeCraftX Platform - TEK FİNAL ŞEMA
 -- Tüm migrasyonlar (050-089 + MT) bu dosyada birleştirildi.
 -- Gereksiz tekrarlar kaldırıldı. Supabase SQL Editor'da tek seferde çalıştırın.
 -- ============================================
@@ -1097,8 +1097,8 @@ INSERT INTO public.skills (name, category) VALUES
 ON CONFLICT (name) DO NOTHING;
 
 INSERT INTO public.blog_posts (title, slug, body, author_id, status, published_at)
-SELECT 'CodeCrafters ile Yazılım Kariyerinize Yön Verin', 'codecrafters-ile-yazilim-kariyerinize-yon-verin',
-  'CodeCrafters, yazılım geliştiricileri ve işverenleri bir araya getiren modern bir kariyer platformudur. CV''nizi oluşturabilir, projelerinizi paylaşabilir, iş ilanlarına başvurabilirsiniz. Yapay zeka destekli eşleştirme ile yeteneklerinize uygun fırsatları keşfedin.',
+SELECT 'CodeCraftX ile Yazılım Kariyerinize Yön Verin', 'codecraftx-ile-yazilim-kariyerinize-yon-verin',
+  'CodeCraftX, yazılım geliştiricileri ve işverenleri bir araya getiren modern bir kariyer platformudur. CV''nizi oluşturabilir, projelerinizi paylaşabilir, iş ilanlarına başvurabilirsiniz. Yapay zeka destekli eşleştirme ile yeteneklerinize uygun fırsatları keşfedin.',
   p.id, 'published', NOW()
 FROM public.profiles p LIMIT 1
 ON CONFLICT (slug) DO NOTHING;

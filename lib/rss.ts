@@ -57,7 +57,7 @@ export async function fetchRssFeeds(maxItemsPerFeed = 10): Promise<RssItem[]> {
       try {
         const res = await fetch(url, {
           next: { revalidate: 3600 },
-          headers: { "User-Agent": "CodeCrafters/1.0" },
+          headers: { "User-Agent": "CodeCraftX/1.0" },
         })
         if (!res.ok) return
         const xml = await res.text()

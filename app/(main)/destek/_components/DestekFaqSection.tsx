@@ -42,11 +42,11 @@ export function DestekFaqSection() {
                       <Badge variant="secondary" className="text-xs font-normal">Genel</Badge>
                       <Badge variant="outline" className="text-xs font-normal">Popüler</Badge>
                       <CheckCircle2 className="h-4 w-4 text-success" />
-                      CodeCrafters nedir ve nasıl çalışır?
+                      CodeCraftX nedir ve nasıl çalışır?
                     </div>
                   </AccordionTrigger>
                   <AccordionContent className="text-muted-foreground">
-                    CodeCrafters, yazılım geliştiricileri ve şirketleri yapay zeka destekli eşleştirme algoritması
+                    CodeCraftX, yazılım geliştiricileri ve şirketleri yapay zeka destekli eşleştirme algoritması
                     ile buluşturan bir platformdur. CV&apos;nizi yükleyin, sistemimiz becerilerinizi analiz eder ve size
                     en uygun iş fırsatlarını önerir.
                   </AccordionContent>
@@ -163,7 +163,7 @@ export function DestekFaqSection() {
                   <AccordionTrigger className="text-left">API entegrasyonu sunuyor musunuz?</AccordionTrigger>
                   <AccordionContent className="text-muted-foreground">
                     Evet, kurumsal paketlerimizde RESTful API erişimi sunuyoruz. API dokümantasyonumuz için
-                    developers.codecrafters.com adresini ziyaret edebilir veya satış ekibimizle iletişime
+                    developers.codecraftx.com adresini ziyaret edebilir veya satış ekibimizle iletişime
                     geçebilirsiniz.
                   </AccordionContent>
                 </AccordionItem>

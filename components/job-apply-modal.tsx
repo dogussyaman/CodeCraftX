@@ -207,6 +207,17 @@ export function JobApplyModal({ jobId, jobTitle, isOpen, onClose }: JobApplyModa
                 return
             }
 
+      // Başvuru için email bildirimi tetikle
+      if (applicationData?.id) {
+        void fetch("/api/email/application-submitted", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ applicationId: applicationData.id }),
+        }).catch((err) => {
+          console.error("Application submitted email trigger failed", err)
+        })
+      }
+
             // Application match Edge Function'ını tetikle
             if (applicationData?.id) {
                 try {

@@ -18,7 +18,7 @@ import { AlphabetFilterBar } from "@/components/ui/alphabet-filter-bar"
 
 export const metadata: Metadata = buildPageMetadata({
   title: getSiteTitle("Terimler"),
-  description: "Yazılım ve teknoloji terimleri sözlüğü. Codecrafters terimler rehberi.",
+  description: "Yazılım ve teknoloji terimleri sözlüğü. CodeCraftX terimler rehberi.",
   path: "/terimler",
 })
 

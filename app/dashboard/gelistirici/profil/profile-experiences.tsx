@@ -90,7 +90,7 @@ export function ProfileExperiences({ experiences, isEditing }: ProfileExperience
                             <form onSubmit={handleSubmit} className="space-y-4 pt-4">
                                 <div className="grid gap-2">
                                     <Label>Şirket Adı</Label>
-                                    <Input name="company_name" required placeholder="Örn: Codecrafters" />
+                                    <Input name="company_name" required placeholder="Örn: CodeCraftX" />
                                 </div>
                                 <div className="grid gap-2">
                                     <Label>Pozisyon</Label>

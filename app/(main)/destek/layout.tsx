@@ -3,7 +3,7 @@ import { buildPageMetadata, getSiteTitle } from "@/lib/seo"
 
 export const metadata: Metadata = buildPageMetadata({
   title: getSiteTitle("Destek"),
-  description: "Codecrafters destek merkezi. Teknik destek, SSS ve bilet oluşturma.",
+  description: "CodeCraftX destek merkezi. Teknik destek, SSS ve bilet oluşturma.",
   path: "/destek",
 })
 
