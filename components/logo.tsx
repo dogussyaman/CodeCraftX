@@ -13,7 +13,7 @@ export function Logo({ className, showText = true, href = "/" }: LogoProps) {
         <Link
             href={href}
             className={cn(
-                "flex items-center gap-2 select-none h-9",
+                "flex items-center gap-2 select-none h-9 min-w-0",
                 className
             )}
         >
@@ -27,9 +27,12 @@ export function Logo({ className, showText = true, href = "/" }: LogoProps) {
                 priority={false}
             />
 
-            {/* Text – logo ile aynı hizada */}
+            {/* Text – logo ile aynı hizada, mobilde taşmayı önlemek için min-w-0 + truncate */}
             {showText && (
-                <span className="text-lg font-semibold tracking-tight text-foreground leading-none align-middle">
+                <span
+                    className="text-lg font-semibold tracking-tight text-foreground leading-none align-middle min-w-0 truncate"
+                    title="CodeCraftX"
+                >
                     Code<span className="font-bold">CraftX</span>
                 </span>
             )}

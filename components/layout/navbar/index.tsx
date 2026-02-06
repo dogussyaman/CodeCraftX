@@ -76,10 +76,10 @@ export function ModernNavbar() {
           : "bg-transparent"
       }`}
     >
-      <div className="container mx-auto px-4 sm:px-6 lg:px-8 max-w-7xl overflow-hidden">
-        <div className="grid grid-cols-3 items-center h-14 sm:h-16 gap-2 min-w-0 min-h-[44px] sm:min-h-0">
+      <div className="container mx-auto px-4 sm:px-6 lg:px-8 max-w-7xl">
+        <div className="grid grid-cols-[minmax(0,1fr)_auto_auto] md:grid-cols-3 items-center h-14 sm:h-16 gap-2 min-w-0 min-h-[44px] sm:min-h-0">
           <div className="flex items-center justify-start min-w-0 overflow-hidden">
-            <Logo />
+            <Logo className="min-w-0" />
           </div>
 
           <nav
