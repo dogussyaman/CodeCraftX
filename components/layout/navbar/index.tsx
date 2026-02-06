@@ -70,15 +70,15 @@ export function ModernNavbar() {
       initial={{ y: -100 }}
       animate={{ y: 0 }}
       transition={springTransition}
-      className={`fixed top-0 left-0 right-0 z-50 transition-[background-color,border-color,box-shadow] duration-300 ease-out ${
+      className={`fixed top-0 left-0 right-0 z-50 pt-[env(safe-area-inset-top)] transition-[background-color,border-color,box-shadow] duration-300 ease-out ${
         isScrolled
           ? "bg-background/80 backdrop-blur-xl border-b border-border/50 shadow-sm"
           : "bg-transparent"
       }`}
     >
-      <div className="container mx-auto px-4 sm:px-6 lg:px-8 max-w-7xl">
+      <div className="container mx-auto px-4 sm:px-6 lg:px-8 max-w-7xl overflow-hidden">
         <div className="grid grid-cols-3 items-center h-14 sm:h-16 gap-2 min-w-0 min-h-[44px] sm:min-h-0">
-          <div className="flex items-center justify-start min-w-0">
+          <div className="flex items-center justify-start min-w-0 overflow-hidden">
             <Logo />
           </div>
 
@@ -89,7 +89,7 @@ export function ModernNavbar() {
             <DesktopNav isActive={isActive} />
           </nav>
 
-          <div className="flex items-center justify-end gap-2 min-w-0">
+          <div className="flex items-center justify-end gap-1 sm:gap-2 min-w-0 overflow-hidden">
             <DesktopActions
               loading={loading}
               user={user}

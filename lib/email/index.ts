@@ -19,6 +19,8 @@ export { NewCandidateMatchEmail, newCandidateMatchEmailSubject } from './templat
 // Email template exports - Admin
 export { NewSupportTicketEmail, newSupportTicketEmailSubject } from './templates/admin/new-support-ticket';
 export { CompanyPendingApprovalEmail, companyPendingApprovalEmailSubject } from './templates/admin/company-pending-approval';
+export { MarketingCampaignEmail, marketingCampaignEmailSubject } from './templates/admin/marketing-campaign';
+export { ProductUpdateEmail, productUpdateEmailSubject } from './templates/admin/product-update';
 
 // Services
 export { sendEmail, logEmail } from './services/send';

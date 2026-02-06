@@ -2,107 +2,81 @@
 
 import { formatDistanceToNow } from "date-fns"
 import { tr } from "date-fns/locale"
-import { Bell, Briefcase, FileText, Mail, CheckCircle2, XCircle, AlertCircle } from "lucide-react"
 import Link from "next/link"
 import type { Notification } from "@/lib/types"
 import { cn } from "@/lib/utils"
 import { Badge } from "@/components/ui/badge"
+import { getNotificationTypeMeta, getNotificationCtaText } from "@/lib/notifications"
+import { ChevronRight } from "lucide-react"
 
 interface NotificationItemProps {
-    notification: Notification
-    onMarkAsRead: (id: string) => void
-}
-
-const getNotificationMeta = (type: string) => {
-    switch (type) {
-        case "new_application":
-            return { label: "Yeni Başvuru", icon: Briefcase }
-        case "application_status_changed":
-            return { label: "Başvuru Durumu", icon: FileText }
-        case "new_match":
-            return { label: "Yeni Eşleşme", icon: CheckCircle2 }
-        case "cv_processed":
-            return { label: "CV İncelendi", icon: CheckCircle2 }
-        case "cv_failed":
-            return { label: "CV İşlenemedi", icon: XCircle }
-        case "new_contact_message":
-            return { label: "Yeni Mesaj", icon: Mail }
-        case "system":
-            return { label: "Sistem", icon: AlertCircle }
-        default:
-            return { label: "Genel", icon: Bell }
-    }
+  notification: Notification
+  onMarkAsRead: (id: string) => void
 }
 
 export function NotificationItem({ notification, onMarkAsRead }: NotificationItemProps) {
-    const isUnread = !notification.read_at
-    const { label, icon: Icon } = getNotificationMeta(notification.type)
+  const isUnread = !notification.read_at
+  const { label, icon: Icon } = getNotificationTypeMeta(notification.type)
+  const ctaText = notification.href ? getNotificationCtaText(notification.type) : null
 
-    const handleClick = () => {
-        if (isUnread) {
-            onMarkAsRead(notification.id)
-        }
+  const handleClick = () => {
+    if (isUnread) {
+      onMarkAsRead(notification.id)
     }
+  }
 
-    const content = (
-        <div
-            className={cn(
-                "flex gap-3 p-3 rounded-lg transition-colors cursor-pointer border border-transparent",
-                isUnread
-                    ? "bg-primary/5 hover:bg-primary/10 border-l-2 border-primary"
-                    : "hover:bg-muted/50"
-            )}
-            onClick={handleClick}
-        >
-            <div className="flex-shrink-0 mt-0.5">
-                <Icon className="size-5 text-muted-foreground" />
-            </div>
+  const content = (
+    <div
+      className={cn(
+        "flex gap-3 p-3 rounded-lg transition-colors cursor-pointer border border-transparent",
+        isUnread ? "bg-primary/5 hover:bg-primary/10 border-l-2 border-l-primary" : "hover:bg-muted/50"
+      )}
+      onClick={handleClick}
+    >
+      <div className="shrink-0 mt-0.5">
+        <Icon className="size-5 text-muted-foreground" />
+      </div>
 
-            <div className="flex-1 min-w-0 space-y-1">
-                <div className="flex items-start justify-between gap-2">
-                    <div className="flex items-start gap-2 flex-wrap">
-                        <p className={cn("text-sm font-medium", isUnread && "text-foreground")}>
-                            {notification.title}
-                        </p>
-                        <Badge variant="outline" className="text-muted-foreground border-border">
-                            {label}
-                        </Badge>
-                    </div>
-                    {isUnread && (
-                        <div className="flex-shrink-0 size-2 bg-primary rounded-full mt-1.5" />
-                    )}
-                </div>
-
-                {notification.body && (
-                    <p className="text-sm text-muted-foreground line-clamp-2">
-                        {notification.body}
-                    </p>
-                )}
-
-                <div className="flex items-center justify-between gap-2 text-xs text-muted-foreground">
-                    <span>
-                        {formatDistanceToNow(new Date(notification.created_at), {
-                            addSuffix: true,
-                            locale: tr,
-                        })}
-                    </span>
-                    {notification.href && (
-                        <span className="text-[11px] text-muted-foreground/80">
-                            Detayları görüntüle
-                        </span>
-                    )}
-                </div>
-            </div>
+      <div className="flex-1 min-w-0 space-y-1.5">
+        <div className="flex items-start justify-between gap-2">
+          <p className={cn("text-sm font-medium shrink-0", isUnread && "text-foreground")}>
+            {notification.title}
+          </p>
+          {isUnread && (
+            <div className="shrink-0 size-2 bg-primary rounded-full mt-1.5" aria-hidden />
+          )}
         </div>
+
+        {notification.body && (
+          <p className="text-sm text-muted-foreground line-clamp-2">{notification.body}</p>
+        )}
+
+        <div className="flex flex-wrap items-center gap-2 text-xs">
+          <Badge variant="secondary" className="text-[10px] font-normal text-muted-foreground border-border">
+            {label}
+          </Badge>
+          <span className="text-muted-foreground">
+            {formatDistanceToNow(new Date(notification.created_at), { addSuffix: true, locale: tr })}
+          </span>
+        </div>
+
+        {ctaText && notification.href && (
+          <div className="flex items-center gap-1 text-xs text-primary pt-0.5">
+            <span className="font-medium">{ctaText}</span>
+            <ChevronRight className="size-3.5" />
+          </div>
+        )}
+      </div>
+    </div>
+  )
+
+  if (notification.href) {
+    return (
+      <Link href={notification.href} className="block">
+        {content}
+      </Link>
     )
+  }
 
-    if (notification.href) {
-        return (
-            <Link href={notification.href} className="block">
-                {content}
-            </Link>
-        )
-    }
-
-    return content
+  return content
 }

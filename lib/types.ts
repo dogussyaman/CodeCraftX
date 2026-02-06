@@ -187,7 +187,7 @@ export interface Notification {
   id: string
   recipient_id: string
   actor_id: string | null
-  type: 'new_application' | 'application_status_changed' | 'new_match' | 'cv_processed' | 'cv_failed' | 'new_contact_message' | 'system'
+  type: 'new_application' | 'application_status_changed' | 'new_match' | 'cv_processed' | 'cv_failed' | 'new_contact_message' | 'support_ticket_resolved' | 'system'
   title: string
   body: string | null
   href: string | null

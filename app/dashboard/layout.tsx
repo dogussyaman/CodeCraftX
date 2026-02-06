@@ -85,7 +85,7 @@ export default async function DashboardLayout({ children }: { children: ReactNod
             <div className="flex-1 flex flex-col min-h-0">{children}</div>
           </DashboardSegmentGuard>
         </main>
-        <DashboardFooter role={role} company={company} />
+        <DashboardFooter role={role} company={company} plan={company?.plan ?? undefined} />
       </SidebarInset>
     </SidebarProvider>
   )

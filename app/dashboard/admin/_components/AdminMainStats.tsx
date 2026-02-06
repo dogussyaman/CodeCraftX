@@ -16,12 +16,16 @@ export function AdminMainStats({
     activeJobCount,
     matchCount,
 }: AdminMainStatsProps) {
+    const cardClass =
+        "bg-card border border-indigo-500/20 border-t-4 border-t-indigo-500/40 dark:border-indigo-500/25 dark:border-t-indigo-500/30"
+    const iconClass = "size-5 text-indigo-600 dark:text-indigo-400"
+
     return (
         <div className="grid grid-cols-1 md:grid-cols-4 gap-6">
-            <Card className="bg-card border-border">
+            <Card className={cardClass}>
                 <CardHeader className="flex flex-row items-center justify-between pb-2">
                     <CardTitle className="text-sm font-medium text-muted-foreground">Toplam Kullanıcı</CardTitle>
-                    <Users className="size-5 text-primary" />
+                    <Users className={iconClass} />
                 </CardHeader>
                 <CardContent>
                     <div className="text-3xl font-bold text-foreground">{totalUsers || 0}</div>
@@ -29,10 +33,10 @@ export function AdminMainStats({
                 </CardContent>
             </Card>
 
-            <Card className="bg-card border-border">
+            <Card className={cardClass}>
                 <CardHeader className="flex flex-row items-center justify-between pb-2">
                     <CardTitle className="text-sm font-medium text-muted-foreground">Şirketler</CardTitle>
-                    <Building2 className="size-5 text-primary" />
+                    <Building2 className={iconClass} />
                 </CardHeader>
                 <CardContent>
                     <div className="text-3xl font-bold text-foreground">{companyCount || 0}</div>
@@ -40,10 +44,10 @@ export function AdminMainStats({
                 </CardContent>
             </Card>
 
-            <Card className="bg-card border-border">
+            <Card className={cardClass}>
                 <CardHeader className="flex flex-row items-center justify-between pb-2">
                     <CardTitle className="text-sm font-medium text-muted-foreground">İş İlanları</CardTitle>
-                    <Briefcase className="size-5 text-accent" />
+                    <Briefcase className={iconClass} />
                 </CardHeader>
                 <CardContent>
                     <div className="text-3xl font-bold text-foreground">{jobCount || 0}</div>
@@ -51,10 +55,10 @@ export function AdminMainStats({
                 </CardContent>
             </Card>
 
-            <Card className="bg-card border-border">
+            <Card className={cardClass}>
                 <CardHeader className="flex flex-row items-center justify-between pb-2">
                     <CardTitle className="text-sm font-medium text-muted-foreground">Eşleşmeler</CardTitle>
-                    <Star className="size-5 text-primary" />
+                    <Star className={iconClass} />
                 </CardHeader>
                 <CardContent>
                     <div className="text-3xl font-bold text-foreground">{matchCount || 0}</div>

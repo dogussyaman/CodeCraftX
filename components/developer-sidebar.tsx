@@ -15,6 +15,7 @@ import {
   MessageCircle,
   Code2,
   BookOpen,
+  Bookmark,
 } from "lucide-react"
 import {
   Sidebar,
@@ -34,6 +35,7 @@ const menuItems = [
   { title: "Ön Yazılarım", href: "/dashboard/gelistirici/on-yazilar", icon: PenTool },
   { title: "Eşleşmeler", href: "/dashboard/gelistirici/eslesmeler", icon: Star },
   { title: "Başvurularım", href: "/dashboard/gelistirici/basvurular", icon: Briefcase },
+  { title: "Kaydettiğim İlanlar", href: "/dashboard/gelistirici/kaydettigim-ilanlar", icon: Bookmark },
   { title: "Projelerim", href: "/dashboard/gelistirici/projelerim", icon: Code2 },
   { title: "Blog Yazılarım", href: "/dashboard/gelistirici/yazilarim", icon: BookOpen },
   { title: "Bildirimler", href: "/dashboard/gelistirici/bildirimler", icon: Bell },

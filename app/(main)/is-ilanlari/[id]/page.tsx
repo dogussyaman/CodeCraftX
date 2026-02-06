@@ -7,6 +7,7 @@ import { Separator } from "@/components/ui/separator"
 import { Building2, MapPin, DollarSign, ArrowLeft } from "lucide-react"
 import { createServerClient } from "@/lib/supabase/server"
 import { JobApplyButton } from "@/components/job-apply-button"
+import { JobSaveButton } from "@/components/job-save-button"
 import { JobSectionList } from "../_components/JobSectionList"
 
 type Locale = "tr" | "en" | "de"
@@ -87,18 +88,25 @@ export default async function IsIlaniDetayPage({
   } = await supabase.auth.getUser()
 
   let hasApplied = false
+  let isSaved = false
 
   if (user) {
-    const { data: application } = await supabase
-      .from("applications")
-      .select("id")
-      .eq("job_id", id)
-      .eq("developer_id", user.id)
-      .maybeSingle()
-
-    if (application) {
-      hasApplied = true
-    }
+    const [{ data: application }, { data: savedRow }] = await Promise.all([
+      supabase
+        .from("applications")
+        .select("id")
+        .eq("job_id", id)
+        .eq("developer_id", user.id)
+        .maybeSingle(),
+      supabase
+        .from("saved_jobs")
+        .select("id")
+        .eq("job_id", id)
+        .eq("developer_id", user.id)
+        .maybeSingle(),
+    ])
+    if (application) hasApplied = true
+    if (savedRow) isSaved = true
   }
 
   const { data: ilan, error } = await supabase
@@ -192,7 +200,10 @@ export default async function IsIlaniDetayPage({
                     </div>
                   )}
                 </div>
-                <JobApplyButton jobId={ilan.id} jobTitle={title} label="Başvuru Yap" hasApplied={hasApplied} isAuthenticated={!!user} />
+                <div className="flex flex-wrap gap-2">
+                  <JobApplyButton jobId={ilan.id} jobTitle={title} label="Başvuru Yap" hasApplied={hasApplied} isAuthenticated={!!user} />
+                  <JobSaveButton jobId={ilan.id} initialSaved={isSaved} isAuthenticated={!!user} />
+                </div>
                 {ilan.ask_expected_salary && (
                   <p className="mt-2 text-xs text-muted-foreground">
                     Bu ilan için başvuru formunda maaş beklentiniz{" "}
@@ -265,8 +276,9 @@ export default async function IsIlaniDetayPage({
           </CardContent>
         </Card>
 
-        <div className="mt-8 text-center">
+        <div className="mt-8 flex flex-wrap justify-center gap-3">
           <JobApplyButton jobId={ilan.id} jobTitle={title} label="Bu İlana Başvur" hasApplied={hasApplied} isAuthenticated={!!user} />
+          <JobSaveButton jobId={ilan.id} initialSaved={isSaved} isAuthenticated={!!user} />
         </div>
       </div>
     </div>

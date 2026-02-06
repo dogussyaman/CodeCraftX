@@ -62,11 +62,25 @@ export default async function CompanyDashboardPage() {
     tax_office?: string | null
   }
 
+  const isPremium = company?.plan === "premium"
+
   return (
     <div className="container mx-auto px-4 py-8 space-y-8 min-h-screen max-w-5xl">
       {/* Profil hero: logo + isim + aksiyon */}
-      <div className="rounded-2xl border bg-card overflow-hidden">
-        <div className="bg-muted/40 px-6 py-8 md:px-8 md:py-10">
+      <div
+        className={
+          isPremium
+            ? "rounded-2xl overflow-hidden border-2 border-amber-500/30 bg-card shadow-[0_0_0_1px_rgba(245,158,11,0.1)] dark:border-amber-500/25 dark:shadow-[0_0_0_1px_rgba(245,158,11,0.15)]"
+            : "rounded-2xl border bg-card overflow-hidden"
+        }
+      >
+        <div
+          className={
+            isPremium
+              ? "bg-gradient-to-r from-amber-500/10 via-muted/40 to-muted/40 px-6 py-8 md:px-8 md:py-10 dark:from-amber-500/15 dark:via-muted/40 dark:to-muted/40"
+              : "bg-muted/40 px-6 py-8 md:px-8 md:py-10"
+          }
+        >
           <div className="flex flex-col sm:flex-row sm:items-center gap-6">
             <div className="shrink-0">
               {company?.logo_url ? (
@@ -90,7 +104,13 @@ export default async function CompanyDashboardPage() {
               </p>
               <div className="flex flex-wrap items-center gap-2 mt-4">
                 {company?.plan && (
-                  <span className="rounded-full border bg-muted px-3 py-1 text-sm font-medium text-muted-foreground">
+                  <span
+                    className={
+                      isPremium
+                        ? "rounded-full border border-amber-500/40 bg-amber-500/15 px-3 py-1 text-sm font-semibold text-amber-700 dark:bg-amber-500/20 dark:text-amber-300"
+                        : "rounded-full border bg-muted px-3 py-1 text-sm font-medium text-muted-foreground"
+                    }
+                  >
                     {company.plan === "free" && "Free"}
                     {company.plan === "orta" && "Orta"}
                     {company.plan === "premium" && "Premium"}
@@ -148,15 +168,33 @@ export default async function CompanyDashboardPage() {
 
       {/* İstatistikler */}
       <div className="grid gap-4 sm:grid-cols-3">
-        <div className="rounded-xl border bg-card p-5 flex flex-col gap-1">
+        <div
+          className={
+            isPremium
+              ? "rounded-xl border border-amber-500/20 bg-card p-5 flex flex-col gap-1 border-t-4 border-t-amber-500/50 dark:border-amber-500/25 dark:border-t-amber-500/40"
+              : "rounded-xl border bg-card p-5 flex flex-col gap-1"
+          }
+        >
           <p className="text-sm font-medium text-muted-foreground">Toplam İlan</p>
           <p className="text-2xl font-semibold">{jobCount ?? 0}</p>
         </div>
-        <div className="rounded-xl border bg-card p-5 flex flex-col gap-1">
+        <div
+          className={
+            isPremium
+              ? "rounded-xl border border-amber-500/20 bg-card p-5 flex flex-col gap-1 border-t-4 border-t-amber-500/50 dark:border-amber-500/25 dark:border-t-amber-500/40"
+              : "rounded-xl border bg-card p-5 flex flex-col gap-1"
+          }
+        >
           <p className="text-sm font-medium text-muted-foreground">Toplam Başvuru</p>
           <p className="text-2xl font-semibold">{applicationCount ?? 0}</p>
         </div>
-        <div className="rounded-xl border bg-card p-5 flex flex-col gap-1">
+        <div
+          className={
+            isPremium
+              ? "rounded-xl border border-amber-500/20 bg-card p-5 flex flex-col gap-1 border-t-4 border-t-amber-500/50 dark:border-amber-500/25 dark:border-t-amber-500/40"
+              : "rounded-xl border bg-card p-5 flex flex-col gap-1"
+          }
+        >
           <p className="text-sm font-medium text-muted-foreground">Çalışan Sayısı</p>
           <p className="text-2xl font-semibold">{company?.employee_count || "-"}</p>
         </div>

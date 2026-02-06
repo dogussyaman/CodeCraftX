@@ -57,8 +57,8 @@ export function AdminSidebar({ profile }: AdminSidebarProps) {
       : baseMenuItems
 
   return (
-    <Sidebar>
-      <SidebarHeader className="border-b border-sidebar-border">
+    <Sidebar className="group-data-[side=left]:border-r group-data-[side=left]:border-indigo-500/20">
+      <SidebarHeader className="border-b border-indigo-500/20 bg-gradient-to-r from-indigo-500/10 to-transparent dark:from-indigo-500/15">
         <SidebarMenu>
           <SidebarMenuItem>
             <SidebarMenuButton size="lg" asChild>
@@ -92,7 +92,7 @@ export function AdminSidebar({ profile }: AdminSidebarProps) {
                     className={cn(
                       "flex items-center gap-3 rounded-lg border-l-2 border-transparent px-3 py-2 text-sm font-medium transition-colors duration-150",
                       isActive
-                        ? "border-primary bg-primary text-primary-foreground"
+                        ? "border-indigo-500 bg-indigo-500/15 text-indigo-700 dark:bg-indigo-500/20 dark:text-indigo-300"
                         : "text-muted-foreground hover:bg-sidebar-accent hover:text-foreground",
                     )}
                   >

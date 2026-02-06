@@ -151,3 +151,20 @@ export interface CompanyPendingApprovalProps {
     contactEmail: string;
     reviewUrl: string;
 }
+
+// Marketing / Announcements
+export interface MarketingCampaignEmailProps {
+    title: string;
+    body: string;
+    ctaText?: string;
+    ctaUrl?: string;
+    recipientName?: string;
+}
+
+export interface ProductUpdateEmailProps {
+    title: string;
+    updates: string[] | string;
+    ctaUrl?: string;
+    ctaText?: string;
+    recipientName?: string;
+}

@@ -12,6 +12,7 @@ import {
   MessageCircle,
   Settings,
   CreditCard,
+  Sparkles,
 } from "lucide-react"
 import {
   Sidebar,
@@ -38,15 +39,23 @@ const menuItems = [
 
 interface CompanySidebarProps {
   profile?: { full_name?: string; email?: string } | null
-  company?: { id: string; name: string | null; logo_url: string | null } | null
+  company?: { id: string; name: string | null; logo_url: string | null; plan?: string | null } | null
 }
 
 export function CompanySidebar({ profile, company }: CompanySidebarProps) {
   const pathname = usePathname()
+  const isPremium = company?.plan === "premium"
 
   return (
-    <Sidebar>
-      <SidebarHeader className="border-b border-sidebar-border">
+    <Sidebar
+      className={cn(isPremium && "group-data-[side=left]:border-r group-data-[side=left]:border-amber-500/20")}
+    >
+      <SidebarHeader
+        className={cn(
+          "border-b",
+          isPremium ? "border-amber-500/20 bg-gradient-to-r from-amber-500/10 to-transparent dark:from-amber-500/15" : "border-sidebar-border",
+        )}
+      >
         <SidebarMenu>
           <SidebarMenuItem>
             <SidebarMenuButton size="lg" asChild>
@@ -87,7 +96,9 @@ export function CompanySidebar({ profile, company }: CompanySidebarProps) {
                     className={cn(
                       "flex items-center gap-3 rounded-lg border-l-2 border-transparent px-3 py-2 text-sm font-medium transition-colors duration-150",
                       isActive
-                        ? "border-primary bg-primary text-primary-foreground"
+                        ? isPremium
+                          ? "border-amber-500 bg-amber-500/15 text-amber-700 dark:bg-amber-500/20 dark:text-amber-300"
+                          : "border-primary bg-primary text-primary-foreground"
                         : "text-muted-foreground hover:bg-sidebar-accent hover:text-foreground",
                     )}
                   >
@@ -101,6 +112,12 @@ export function CompanySidebar({ profile, company }: CompanySidebarProps) {
         </SidebarMenu>
       </SidebarContent>
       <SidebarFooter>
+        {isPremium && (
+          <div className="mb-2 flex items-center justify-center gap-1.5 rounded-lg border border-amber-500/30 bg-amber-500/10 px-3 py-1.5 text-xs font-semibold text-amber-700 dark:bg-amber-500/15 dark:text-amber-400">
+            <Sparkles className="size-3.5 shrink-0" />
+            Premium
+          </div>
+        )}
         {profile && (
           <SidebarMenu>
             <SidebarMenuItem>

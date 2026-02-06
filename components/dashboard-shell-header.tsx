@@ -4,7 +4,7 @@ import Link from "next/link"
 import { Button } from "@/components/ui/button"
 import { SidebarTrigger } from "@/components/ui/sidebar"
 import { Separator } from "@/components/ui/separator"
-import { Home, LogOut, Sparkles } from "lucide-react"
+import { Home, LogOut, Sparkles, Shield } from "lucide-react"
 import { ThemeToggle } from "@/components/theme-toggle"
 import { NotificationDropdown } from "@/components/notifications/notification-dropdown"
 import { createClient } from "@/lib/supabase/client"
@@ -28,6 +28,9 @@ export function DashboardShellHeader({ profile, company, plan }: DashboardShellH
   const router = useRouter()
   const dashboardPath = getDashboardPath(profile.role)
   const isPremium = plan === "premium"
+  const isAdmin =
+    (profile.role === "admin" || profile.role === "platform_admin" || profile.role === "mt") &&
+    !company
 
   const handleSignOut = async () => {
     const supabase = createClient()
@@ -40,8 +43,16 @@ export function DashboardShellHeader({ profile, company, plan }: DashboardShellH
       <SidebarTrigger className="-ml-1" />
       <Separator
         orientation="vertical"
-        className={`mx-2 h-4 ${isPremium ? "bg-amber-500/40" : ""}`}
+        className={`mx-2 h-4 ${
+          isPremium ? "bg-amber-500/40" : isAdmin ? "bg-indigo-500/40" : ""
+        }`}
       />
+      {isAdmin && (
+        <span className="hidden sm:flex items-center gap-1.5 rounded-full border border-indigo-500/30 bg-indigo-500/10 px-2.5 py-1 text-xs font-semibold text-indigo-700 dark:bg-indigo-400/20 dark:border-indigo-400/30 dark:text-indigo-300">
+          <Shield className="size-3.5" />
+          Yönetici
+        </span>
+      )}
       {company && (company.logo_url || company.name) ? (
         <Link
           href="/dashboard/company"
@@ -72,7 +83,9 @@ export function DashboardShellHeader({ profile, company, plan }: DashboardShellH
         className={
           isPremium
             ? "gap-1.5 rounded-md border border-border bg-transparent dark:bg-transparent hover:border-amber-500/40 hover:bg-amber-500/10 hover:text-amber-700 dark:hover:bg-amber-500/10 dark:hover:text-amber-400"
-            : "gap-1.5 rounded-md border border-border bg-transparent dark:bg-transparent hover:border-primary/40 hover:bg-muted dark:hover:bg-white/10 hover:text-foreground"
+            : isAdmin
+              ? "gap-1.5 rounded-md border border-border bg-transparent dark:bg-transparent hover:border-indigo-500/40 hover:bg-indigo-500/10 hover:text-indigo-700 dark:hover:bg-indigo-500/10 dark:hover:text-indigo-300"
+              : "gap-1.5 rounded-md border border-border bg-transparent dark:bg-transparent hover:border-primary/40 hover:bg-muted dark:hover:bg-white/10 hover:text-foreground"
         }
       >
         <Link href="/" className="flex items-center gap-2 px-2 py-1.5 text-sm font-medium transition-colors">
@@ -101,6 +114,17 @@ export function DashboardShellHeader({ profile, company, plan }: DashboardShellH
     return (
       <header className="relative flex h-12 shrink-0 items-center gap-2 border-b border-amber-500/20 from-amber-500/5 via-transparent to-amber-600/5 px-4 lg:px-6">
         <div className="absolute inset-0 bg-[radial-gradient(ellipse_80%_50%_at_50%_-20%,rgba(245,158,11,0.12),transparent)] pointer-events-none" />
+        <div className="relative flex flex-1 items-center gap-2 min-w-0">
+          {headerContent}
+        </div>
+      </header>
+    )
+  }
+
+  if (isAdmin) {
+    return (
+      <header className="relative flex h-12 shrink-0 items-center gap-2 border-b border-indigo-500/20 px-4 lg:px-6">
+        <div className="absolute inset-0 bg-[radial-gradient(ellipse_80%_50%_at_50%_-20%,rgba(99,102,241,0.08),transparent)] pointer-events-none dark:bg-[radial-gradient(ellipse_80%_50%_at_50%_-20%,rgba(99,102,241,0.12),transparent)]" />
         <div className="relative flex flex-1 items-center gap-2 min-w-0">
           {headerContent}
         </div>

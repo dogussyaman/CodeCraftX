@@ -158,12 +158,12 @@ export function ModernFooter() {
 
         {/* Bottom Section */}
         <div className="mt-12 pt-8 border-t border-border flex flex-col md:flex-row items-center justify-between gap-4">
-          <p className="text-sm text-muted-foreground flex items-center gap-1">
+          <p className="text-sm text-muted-foreground flex items-center gap-1 text-center md:text-left">
             © 2026 CodeCraftX. Tüm hakları saklıdır.
-            <Heart className="h-4 w-4 text-destructive inline fill-destructive" />
+            <Heart className="h-4 w-4 text-destructive inline fill-destructive shrink-0" />
             ile Türkiye'de geliştirildi
           </p>
-          <div className="flex items-center gap-6 text-sm">
+          <div className="flex flex-wrap items-center justify-center md:justify-end gap-3 sm:gap-6 text-xs sm:text-sm">
             <Link href="/gizlilik-politikasi" className="text-muted-foreground hover:text-foreground transition-colors">
               Gizlilik Politikası
             </Link>

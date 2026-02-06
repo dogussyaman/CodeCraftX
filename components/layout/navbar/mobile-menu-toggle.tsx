@@ -12,8 +12,10 @@ type Props = {
 
 export function MobileMenuToggle({ isOpen, onToggle }: Props) {
   return (
-    <div className="flex md:hidden items-center gap-1 shrink-0">
-      <ThemeToggle />
+    <div className="flex md:hidden items-center gap-0.5 shrink-0">
+      <div className="min-w-[44px] min-h-[44px] flex items-center justify-center -ml-1 touch-manipulation" aria-hidden>
+        <ThemeToggle />
+      </div>
       <button
         type="button"
         onClick={onToggle}
