@@ -1,135 +1,71 @@
- "use client";
+"use client"
 
-import { useEffect, useState } from "react";
-import type { User } from "@supabase/supabase-js";
-import { createClient } from "@/lib/supabase/client";
+import { useEffect } from "react"
+import { useDispatch, useSelector } from "react-redux"
+import { createClient } from "@/lib/supabase/client"
+import type { RootState } from "@/lib/store"
+import type { Role } from "@/lib/store/authSlice"
+import { setUser, setRole, setLoading, logoutAction } from "@/lib/store/authSlice"
 
-export type Role =
-  | "developer"
-  | "hr"
-  | "admin"
-  | "company"
-  | "company_admin"
-  | "platform_admin"
-  | "mt"
-  | null;
+const supabase = createClient()
+let authInitialized = false
 
-type AuthState = {
-  user: User | null;
-  role: Role;
-  loading: boolean;
-};
-
-const supabase = createClient();
-
-let state: AuthState = {
-  user: null,
-  role: null,
-  loading: true,
-};
-
-const listeners = new Set<(state: AuthState) => void>();
-let initialized = false;
-
-const notify = () => {
-  for (const listener of listeners) {
-    listener(state);
-  }
-};
-
-const setState = (partial: Partial<AuthState>) => {
-  state = { ...state, ...partial };
-  notify();
-};
-
-const fetchUserRole = async (userId: string) => {
+async function fetchUserRole(userId: string): Promise<Role> {
   try {
     const { data: profile } = await supabase
       .from("profiles")
       .select("role")
       .eq("id", userId)
-      .single();
-
-    setState({
-      role: (profile?.role as Role) || "developer",
-    });
+      .single()
+    return (profile?.role as Role) || "developer"
   } catch (error) {
-    console.error("Profile fetch error:", error);
-    setState({ role: "developer" });
+    console.error("Profile fetch error:", error)
+    return "developer"
   }
-};
-
-const initAuth = async () => {
-  if (initialized) return;
-  initialized = true;
-
-  try {
-    const {
-      data: { user },
-    } = await supabase.auth.getUser();
-
-    setState({
-      user,
-      loading: false,
-    });
-
-    if (user) {
-      fetchUserRole(user.id).catch((error) => {
-        console.error("Role fetch error:", error);
-      });
-    }
-  } catch (error) {
-    console.error("Auth initialization error:", error);
-    setState({ loading: false });
-  }
-
-  const {
-    data: { subscription },
-  } = supabase.auth.onAuthStateChange(async (_event, session) => {
-    const currentUser = session?.user || null;
-
-    setState({
-      user: currentUser,
-      loading: false,
-      role: currentUser ? state.role : null,
-    });
-
-    if (currentUser) {
-      fetchUserRole(currentUser.id).catch((error) => {
-        console.error("Role fetch error:", error);
-      });
-    }
-  });
-
-  // Supabase kendi içinde unsubscribe handle ediyor; burada sadece referans tutuyoruz.
-  // Uygulama yaşam döngüsü boyunca auth dinleyicisinin açık kalması bizim için yeterli.
-  return subscription;
-};
-
-const logout = async () => {
-  await supabase.auth.signOut();
-  setState({
-    user: null,
-    role: null,
-    loading: false,
-  });
-};
-
-export function useAuth() {
-  const [localState, setLocalState] = useState<AuthState>(state);
-
-  useEffect(() => {
-    listeners.add(setLocalState);
-    void initAuth();
-
-    return () => {
-      listeners.delete(setLocalState);
-    };
-  }, []);
-
-  return {
-    ...localState,
-    logout,
-  };
 }
 
+function initAuth(dispatch: ReturnType<typeof useDispatch>) {
+  if (authInitialized) return
+  authInitialized = true
+
+  supabase.auth.getUser().then(({ data: { user } }) => {
+    dispatch(setUser(user))
+    if (user) {
+      fetchUserRole(user.id).then((role) => dispatch(setRole(role)))
+    }
+  }).catch(() => {
+    dispatch(setLoading(false))
+  })
+
+  supabase.auth.onAuthStateChange(async (_event, session) => {
+    const currentUser = session?.user ?? null
+    dispatch(setUser(currentUser))
+    if (currentUser) {
+      const role = await fetchUserRole(currentUser.id)
+      dispatch(setRole(role))
+    }
+  })
+}
+
+export function useAuth() {
+  const dispatch = useDispatch()
+  const { user, role, loading } = useSelector((state: RootState) => state.auth)
+
+  useEffect(() => {
+    initAuth(dispatch)
+  }, [dispatch])
+
+  const logout = async () => {
+    await supabase.auth.signOut()
+    dispatch(logoutAction())
+  }
+
+  return {
+    user,
+    role,
+    loading,
+    logout,
+  }
+}
+
+export type { Role }

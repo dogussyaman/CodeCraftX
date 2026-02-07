@@ -60,8 +60,9 @@ export function ModernNavbar() {
   };
 
   const getDashboardLink = () => {
-    if (role === "admin") return "/dashboard/admin";
+    if (role === "admin" || role === "platform_admin" || role === "mt") return "/dashboard/admin";
     if (role === "hr") return "/dashboard/ik";
+    if (role === "company_admin") return "/dashboard/company";
     return "/dashboard/gelistirici";
   };
 

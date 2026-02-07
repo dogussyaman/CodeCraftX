@@ -33,11 +33,16 @@ export default async function AdminProjelerPage() {
       : { data: [] }
 
   return (
-    <div className="space-y-8">
-      <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
-        <div>
-          <h1 className="text-2xl font-bold tracking-tight">Projeler</h1>
-          <p className="text-muted-foreground">Açık kaynak projelerinizi yönetin ve toplulukla paylaşın.</p>
+    <div className="container mx-auto px-4 py-8 space-y-8 min-h-screen max-w-7xl">
+      <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
+        <div className="flex items-center gap-4">
+          <div className="rounded-xl bg-primary/10 p-3">
+            <Code2 className="size-8 text-primary" />
+          </div>
+          <div>
+            <h1 className="text-2xl font-bold text-foreground">Projeler</h1>
+            <p className="text-sm text-muted-foreground">Açık kaynak projelerinizi yönetin ve toplulukla paylaşın.</p>
+          </div>
         </div>
         <Button asChild>
           <Link href="/dashboard/admin/projeler/yeni" className="gap-2">
@@ -52,10 +57,11 @@ export default async function AdminProjelerPage() {
       )}
 
       {!projeler?.length ? (
-        <Card>
+        <Card className="rounded-2xl border-dashed border-border bg-muted/30 shadow-sm">
           <CardContent className="flex flex-col items-center justify-center py-16">
-            <Code2 className="size-12 text-muted-foreground mb-4" />
-            <p className="text-muted-foreground mb-4">Henüz proje eklemediniz.</p>
+            <Code2 className="size-16 text-muted-foreground mb-4 opacity-20" />
+            <h3 className="text-lg font-semibold mb-2">Henüz proje eklemediniz</h3>
+            <p className="text-muted-foreground mb-4">İlk projenizi ekleyerek başlayın.</p>
             <Button asChild>
               <Link href="/dashboard/admin/projeler/yeni" className="gap-2">
                 <Plus className="size-4" />
@@ -73,7 +79,7 @@ export default async function AdminProjelerPage() {
                 ? JSON.parse(proje.technologies || "[]")
                 : []
             return (
-              <Card key={proje.id} className="group hover:shadow-lg transition-all duration-300 hover:border-primary/50 pt-0 border-none">
+              <Card key={proje.id} className="rounded-2xl border border-border bg-card shadow-sm group hover:shadow-lg transition-all duration-300 hover:border-primary/50 pt-0 overflow-hidden">
                  <div className="relative aspect-video w-full overflow-hidden rounded-t-lg bg-muted">
                     {proje.image_url ? (
                       <Image

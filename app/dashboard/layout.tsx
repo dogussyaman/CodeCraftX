@@ -64,8 +64,21 @@ export default async function DashboardLayout({ children }: { children: ReactNod
           ? CompanySidebar
           : DeveloperSidebar
 
+  const segment =
+    role === "admin" || role === "platform_admin" || role === "mt"
+      ? "admin"
+      : role === "hr"
+        ? "hr"
+        : role === "company_admin"
+          ? company?.plan === "premium"
+            ? "company-premium"
+            : company?.plan === "orta"
+              ? "company-orta"
+              : "company-free"
+          : "developer"
+
   return (
-    <SidebarProvider defaultOpen={defaultOpen}>
+    <SidebarProvider defaultOpen={defaultOpen} data-segment={segment}>
       {role === "company_admin" ? (
         <CompanySidebar profile={profile as Profile} company={company} />
       ) : (

@@ -1,6 +1,7 @@
 import { createClient } from "@/lib/supabase/server"
 import { DashboardNotificationsPage } from "@/components/notifications/dashboard-notifications-page"
 import { CompanyBroadcastForm } from "./_components/CompanyBroadcastForm"
+import { Bell } from "lucide-react"
 
 export default async function CompanyNotificationsPage() {
   const supabase = await createClient()
@@ -19,19 +20,30 @@ export default async function CompanyNotificationsPage() {
   }
 
   return (
-    <div className="container mx-auto p-6 max-w-4xl min-h-screen space-y-8">
-      <div>
-        <h1 className="text-3xl font-bold">Bildirimler</h1>
-        <p className="text-muted-foreground mt-1">
-          Şirket hesabınıza gelen bildirimler ve şirket içi bildirim gönderimi.
-        </p>
+    <div className="container mx-auto px-4 py-8 space-y-8 min-h-screen max-w-7xl">
+      <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
+        <div className="flex items-center gap-4">
+          <div className="rounded-xl bg-primary/10 p-3">
+            <Bell className="size-8 text-primary" />
+          </div>
+          <div>
+            <h1 className="text-2xl font-bold text-foreground">Bildirimler</h1>
+            <p className="text-sm text-muted-foreground">
+              Şirket hesabınıza gelen bildirimler ve şirket içi bildirim gönderimi.
+            </p>
+          </div>
+        </div>
       </div>
 
       {companyId && (
         <CompanyBroadcastForm companyId={companyId} />
       )}
 
-      <DashboardNotificationsPage subtitle="Şirketinize gelen tüm bildirimleri burada görebilirsiniz." />
+      <DashboardNotificationsPage
+        userId={user?.id}
+        subtitle="Şirketinize gelen tüm bildirimleri burada görebilirsiniz."
+        hideHeader
+      />
     </div>
   )
 }

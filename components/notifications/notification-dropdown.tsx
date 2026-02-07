@@ -10,6 +10,7 @@ import {
 } from "@/components/ui/dropdown-menu"
 import { ScrollArea } from "@/components/ui/scroll-area"
 import { NotificationItem } from "./notification-item"
+import { NotificationDropdownSkeleton } from "@/components/skeleton-loaders"
 import { useNotifications } from "@/hooks/use-notifications"
 import Link from "next/link"
 
@@ -55,9 +56,7 @@ export function NotificationDropdown({ userId, dashboardPath }: NotificationDrop
 
                 <ScrollArea className="h-[400px]">
                     {loading ? (
-                        <div className="p-8 text-center text-sm text-muted-foreground">
-                            Yükleniyor...
-                        </div>
+                        <NotificationDropdownSkeleton />
                     ) : notifications.length === 0 ? (
                         <div className="p-8 text-center">
                             <Bell className="size-12 mx-auto mb-3 text-muted-foreground/50" />

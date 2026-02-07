@@ -10,7 +10,7 @@ interface DeveloperStatsProps {
 export function DeveloperStats({ cvCount, matchCount, applicationCount }: DeveloperStatsProps) {
     return (
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-            <Card className="group hover:shadow-lg transition-all duration-300 border-primary/10 bg-gradient-to-br from-background to-primary/5 dark:to-primary/10">
+            <Card className="group hover:shadow-lg transition-all duration-300 rounded-2xl border border-border bg-card shadow-sm overflow-hidden">
                 <CardHeader className="flex flex-row items-center justify-between pb-2">
                     <CardTitle className="text-sm font-medium text-muted-foreground">Yüklenen CV</CardTitle>
                     <div className="p-2 rounded-lg bg-primary/10 text-primary group-hover:scale-110 transition-transform">
@@ -25,10 +25,10 @@ export function DeveloperStats({ cvCount, matchCount, applicationCount }: Develo
                 </CardContent>
             </Card>
 
-            <Card className="group hover:shadow-lg transition-all duration-300 border-accent/10 bg-gradient-to-br from-background to-accent/5 dark:to-accent/10">
+            <Card className="group hover:shadow-lg transition-all duration-300 rounded-2xl border border-border bg-card shadow-sm overflow-hidden">
                 <CardHeader className="flex flex-row items-center justify-between pb-2">
                     <CardTitle className="text-sm font-medium text-muted-foreground">Eşleşmeler</CardTitle>
-                    <div className="p-2 rounded-lg bg-accent/10 text-accent group-hover:scale-110 transition-transform">
+                    <div className="p-2 rounded-lg bg-primary/10 text-primary group-hover:scale-110 transition-transform">
                         <Star className="size-5" />
                     </div>
                 </CardHeader>
@@ -38,7 +38,7 @@ export function DeveloperStats({ cvCount, matchCount, applicationCount }: Develo
                 </CardContent>
             </Card>
 
-            <Card className="group hover:shadow-lg transition-all duration-300 border-primary/10 bg-gradient-to-br from-background to-primary/5 dark:to-primary/10">
+            <Card className="group hover:shadow-lg transition-all duration-300 rounded-2xl border border-border bg-card shadow-sm overflow-hidden">
                 <CardHeader className="flex flex-row items-center justify-between pb-2">
                     <CardTitle className="text-sm font-medium text-muted-foreground">Başvurular</CardTitle>
                     <div className="p-2 rounded-lg bg-primary/10 text-primary group-hover:scale-110 transition-transform">

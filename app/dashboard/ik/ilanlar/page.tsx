@@ -38,11 +38,16 @@ export default async function JobsPage() {
   }
 
   return (
-    <div className="container mx-auto px-4 py-8 space-y-8 min-h-screen">
-      <div className="flex items-center justify-between">
-        <div>
-          <h1 className="text-3xl font-bold text-foreground mb-2">İş İlanları</h1>
-          <p className="text-muted-foreground">İş ilanlarınızı oluşturun ve yönetin</p>
+    <div className="container mx-auto px-4 py-8 space-y-8 min-h-screen max-w-7xl">
+      <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
+        <div className="flex items-center gap-4">
+          <div className="rounded-xl bg-primary/10 p-3">
+            <Briefcase className="size-8 text-primary" />
+          </div>
+          <div>
+            <h1 className="text-2xl font-bold text-foreground">İş İlanları</h1>
+            <p className="text-sm text-muted-foreground">İş ilanlarınızı oluşturun ve yönetin</p>
+          </div>
         </div>
         <Button asChild>
           <Link href="/dashboard/ik/ilanlar/olustur">
@@ -53,7 +58,7 @@ export default async function JobsPage() {
       </div>
 
       {!jobs || jobs.length === 0 ? (
-        <Card className="border-dashed bg-card dark:bg-zinc-900/50 dark:border-zinc-800">
+        <Card className="rounded-2xl border-dashed border-border bg-muted/30 shadow-sm">
           <CardContent className="flex flex-col items-center justify-center py-16">
             <Briefcase className="size-16 text-muted-foreground mb-4 opacity-20" />
             <h3 className="text-lg font-semibold mb-2">Henüz ilan oluşturmadınız</h3>
@@ -71,7 +76,7 @@ export default async function JobsPage() {
       ) : (
         <div className="grid grid-cols-1 gap-6">
           {jobs.map((job: any) => (
-            <Card key={job.id} className="bg-card border-border hover:border-primary/50 transition-colors">
+            <Card key={job.id} className="rounded-2xl border border-border bg-card shadow-sm hover:border-primary/50 transition-colors">
               <CardHeader>
                 <div className="flex items-start justify-between">
                   <div className="flex-1">

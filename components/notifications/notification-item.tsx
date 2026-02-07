@@ -12,14 +12,21 @@ import { ChevronRight } from "lucide-react"
 interface NotificationItemProps {
   notification: Notification
   onMarkAsRead: (id: string) => void
+  /** Verilirse tıklanınca önce detay açılır; verilmezse href varsa doğrudan sayfaya gider */
+  onOpenDetail?: (notification: Notification) => void
 }
 
-export function NotificationItem({ notification, onMarkAsRead }: NotificationItemProps) {
+export function NotificationItem({ notification, onMarkAsRead, onOpenDetail }: NotificationItemProps) {
   const isUnread = !notification.read_at
   const { label, icon: Icon } = getNotificationTypeMeta(notification.type)
   const ctaText = notification.href ? getNotificationCtaText(notification.type) : null
 
-  const handleClick = () => {
+  const handleClick = (e: React.MouseEvent) => {
+    if (onOpenDetail) {
+      e.preventDefault()
+      onOpenDetail(notification)
+      return
+    }
     if (isUnread) {
       onMarkAsRead(notification.id)
     }
@@ -27,6 +34,7 @@ export function NotificationItem({ notification, onMarkAsRead }: NotificationIte
 
   const content = (
     <div
+      role={onOpenDetail ? "button" : undefined}
       className={cn(
         "flex gap-3 p-3 rounded-lg transition-colors cursor-pointer border border-transparent",
         isUnread ? "bg-primary/5 hover:bg-primary/10 border-l-2 border-l-primary" : "hover:bg-muted/50"
@@ -70,7 +78,7 @@ export function NotificationItem({ notification, onMarkAsRead }: NotificationIte
     </div>
   )
 
-  if (notification.href) {
+  if (!onOpenDetail && notification.href) {
     return (
       <Link href={notification.href} className="block">
         {content}

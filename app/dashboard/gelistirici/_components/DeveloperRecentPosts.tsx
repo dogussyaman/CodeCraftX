@@ -41,7 +41,7 @@ export function DeveloperRecentPosts({ recentPosts }: DeveloperRecentPostsProps)
         </div>
       </div>
 
-      <Card className="shadow-sm overflow-hidden">
+      <Card className="rounded-2xl border border-border bg-card shadow-sm overflow-hidden">
         <CardContent className="p-0">
           {!recentPosts || recentPosts.length === 0 ? (
             <div className="flex flex-col items-center justify-center py-12 text-center px-4">

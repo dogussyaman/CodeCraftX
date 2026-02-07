@@ -11,6 +11,7 @@ import {
   Bell,
   Ticket,
   MessageCircle,
+  User,
 } from "lucide-react"
 import {
   Sidebar,
@@ -25,6 +26,7 @@ import { cn } from "@/lib/utils"
 
 const menuItems = [
   { title: "Panel", href: "/dashboard/ik", icon: Home },
+  { title: "Profilim", href: "/dashboard/ik/profil", icon: User },
   { title: "Şirket Bilgileri", href: "/dashboard/ik/sirket", icon: Building2 },
   { title: "İş İlanları", href: "/dashboard/ik/ilanlar", icon: Briefcase },
   { title: "Eşleşmeler", href: "/dashboard/ik/eslesmeler", icon: Star },

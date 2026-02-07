@@ -1,7 +1,7 @@
 export function BlogHero() {
   return (
     <div className="relative min-h-[38vh] w-full overflow-hidden rounded-b-[2rem] bg-gradient-to-br from-[#0f2d3a] via-[#134050] to-[#0f2d3a] pt-20 pb-14 md:min-h-[40vh] md:pt-24 md:pb-20">
-      {/* Arka plan: nokta ızgarası + hafif cyan parıltı (CTA ile aynı teal tonu) */}
+      {/* Arka plan: nokta ızgarası + hafif mavi parıltı (primary palet) */}
       <div
         className="absolute inset-0 opacity-[0.12] text-white"
         style={{
@@ -9,8 +9,8 @@ export function BlogHero() {
           backgroundSize: "24px 24px",
         }}
       />
-      <div className="absolute -right-1/4 -top-1/4 h-[80%] w-[80%] rounded-full bg-cyan-400/12 blur-3xl" aria-hidden />
-      <div className="absolute bottom-0 right-0 h-1/2 w-1/2 rounded-full bg-cyan-300/8 blur-2xl" aria-hidden />
+      <div className="absolute -right-1/4 -top-1/4 h-[80%] w-[80%] rounded-full bg-blue-400/12 blur-3xl" aria-hidden />
+      <div className="absolute bottom-0 right-0 h-1/2 w-1/2 rounded-full bg-blue-300/8 blur-2xl" aria-hidden />
 
       {/* Sağ tarafta yarı taşan ağ/code grafiği */}
       <div className="absolute -right-[12%] top-1/2 h-[85%] w-[55%] min-w-[280px] max-w-[420px] -translate-y-1/2 opacity-90 md:-right-[8%] md:w-[48%]" aria-hidden>
@@ -68,7 +68,7 @@ export function BlogHero() {
 
       <div className="container relative z-10 mx-auto px-4 max-w-6xl">
         <header className="max-w-2xl">
-          <span className="inline-block rounded-full border border-cyan-300/40 bg-cyan-400/15 px-3 py-1 text-xs font-medium uppercase tracking-widest text-cyan-100 backdrop-blur-sm">
+          <span className="inline-block rounded-full border border-blue-300/40 bg-blue-400/15 px-3 py-1 text-xs font-medium uppercase tracking-widest text-blue-100 backdrop-blur-sm">
             Blog
           </span>
           <h1 className="mt-4 text-3xl font-bold tracking-tight text-white drop-shadow-sm md:text-4xl lg:text-5xl">
@@ -78,8 +78,8 @@ export function BlogHero() {
             Kariyer ipuçları, teknoloji yazıları ve topluluk deneyimleri. Birlikte öğrenelim ve büyüyelim.
           </p>
           <div className="mt-6 flex items-center gap-3">
-            <div className="h-0.5 w-16 rounded-full bg-cyan-300/50" />
-            <span className="text-xs font-medium uppercase tracking-wider text-cyan-200/70">CodeCraftX</span>
+            <div className="h-0.5 w-16 rounded-full bg-blue-300/50" />
+            <span className="text-xs font-medium uppercase tracking-wider text-blue-200/70">CodeCraftX</span>
           </div>
         </header>
       </div>

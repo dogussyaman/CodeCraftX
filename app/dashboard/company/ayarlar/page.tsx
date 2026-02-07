@@ -1,6 +1,9 @@
 import { redirect } from "next/navigation"
 import { createClient } from "@/lib/supabase/server"
 import { CompanySettingsForm } from "@/components/company/CompanySettingsForm"
+import { Button } from "@/components/ui/button"
+import { Settings } from "lucide-react"
+import Link from "next/link"
 
 export default async function CompanyAyarlarPage() {
   const supabase = await createClient()
@@ -37,5 +40,25 @@ export default async function CompanyAyarlarPage() {
     redirect("/dashboard/company")
   }
 
-  return <CompanySettingsForm company={company} />
+  return (
+    <div className="container mx-auto px-4 py-8 space-y-8 min-h-screen max-w-6xl">
+      <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
+        <div className="flex items-center gap-4">
+          <div className="rounded-xl bg-primary/10 p-3">
+            <Settings className="size-8 text-primary" />
+          </div>
+          <div>
+            <h1 className="text-2xl font-bold text-foreground">Şirket Bilgileri</h1>
+            <p className="text-sm text-muted-foreground">
+              Genel bilgilerinizi görüntüleyin ve güncelleyin. Plan ve abonelik üyelik sayfasından yönetilir.
+            </p>
+          </div>
+        </div>
+        <Button variant="outline" size="sm" asChild>
+          <Link href="/dashboard/company">Panele Dön</Link>
+        </Button>
+      </div>
+      <CompanySettingsForm company={company} />
+    </div>
+  )
 }

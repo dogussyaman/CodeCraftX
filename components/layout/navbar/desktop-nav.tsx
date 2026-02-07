@@ -56,27 +56,27 @@ export function DesktopNav({
             onMouseEnter={() => setHoveredIndex(idx)}
             onMouseLeave={() => setHoveredIndex(null)}
           >
-            <motion.div
-              className="cursor-pointer px-4 py-1.5"
-              whileHover={{ scale: 1.02 }}
-              whileTap={{ scale: 0.98 }}
-              transition={springFast}
+            <Link
+              href={item.href}
+              className={`
+                block w-full px-4 py-1.5 text-[15px] font-medium tracking-tight whitespace-nowrap
+                transition-colors duration-300 ease-out
+                focus-visible:text-primary focus-visible:outline-none
+                ${isHighlight
+                  ? "text-foreground dark:text-white"
+                  : "text-muted-foreground hover:text-primary"
+                }
+              `}
             >
-              <Link
-                href={item.href}
-                className={`
-                  block text-[15px] font-medium tracking-tight whitespace-nowrap
-                  transition-colors duration-300 ease-out
-                  focus-visible:text-primary focus-visible:outline-none
-                  ${isHighlight
-                    ? "text-foreground dark:text-white"
-                    : "text-muted-foreground hover:text-primary"
-                  }
-                `}
+              <motion.span
+                className="block"
+                whileHover={{ scale: 1.02 }}
+                whileTap={{ scale: 0.98 }}
+                transition={springFast}
               >
                 {item.label}
-              </Link>
-            </motion.div>
+              </motion.span>
+            </Link>
           </li>
         );
       })}

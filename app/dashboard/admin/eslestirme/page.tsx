@@ -56,11 +56,16 @@ export default async function MatchingPage() {
     .limit(10)
 
   return (
-    <div className="container mx-auto px-4 py-8 space-y-8 min-h-screen">
-      <div className="flex items-center justify-between">
-        <div>
-          <h1 className="text-3xl font-bold text-foreground mb-2">Eşleştirme Sistemi</h1>
-          <p className="text-muted-foreground">CV ve iş ilanı eşleştirmelerini yönetin</p>
+    <div className="container mx-auto px-4 py-8 space-y-8 min-h-screen max-w-7xl">
+      <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
+        <div className="flex items-center gap-4">
+          <div className="rounded-xl bg-primary/10 p-3">
+            <Zap className="size-8 text-primary" />
+          </div>
+          <div>
+            <h1 className="text-2xl font-bold text-foreground">Eşleştirme Sistemi</h1>
+            <p className="text-sm text-muted-foreground">CV ve iş ilanı eşleştirmelerini yönetin</p>
+          </div>
         </div>
         <Button asChild>
           <Link href="/dashboard/admin/eslestirme/calistir">
@@ -70,41 +75,54 @@ export default async function MatchingPage() {
         </Button>
       </div>
 
-      {/* İstatistikler */}
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-        <Card>
-          <CardHeader>
-            <CardTitle className="text-base">İşlenmiş CV</CardTitle>
-            <CardDescription>Eşleştirmeye hazır</CardDescription>
-          </CardHeader>
-          <CardContent>
-            <div className="text-3xl font-bold">{processedCVs?.length || 0}</div>
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+        <Card className="rounded-2xl border border-border bg-card shadow-sm overflow-hidden">
+          <CardContent className="p-5">
+            <div className="flex items-start justify-between">
+              <div>
+                <p className="text-sm font-medium text-muted-foreground">İşlenmiş CV</p>
+                <p className="text-3xl font-bold text-foreground mt-1">{processedCVs?.length || 0}</p>
+                <p className="text-xs text-muted-foreground mt-1">Eşleştirmeye hazır</p>
+              </div>
+              <div className="rounded-xl bg-primary/10 p-2.5">
+                <Zap className="size-5 text-primary" />
+              </div>
+            </div>
           </CardContent>
         </Card>
 
-        <Card>
-          <CardHeader>
-            <CardTitle className="text-base">Aktif İlan</CardTitle>
-            <CardDescription>Eşleştirmeye açık</CardDescription>
-          </CardHeader>
-          <CardContent>
-            <div className="text-3xl font-bold">{activeJobs?.length || 0}</div>
+        <Card className="rounded-2xl border border-border bg-card shadow-sm overflow-hidden">
+          <CardContent className="p-5">
+            <div className="flex items-start justify-between">
+              <div>
+                <p className="text-sm font-medium text-muted-foreground">Aktif İlan</p>
+                <p className="text-3xl font-bold text-foreground mt-1">{activeJobs?.length || 0}</p>
+                <p className="text-xs text-muted-foreground mt-1">Eşleştirmeye açık</p>
+              </div>
+              <div className="rounded-xl bg-green-500/10 p-2.5">
+                <Zap className="size-5 text-green-600 dark:text-green-400" />
+              </div>
+            </div>
           </CardContent>
         </Card>
 
-        <Card>
-          <CardHeader>
-            <CardTitle className="text-base">Toplam Eşleşme</CardTitle>
-            <CardDescription>Oluşturulan</CardDescription>
-          </CardHeader>
-          <CardContent>
-            <div className="text-3xl font-bold">{recentMatches?.length || 0}</div>
+        <Card className="rounded-2xl border border-border bg-card shadow-sm overflow-hidden">
+          <CardContent className="p-5">
+            <div className="flex items-start justify-between">
+              <div>
+                <p className="text-sm font-medium text-muted-foreground">Toplam Eşleşme</p>
+                <p className="text-3xl font-bold text-foreground mt-1">{recentMatches?.length || 0}</p>
+                <p className="text-xs text-muted-foreground mt-1">Oluşturulan</p>
+              </div>
+              <div className="rounded-xl bg-muted p-2.5">
+                <Zap className="size-5 text-muted-foreground" />
+              </div>
+            </div>
           </CardContent>
         </Card>
       </div>
 
-      {/* Son Eşleşmeler */}
-      <Card>
+      <Card className="rounded-2xl border border-border bg-card shadow-sm">
         <CardHeader>
           <CardTitle className="flex items-center gap-2">
             <Zap className="size-5" />

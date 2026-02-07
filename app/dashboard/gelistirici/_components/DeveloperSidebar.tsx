@@ -6,7 +6,7 @@ import { BookOpen, Briefcase, Star, Upload } from "lucide-react"
 export function DeveloperSidebar() {
     return (
         <div className="space-y-6">
-            <Card className="from-card to-muted/30 border-border">
+            <Card className="rounded-2xl border border-border bg-card shadow-sm">
                 <CardContent className="p-6">
                     <CardTitle className="text-lg mb-4">Hızlı İşlemler</CardTitle>
                     <div className="grid gap-3">
@@ -59,7 +59,7 @@ export function DeveloperSidebar() {
                 </CardContent>
             </Card>
 
-            <Card className="border-none bg-primary/5 dark:bg-primary/10 shadow-none">
+            <Card className="rounded-2xl border border-primary/20 bg-primary/5 dark:bg-primary/10 shadow-sm">
                 <CardContent className="p-6">
                     <h3 className="font-semibold mb-2 flex items-center gap-2">
                         <Star className="size-4 text-primary fill-primary" />

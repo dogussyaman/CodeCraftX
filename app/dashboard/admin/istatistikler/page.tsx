@@ -44,14 +44,20 @@ export default async function StatisticsPage() {
   const totalRevenue = successPayments?.reduce((sum, p) => sum + Number(p.amount ?? 0), 0) ?? 0
 
   return (
-    <div className="container mx-auto px-4 py-8 space-y-8 min-h-screen">
-      <div>
-        <h1 className="text-3xl font-bold text-foreground mb-2">Platform İstatistikleri</h1>
-        <p className="text-muted-foreground">Detaylı platform metrikleri ve raporlar</p>
+    <div className="container mx-auto px-4 py-8 space-y-8 min-h-screen max-w-7xl">
+      <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
+        <div className="flex items-center gap-4">
+          <div className="rounded-xl bg-primary/10 p-3">
+            <BarChart3 className="size-8 text-primary" />
+          </div>
+          <div>
+            <h1 className="text-2xl font-bold text-foreground">Platform İstatistikleri</h1>
+            <p className="text-sm text-muted-foreground">Detaylı platform metrikleri ve raporlar</p>
+          </div>
+        </div>
       </div>
 
-      {/* Kullanıcı İstatistikleri */}
-      <Card>
+      <Card className="rounded-2xl border border-border bg-card shadow-sm">
         <CardHeader>
           <CardTitle className="flex items-center gap-2">
             <Users className="size-5" />
@@ -84,7 +90,7 @@ export default async function StatisticsPage() {
       </Card>
 
       {/* Abonelik ve Gelir */}
-      <Card>
+      <Card className="rounded-2xl border border-border bg-card shadow-sm">
         <CardHeader>
           <CardTitle className="flex items-center gap-2">
             <Banknote className="size-5" />
@@ -109,7 +115,7 @@ export default async function StatisticsPage() {
       </Card>
 
       {/* İş İlanı İstatistikleri */}
-      <Card>
+      <Card className="rounded-2xl border border-border bg-card shadow-sm">
         <CardHeader>
           <CardTitle className="flex items-center gap-2">
             <Briefcase className="size-5" />
@@ -140,7 +146,7 @@ export default async function StatisticsPage() {
       </Card>
 
       {/* Eşleştirme İstatistikleri */}
-      <Card>
+      <Card className="rounded-2xl border border-border bg-card shadow-sm">
         <CardHeader>
           <CardTitle className="flex items-center gap-2">
             <TrendingUp className="size-5" />
@@ -173,7 +179,7 @@ export default async function StatisticsPage() {
       </Card>
 
       {/* Performans Metrikleri */}
-      <Card>
+      <Card className="rounded-2xl border border-border bg-card shadow-sm">
         <CardHeader>
           <CardTitle className="flex items-center gap-2">
             <BarChart3 className="size-5" />

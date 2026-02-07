@@ -53,7 +53,7 @@ export function CompanySidebar({ profile, company }: CompanySidebarProps) {
       <SidebarHeader
         className={cn(
           "border-b",
-          isPremium ? "border-amber-500/20 bg-gradient-to-r from-amber-500/10 to-transparent dark:from-amber-500/15" : "border-sidebar-border",
+          isPremium ? "border-amber-500/20 from-amber-500/10 to-transparent dark:from-amber-500/15" : "border-sidebar-border",
         )}
       >
         <SidebarMenu>
@@ -121,7 +121,7 @@ export function CompanySidebar({ profile, company }: CompanySidebarProps) {
         {profile && (
           <SidebarMenu>
             <SidebarMenuItem>
-              <div className="flex flex-col gap-0.5 rounded-lg px-3 py-2 text-sm">
+              <div className={cn("flex flex-col gap-0.5 rounded-lg px-3 py-2 text-sm", isPremium ? "bg-amber-500/10 text-amber-700 dark:bg-amber-500/20 dark:text-amber-300" : "bg-primary/10 text-primary-foreground")}>
                 <span className="truncate font-medium">{profile.full_name ?? "Şirket"}</span>
                 <span className="truncate text-xs text-muted-foreground">{profile.email}</span>
               </div>

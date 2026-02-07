@@ -8,6 +8,9 @@ type CreateHrRequest = {
   tempPassword?: string
   title?: string
   phone?: string
+  bio?: string
+  website?: string
+  avatar_url?: string
 }
 
 export async function POST(request: Request) {
@@ -92,6 +95,9 @@ export async function POST(request: Request) {
       created_by_user_id: currentUser.id,
       hr_title: body.title || null,
       hr_phone: body.phone || null,
+      hr_bio: body.bio || null,
+      hr_website: body.website || null,
+      hr_avatar_url: body.avatar_url || null,
     })
 
     if (rpcError) {

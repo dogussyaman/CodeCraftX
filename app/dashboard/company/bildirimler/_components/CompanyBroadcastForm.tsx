@@ -64,7 +64,7 @@ export function CompanyBroadcastForm({ companyId }: CompanyBroadcastFormProps) {
   }
 
   return (
-    <Card className="bg-card border-border">
+    <Card className="rounded-2xl border border-border bg-card shadow-sm">
       <CardHeader>
         <CardTitle>Şirket içi bildirim gönder</CardTitle>
         <CardDescription>

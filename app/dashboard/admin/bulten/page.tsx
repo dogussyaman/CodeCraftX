@@ -35,18 +35,20 @@ export default function AdminBultenPage() {
   }, [])
 
   return (
-    <div className="container mx-auto p-6 max-w-4xl min-h-screen space-y-6">
+    <div className="container mx-auto px-4 py-8 space-y-8 min-h-screen max-w-7xl">
       <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
-        <div>
-          <h1 className="text-2xl font-bold flex items-center gap-2">
-            <Mail className="size-6" />
-            Bülten
-          </h1>
-          <CardDescription className="mt-1">
-            Kampanya oluşturun ve abonelere e-posta gönderin.
-          </CardDescription>
+        <div className="flex items-center gap-4">
+          <div className="rounded-xl bg-primary/10 p-3">
+            <Mail className="size-8 text-primary" />
+          </div>
+          <div>
+            <h1 className="text-2xl font-bold text-foreground">Bülten</h1>
+            <p className="text-sm text-muted-foreground mt-0.5">
+              Kampanya oluşturun ve abonelere e-posta gönderin.
+            </p>
+          </div>
         </div>
-        <Button asChild className="rounded-lg">
+        <Button asChild>
           <Link href="/dashboard/admin/bulten/olustur">
             <Plus className="size-4 mr-2" />
             Yeni bülten
@@ -54,7 +56,7 @@ export default function AdminBultenPage() {
         </Button>
       </div>
 
-      <Card>
+      <Card className="rounded-2xl border border-border bg-card shadow-sm">
         <CardHeader>
           <CardTitle>Kampanyalar</CardTitle>
           <CardDescription>

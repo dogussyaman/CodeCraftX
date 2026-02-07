@@ -204,7 +204,7 @@ export function LoginForm() {
                 <Button
                     type="button"
                     variant="outline"
-                    className="w-full h-11 bg-transparent"
+                    className="w-full h-11 bg-transparent hover:bg-muted hover:text-foreground border-border"
                     onClick={() => handleOAuthLogin("google")}
                     disabled={isLoading}
                 >
@@ -219,7 +219,7 @@ export function LoginForm() {
                 <Button
                     type="button"
                     variant="outline"
-                    className="w-full h-11 bg-transparent"
+                    className="w-full h-11 bg-transparent hover:bg-muted hover:text-foreground border-border"
                     onClick={() => handleOAuthLogin("github")}
                     disabled={isLoading}
                 >

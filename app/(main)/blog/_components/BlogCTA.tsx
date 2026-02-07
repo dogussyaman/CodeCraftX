@@ -35,13 +35,13 @@ export function BlogCTA() {
             </linearGradient>
           </defs>
           <rect width="100%" height="100%" fill="url(#blog-cta-dots)" />
-          {/* Bağlantı çizgileri – header ile aynı cyan ailesi */}
+          {/* Bağlantı çizgileri – primary mavi ailesi */}
           <path d="M 80 80 Q 180 40 280 100 T 380 120" fill="none" stroke="url(#cta-line-a)" strokeWidth="1.5" strokeDasharray="4 3" opacity="0.8" />
           <path d="M 60 180 Q 160 140 260 200 T 400 160" fill="none" stroke="url(#cta-line-b)" strokeWidth="1.2" strokeDasharray="3 4" opacity="0.75" />
           <path d="M 100 220 Q 200 180 320 240" fill="none" stroke="url(#cta-line-c)" strokeWidth="1" opacity="0.65" />
           <path d="M 40 100 Q 150 80 250 160 T 380 220" fill="none" stroke="url(#cta-line-d)" strokeWidth="1.3" opacity="0.7" />
           <path d="M 120 40 Q 220 100 300 60 T 400 80" fill="none" stroke="url(#cta-line-a)" strokeWidth="1.2" strokeDasharray="5 2" opacity="0.6" />
-          {/* Noktalar – cyan/sky tonları */}
+          {/* Noktalar – mavi tonları */}
           <circle cx="80" cy="80" r="4" fill="#a5f3fc" opacity="0.9" />
           <circle cx="280" cy="100" r="5" fill="#67e8f9" opacity="0.9" />
           <circle cx="380" cy="120" r="3" fill="#22d3ee" opacity="0.9" />
@@ -63,7 +63,7 @@ export function BlogCTA() {
             CodeCraftX ile doğru yetenekleri bulun, eşleştirmenin gücünü deneyimleyin.
           </p>
           <div className="mt-6 flex flex-wrap gap-3">
-            <Button asChild size="lg" className="bg-cyan-400 text-[#0f2d3a] hover:bg-cyan-300">
+            <Button asChild size="lg" className="bg-primary text-primary-foreground hover:bg-primary/90">
               <Link href="/auth/kayit">Ücretsiz Başla</Link>
             </Button>
             <Button

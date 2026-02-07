@@ -64,7 +64,7 @@ export default async function DeveloperDashboardPage() {
     .limit(5)
 
   return (
-    <div className="container mx-auto px-4 py-8 space-y-8 min-h-screen animate-in fade-in duration-500">
+    <div className="container mx-auto px-4 py-8 space-y-8 min-h-screen max-w-7xl animate-in fade-in duration-500">
       <DeveloperHeader fullName={profile?.full_name ?? null} />
       <DeveloperStats cvCount={cvCount ?? 0} matchCount={matchCount ?? 0} applicationCount={applicationCount ?? 0} />
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">

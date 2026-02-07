@@ -17,8 +17,8 @@ export function AdminMainStats({
     matchCount,
 }: AdminMainStatsProps) {
     const cardClass =
-        "bg-card border border-indigo-500/20 border-t-4 border-t-indigo-500/40 dark:border-indigo-500/25 dark:border-t-indigo-500/30"
-    const iconClass = "size-5 text-indigo-600 dark:text-indigo-400"
+        "bg-card border border-border rounded-xl shadow-sm border-t-4 border-t-primary/50 dark:border-primary/30"
+    const iconClass = "size-5 text-primary"
 
     return (
         <div className="grid grid-cols-1 md:grid-cols-4 gap-6">

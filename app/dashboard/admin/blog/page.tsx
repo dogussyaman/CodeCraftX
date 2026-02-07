@@ -14,11 +14,16 @@ export default async function AdminBlogPage() {
     .order("created_at", { ascending: false })
 
   return (
-    <div className="space-y-8">
-      <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
-        <div>
-          <h1 className="text-2xl font-bold tracking-tight">Blog</h1>
-          <p className="text-muted-foreground">Blog yazılarını yönetin.</p>
+    <div className="container mx-auto px-4 py-8 space-y-8 min-h-screen max-w-7xl">
+      <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
+        <div className="flex items-center gap-4">
+          <div className="rounded-xl bg-primary/10 p-3">
+            <BookOpen className="size-8 text-primary" />
+          </div>
+          <div>
+            <h1 className="text-2xl font-bold text-foreground">Blog</h1>
+            <p className="text-sm text-muted-foreground">Blog yazılarını yönetin</p>
+          </div>
         </div>
         <Button asChild>
           <Link href="/dashboard/admin/blog/olustur" className="gap-2">
@@ -29,10 +34,11 @@ export default async function AdminBlogPage() {
       </div>
 
       {!posts?.length ? (
-        <Card>
+        <Card className="rounded-2xl border-dashed border-border bg-muted/30 shadow-sm">
           <CardContent className="flex flex-col items-center justify-center py-16">
-            <FileText className="size-12 text-muted-foreground mb-4" />
-            <p className="text-muted-foreground mb-4">Henüz yazı yok.</p>
+            <FileText className="size-16 text-muted-foreground mb-4 opacity-20" />
+            <h3 className="text-lg font-semibold mb-2">Henüz yazı yok</h3>
+            <p className="text-muted-foreground mb-4">İlk blog yazınızı oluşturun</p>
             <Button asChild>
               <Link href="/dashboard/admin/blog/olustur" className="gap-2">
                 <Plus className="size-4" />
@@ -44,7 +50,7 @@ export default async function AdminBlogPage() {
       ) : (
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
           {posts.map((post) => (
-            <Card key={post.id} className="flex flex-col overflow-hidden pt-0">
+            <Card key={post.id} className="rounded-2xl border border-border bg-card shadow-sm flex flex-col overflow-hidden pt-0">
               <div className="aspect-video w-full overflow-hidden bg-muted border-b border-border">
                 {(post as { cover_image_url?: string | null }).cover_image_url ? (
                   <img

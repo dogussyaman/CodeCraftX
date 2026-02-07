@@ -182,3 +182,49 @@ export function UserCardSkeleton() {
     </Card>
   )
 }
+
+/**
+ * Bildirim liste satırı (tek öğe) — sol ikon, başlık + body çizgileri, tarih
+ */
+function NotificationRowSkeleton() {
+  return (
+    <div className="flex gap-3 p-3 rounded-lg border border-transparent">
+      <Skeleton className="size-5 shrink-0 rounded mt-0.5" />
+      <div className="flex-1 min-w-0 space-y-2">
+        <Skeleton className="h-4 w-3/4" />
+        <Skeleton className="h-3 w-full" />
+        <Skeleton className="h-3 w-2/3" />
+        <div className="flex items-center gap-2 pt-1">
+          <Skeleton className="h-5 w-14 rounded-full" />
+          <Skeleton className="h-3 w-20" />
+        </div>
+      </div>
+    </div>
+  )
+}
+
+/**
+ * Bildirim listesi sayfası için skeleton (5–7 satır)
+ */
+export function NotificationListSkeleton({ rows = 6 }: { rows?: number }) {
+  return (
+    <div className="space-y-2">
+      {Array.from({ length: rows }).map((_, i) => (
+        <NotificationRowSkeleton key={i} />
+      ))}
+    </div>
+  )
+}
+
+/**
+ * Header dropdown için bildirim skeleton (3–4 satır)
+ */
+export function NotificationDropdownSkeleton() {
+  return (
+    <div className="p-2 space-y-1">
+      {Array.from({ length: 4 }).map((_, i) => (
+        <NotificationRowSkeleton key={i} />
+      ))}
+    </div>
+  )
+}

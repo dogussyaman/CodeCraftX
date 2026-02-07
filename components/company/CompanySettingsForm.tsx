@@ -9,7 +9,7 @@ import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import { Textarea } from "@/components/ui/textarea"
 import { Badge } from "@/components/ui/badge"
-import { AlertCircle, Loader2, ArrowLeft } from "lucide-react"
+import { AlertCircle, Loader2 } from "lucide-react"
 import Link from "next/link"
 import type { Company, CompanyPlan, SubscriptionStatus } from "@/lib/types"
 
@@ -96,18 +96,7 @@ export function CompanySettingsForm({ company }: { company: CompanyWithExtras })
   }
 
   return (
-    <div className="container mx-auto px-4 py-8 max-w-2xl min-h-screen space-y-6">
-      <div>
-        <Link
-          href="/dashboard/company"
-          className="text-sm text-muted-foreground hover:text-foreground flex items-center gap-1"
-        >
-          <ArrowLeft className="size-4" />
-          Panele Dön
-        </Link>
-      </div>
-
-      <Card className="bg-card border-border">
+    <Card className="rounded-2xl border border-border bg-card shadow-sm">
         <CardHeader>
           <CardTitle className="text-2xl">Şirket Bilgileri</CardTitle>
           <CardDescription>Genel bilgilerinizi görüntüleyin ve güncelleyin. Plan ve abonelik durumu yalnızca görüntülenir.</CardDescription>
@@ -315,6 +304,5 @@ export function CompanySettingsForm({ company }: { company: CompanyWithExtras })
           </form>
         </CardContent>
       </Card>
-    </div>
   )
 }

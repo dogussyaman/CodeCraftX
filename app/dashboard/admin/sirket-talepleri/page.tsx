@@ -40,32 +40,40 @@ export default async function AdminSirketTalepleriPage() {
 
   if (error) {
     return (
-      <div className="container mx-auto p-6 min-h-screen">
-        <h1 className="text-2xl font-bold flex items-center gap-2">
-          <Building2 className="h-6 w-6" />
-          Şirket Talepleri
-        </h1>
-        <p className="text-destructive mt-2">Veriler yüklenemedi: {error.message}</p>
+      <div className="container mx-auto px-4 py-8 min-h-screen max-w-7xl">
+        <div className="flex items-center gap-4">
+          <div className="rounded-xl bg-primary/10 p-3">
+            <Building2 className="size-8 text-primary" />
+          </div>
+          <div>
+            <h1 className="text-2xl font-bold text-foreground">Şirket Talepleri</h1>
+            <p className="text-destructive text-sm mt-1">Veriler yüklenemedi: {error.message}</p>
+          </div>
+        </div>
       </div>
     )
   }
 
   return (
-    <div className="container mx-auto p-6 min-h-screen">
-      <div className="mb-6">
-        <h1 className="text-3xl font-bold flex items-center gap-3">
-          <Building2 className="size-8 text-primary" />
-          Şirket Talepleri
-        </h1>
-        <p className="text-muted-foreground mt-2">
-          Kullanıcıların şirket kayıt talepleri. Beklemedeki talepleri <strong>Onayla</strong> / <strong>Reddet</strong> ile değerlendirin; onaylanan talepler için &quot;Şirket oluştur&quot; ile yeni şirket ekleyebilirsiniz.
-        </p>
+    <div className="container mx-auto px-4 py-8 space-y-8 min-h-screen max-w-7xl">
+      <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
+        <div className="flex items-center gap-4">
+          <div className="rounded-xl bg-primary/10 p-3">
+            <Building2 className="size-8 text-primary" />
+          </div>
+          <div>
+            <h1 className="text-2xl font-bold text-foreground">Şirket Talepleri</h1>
+            <p className="text-sm text-muted-foreground">
+              Kullanıcıların şirket kayıt talepleri. Beklemedeki talepleri Onayla / Reddet ile değerlendirin; onaylanan talepler için Şirket oluştur ile yeni şirket ekleyebilirsiniz.
+            </p>
+          </div>
+        </div>
       </div>
 
       <div className="space-y-4">
         {!requests?.length ? (
-          <Card>
-            <CardContent className="py-12 text-center text-muted-foreground">
+          <Card className="rounded-2xl border-dashed border-border bg-muted/30 shadow-sm">
+            <CardContent className="py-16 text-center text-muted-foreground">
               Henüz şirket talebi yok.
             </CardContent>
           </Card>
@@ -84,7 +92,7 @@ export default async function AdminSirketTalepleriPage() {
             created_company_id: string | null
             plan?: string | null
           }) => (
-            <Card key={r.id}>
+            <Card key={r.id} className="rounded-2xl border border-border bg-card shadow-sm">
               <CardHeader className="flex flex-row items-start justify-between gap-4 flex-wrap">
                 <div>
                   <CardTitle className="text-base">{r.company_name}</CardTitle>

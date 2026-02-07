@@ -22,10 +22,10 @@ export function AdminDetailStats({
 
     return (
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-            <Card className="bg-card border-border">
+            <Card className="bg-card border border-border rounded-xl shadow-sm">
                 <CardHeader>
                     <CardTitle className="flex items-center gap-2 text-base">
-                        <UserCheck className="size-5" />
+                        <UserCheck className="size-5 text-primary" />
                         Kullanıcı Dağılımı
                     </CardTitle>
                 </CardHeader>
@@ -41,10 +41,10 @@ export function AdminDetailStats({
                 </CardContent>
             </Card>
 
-            <Card className="bg-card border-border">
+            <Card className="bg-card border border-border rounded-xl shadow-sm">
                 <CardHeader>
                     <CardTitle className="flex items-center gap-2 text-base">
-                        <TrendingUp className="size-5" />
+                        <TrendingUp className="size-5 text-primary" />
                         CV İstatistikleri
                     </CardTitle>
                 </CardHeader>
@@ -60,10 +60,10 @@ export function AdminDetailStats({
                 </CardContent>
             </Card>
 
-            <Card className="bg-card border-border">
+            <Card className="bg-card border border-border rounded-xl shadow-sm">
                 <CardHeader>
                     <CardTitle className="flex items-center gap-2 text-base">
-                        <Briefcase className="size-5" />
+                        <Briefcase className="size-5 text-primary" />
                         Başvuru İstatistikleri
                     </CardTitle>
                 </CardHeader>

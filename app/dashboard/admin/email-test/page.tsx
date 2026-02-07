@@ -83,19 +83,22 @@ export default function EmailTestPage() {
     };
 
     return (
-        <div className="p-6 max-w-4xl mx-auto space-y-8">
-            <div>
-                <h1 className="text-2xl font-bold mb-2 flex items-center gap-2">
-                    <Mail className="size-6" />
-                    E-posta Test Paneli
-                </h1>
-                <p className="text-muted-foreground">
-                    Sistemdeki e-posta şablonlarını test edin. Resend API ile gerçek e-posta gönderilir.
-                    Sadece Admin ve MT rolleri bu sayfayı kullanabilir.
-                </p>
+        <div className="container mx-auto px-4 py-8 space-y-8 min-h-screen max-w-7xl">
+            <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
+                <div className="flex items-center gap-4">
+                    <div className="rounded-xl bg-primary/10 p-3">
+                        <Mail className="size-8 text-primary" />
+                    </div>
+                    <div>
+                        <h1 className="text-2xl font-bold text-foreground">E-posta Test Paneli</h1>
+                        <p className="text-sm text-muted-foreground">
+                            Sistemdeki e-posta şablonlarını test edin. Resend API ile gerçek e-posta gönderilir. Sadece Admin ve MT rolleri bu sayfayı kullanabilir.
+                        </p>
+                    </div>
+                </div>
             </div>
 
-            <Card className="border-border bg-card">
+            <Card className="rounded-2xl border border-border bg-card shadow-sm">
                 <CardHeader>
                     <CardTitle>Alıcı adresi</CardTitle>
                     <CardDescription>Test e-postaları bu adrese gidecek</CardDescription>
@@ -133,7 +136,7 @@ export default function EmailTestPage() {
 
             <div className="space-y-8">
                 {EMAIL_GROUPS.map((group) => (
-                    <Card key={group.title} className="border-border bg-card">
+                    <Card key={group.title} className="rounded-2xl border border-border bg-card shadow-sm">
                         <CardHeader>
                             <CardTitle>{group.title}</CardTitle>
                             <CardDescription>{group.description}</CardDescription>
@@ -172,7 +175,7 @@ export default function EmailTestPage() {
                 ))}
             </div>
 
-            <Card className="border-amber-200 dark:border-amber-800 bg-amber-50/50 dark:bg-amber-950/20">
+            <Card className="rounded-2xl border border-amber-200 dark:border-amber-800 bg-amber-50/50 dark:bg-amber-950/20 shadow-sm">
                 <CardContent className="pt-6">
                     <h4 className="font-semibold text-amber-800 dark:text-amber-200 mb-1">Önemli</h4>
                     <p className="text-sm text-amber-700 dark:text-amber-300">

@@ -220,7 +220,7 @@ export default function CompanyCreateJobPage() {
             </CardDescription>
           </CardHeader>
           <CardContent>
-            <Button asChild>
+            <Button variant="outline" asChild>
               <Link href="/dashboard/company">Panele Dön</Link>
             </Button>
           </CardContent>

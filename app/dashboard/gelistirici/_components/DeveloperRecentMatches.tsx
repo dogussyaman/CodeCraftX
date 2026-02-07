@@ -47,7 +47,7 @@ export function DeveloperRecentMatches({ cvCount, recentMatches }: DeveloperRece
                 </Button>
             </div>
 
-            <Card className="shadow-sm overflow-hidden">
+            <Card className="rounded-2xl border border-border bg-card shadow-sm overflow-hidden">
                 <CardContent className="p-0">
                     {!recentMatches || recentMatches.length === 0 ? (
                         <div className="flex flex-col items-center justify-center py-16 text-center px-4">
