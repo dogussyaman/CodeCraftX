@@ -5,6 +5,8 @@ import { useState, useLayoutEffect, useRef } from "react";
 import { motion } from "framer-motion";
 import { NAV_ITEMS, springPill, springFast } from "./constants";
 
+const MotionLink = motion(Link);
+
 export function DesktopNav({
   isActive,
 }: {
@@ -56,27 +58,23 @@ export function DesktopNav({
             onMouseEnter={() => setHoveredIndex(idx)}
             onMouseLeave={() => setHoveredIndex(null)}
           >
-            <motion.div
-              className="cursor-pointer px-4 py-1.5"
+            <MotionLink
+              href={item.href}
+              className={`
+                block cursor-pointer px-4 py-1.5 text-[15px] font-medium tracking-tight whitespace-nowrap
+                transition-colors duration-300 ease-out
+                focus-visible:text-primary focus-visible:outline-none
+                ${isHighlight
+                  ? "text-foreground dark:text-white"
+                  : "text-muted-foreground hover:text-primary"
+                }
+              `}
               whileHover={{ scale: 1.02 }}
               whileTap={{ scale: 0.98 }}
               transition={springFast}
             >
-              <Link
-                href={item.href}
-                className={`
-                  block text-[15px] font-medium tracking-tight whitespace-nowrap
-                  transition-colors duration-300 ease-out
-                  focus-visible:text-primary focus-visible:outline-none
-                  ${isHighlight
-                    ? "text-foreground dark:text-white"
-                    : "text-muted-foreground hover:text-primary"
-                  }
-                `}
-              >
-                {item.label}
-              </Link>
-            </motion.div>
+              {item.label}
+            </MotionLink>
           </li>
         );
       })}
