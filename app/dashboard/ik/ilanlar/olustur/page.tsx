@@ -14,6 +14,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import { Checkbox } from "@/components/ui/checkbox"
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group"
+import { BackLink } from "@/components/ui/back-link"
 import { AlertCircle } from "lucide-react"
 import Link from "next/link"
 import { JobListEditor } from "@/components/job-form/JobListEditor"
@@ -252,9 +253,7 @@ export default function CreateJobPage() {
   return (
     <div className="container mx-auto px-4 py-8 max-w-3xl min-h-screen">
       <div className="mb-6">
-        <Link href="/dashboard/ik/ilanlar" className="text-sm text-muted-foreground hover:text-foreground">
-          ← Geri Dön
-        </Link>
+        <BackLink href="/dashboard/ik/ilanlar" />
       </div>
 
       {atJobLimit && (

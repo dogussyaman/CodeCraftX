@@ -10,6 +10,7 @@ import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import { Textarea } from "@/components/ui/textarea"
+import { BackLink } from "@/components/ui/back-link"
 import { AlertCircle } from "lucide-react"
 import Link from "next/link"
 
@@ -59,9 +60,7 @@ export default function CreateCompanyPage() {
   return (
     <div className="container mx-auto px-4 py-8 max-w-2xl min-h-screen">
       <div className="mb-6">
-        <Link href="/dashboard/ik/sirketler" className="text-sm text-muted-foreground hover:text-foreground">
-          ← Geri Dön
-        </Link>
+        <BackLink href="/dashboard/ik/sirketler" />
       </div>
 
       <Card>

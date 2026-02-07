@@ -5,8 +5,8 @@ import { useRouter } from "next/navigation"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
 import { Progress } from "@/components/ui/progress"
+import { BackLink } from "@/components/ui/back-link"
 import { AlertCircle, CheckCircle, Loader2 } from "lucide-react"
-import Link from "next/link"
 
 export default function RunMatchingPage() {
   const [running, setRunning] = useState(false)
@@ -60,9 +60,7 @@ export default function RunMatchingPage() {
   return (
     <div className="container mx-auto px-4 py-8 max-w-2xl min-h-screen">
       <div className="mb-6">
-        <Link href="/dashboard/admin/eslestirme" className="text-sm text-muted-foreground hover:text-foreground">
-          ← Geri Dön
-        </Link>
+        <BackLink href="/dashboard/admin/eslestirme" />
       </div>
 
       <Card>

@@ -3,6 +3,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Badge } from "@/components/ui/badge"
 import { Button } from "@/components/ui/button"
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
+import { BackLink } from "@/components/ui/back-link"
 import { Briefcase, Globe, Linkedin, Github, Twitter, MapPin, Mail, Phone, Edit2, Download, ExternalLink, BookOpen } from "lucide-react"
 import { ProfileForm } from "./profile-form"
 import { ProfileExperiences } from "./profile-experiences"
@@ -78,9 +79,7 @@ export default async function ProfilePage({ searchParams }: ProfilePageProps) {
             <h1 className="text-3xl font-bold text-foreground">Profili Düzenle</h1>
             <p className="text-muted-foreground">Bilgilerinizi güncelleyin ve kaydedin</p>
           </div>
-          <Button variant="ghost" asChild className="hover:bg-muted transition-all duration-300 hover:translate-x-[-4px]">
-            <Link href="/dashboard/gelistirici/profil">Geri Dön</Link>
-          </Button>
+          <BackLink href="/dashboard/gelistirici/profil" />
         </div>
 
         {/* Temel Bilgiler Formu */}
