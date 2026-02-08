@@ -3,6 +3,7 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { Badge } from "@/components/ui/badge"
 import { Briefcase, Clock } from "lucide-react"
 import { APPLICATION_STATUS_MAP_DEV } from "@/lib/status-variants"
+import { InterviewAvailability } from "../_components/InterviewAvailability"
 
 export default async function ApplicationsPage() {
   const supabase = await createClient()
@@ -19,6 +20,7 @@ export default async function ApplicationsPage() {
         title,
         location,
         job_type,
+        company_id,
         companies:company_id (
           name
         )
@@ -27,7 +29,9 @@ export default async function ApplicationsPage() {
         id,
         title,
         content,
-        is_visible_to_developer
+        is_visible_to_developer,
+        note_type,
+        created_at
       )
     `,
     )
@@ -45,6 +49,26 @@ export default async function ApplicationsPage() {
       month: "long",
       day: "numeric",
     })
+  }
+
+  const parseInterviewPayload = (notes: any[]) => {
+    const interviewNote = notes.find((note) => note.note_type === "interview")
+    if (!interviewNote?.content) return null
+    try {
+      return JSON.parse(interviewNote.content)
+    } catch {
+      return null
+    }
+  }
+
+  const parseInterviewResponse = (notes: any[]) => {
+    const responseNote = notes.find((note) => note.note_type === "interview_response")
+    if (!responseNote?.content) return null
+    try {
+      return JSON.parse(responseNote.content)
+    } catch {
+      return null
+    }
   }
 
   return (
@@ -78,32 +102,52 @@ export default async function ApplicationsPage() {
                 </div>
               </CardHeader>
               <CardContent className="space-y-3">
-                <div className="flex flex-wrap items-center gap-4 text-sm text-muted-foreground">
-                  <div className="flex items-center gap-1">
-                    <Clock className="size-4" />
-                    Başvuru tarihi: {formatDate(application.created_at)}
-                  </div>
-                  {application.job_postings?.location && <span>{application.job_postings.location}</span>}
-                  {application.job_postings?.job_type && (
-                    <span className="capitalize">{application.job_postings.job_type.replace("-", " ")}</span>
-                  )}
-                </div>
-                {typeof application.expected_salary === "number" && (
-                  <div className="text-sm text-muted-foreground">
-                    Sizin maaş beklentiniz:{" "}
-                    <span className="font-medium text-foreground">
-                      {application.expected_salary.toLocaleString("tr-TR")} ₺
-                    </span>
-                  </div>
-                )}
-                {application.application_notes && application.application_notes.length > 0 && (
-                  <div className="pt-2 border-t border-border/40 text-sm">
-                    <div className="font-medium text-foreground mb-1">Şirketten mesaj</div>
-                    <p className="text-muted-foreground whitespace-pre-line">
-                      {application.application_notes[0].content}
-                    </p>
-                  </div>
-                )}
+                {(() => {
+                  const notes = application.application_notes ?? []
+                  const interviewPayload = parseInterviewPayload(notes)
+                  const interviewResponse = parseInterviewResponse(notes)
+                  const visibleNote = notes.find(
+                    (note: any) => note.is_visible_to_developer && note.note_type !== "interview",
+                  )
+
+                  return (
+                    <>
+                      <div className="flex flex-wrap items-center gap-4 text-sm text-muted-foreground">
+                        <div className="flex items-center gap-1">
+                          <Clock className="size-4" />
+                          Başvuru tarihi: {formatDate(application.created_at)}
+                        </div>
+                        {application.job_postings?.location && <span>{application.job_postings.location}</span>}
+                        {application.job_postings?.job_type && (
+                          <span className="capitalize">{application.job_postings.job_type.replace("-", " ")}</span>
+                        )}
+                      </div>
+                      {typeof application.expected_salary === "number" && (
+                        <div className="text-sm text-muted-foreground">
+                          Sizin maaş beklentiniz:{" "}
+                          <span className="font-medium text-foreground">
+                            {application.expected_salary.toLocaleString("tr-TR")} ₺
+                          </span>
+                        </div>
+                      )}
+                      {visibleNote && (
+                        <div className="pt-2 border-t border-border/40 text-sm">
+                          <div className="font-medium text-foreground mb-1">Şirketten mesaj</div>
+                          <p className="text-muted-foreground whitespace-pre-line">{visibleNote.content}</p>
+                        </div>
+                      )}
+                      {interviewPayload && (
+                        <InterviewAvailability
+                          applicationId={application.id}
+                          jobTitle={application.job_postings?.title ?? ""}
+                          companyId={application.job_postings?.company_id ?? null}
+                          interview={interviewPayload}
+                          existingResponse={interviewResponse ?? undefined}
+                        />
+                      )}
+                    </>
+                  )
+                })()}
               </CardContent>
             </Card>
           ))}

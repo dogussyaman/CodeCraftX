@@ -9,6 +9,8 @@ import { Textarea } from "@/components/ui/textarea"
 import { Label } from "@/components/ui/label"
 import { Checkbox } from "@/components/ui/checkbox"
 import { toast } from "sonner"
+import { Input } from "@/components/ui/input"
+import { APPLICATION_FEEDBACK_TEMPLATES } from "@/lib/feedback-templates"
 
 const STATUS_OPTIONS = [
   { value: "pending", label: "Bekliyor" },
@@ -38,9 +40,23 @@ export function HrApplicationActions({
   const [pendingStatus, setPendingStatus] = useState<string | null>(null)
   const [feedbackText, setFeedbackText] = useState("")
   const [feedbackVisibleToDev, setFeedbackVisibleToDev] = useState(true)
+  const [interviewOpen, setInterviewOpen] = useState(false)
+  const [interviewDate, setInterviewDate] = useState("")
+  const [interviewTimes, setInterviewTimes] = useState(["", "", ""])
+  const [interviewType, setInterviewType] = useState<"video" | "phone" | "onsite">("video")
+  const [interviewLink, setInterviewLink] = useState("")
+  const [interviewLocation, setInterviewLocation] = useState("")
+  const [interviewNote, setInterviewNote] = useState("")
 
   const startStatusChange = (value: string) => {
     if (value === status) return
+
+    if (value === "interview") {
+      setPendingStatus(value)
+      setFeedbackText("")
+      setInterviewOpen(true)
+      return
+    }
 
     // Red / kabul durumlarında geri bildirim iste
     if (value === "rejected" || value === "accepted") {
@@ -66,6 +82,14 @@ export function HrApplicationActions({
   const updateStatus = async (
     newStatus: string,
     note?: { content: string; visibleToDev: boolean },
+    interviewPayload?: {
+      date: string
+      timeOptions: string[]
+      type: "video" | "phone" | "onsite"
+      link?: string
+      location?: string
+      note?: string
+    },
   ) => {
     try {
       setLoading(true)
@@ -121,6 +145,22 @@ export function HrApplicationActions({
         }
       }
 
+      if (interviewPayload) {
+        const { error: interviewNoteError } = await supabase.from("application_notes").insert({
+          application_id: applicationId,
+          created_by: user.id,
+          note_type: "interview",
+          title: "Görüşme Daveti",
+          content: JSON.stringify(interviewPayload),
+          is_visible_to_developer: true,
+        })
+
+        if (interviewNoteError) {
+          console.error(interviewNoteError)
+          toast.warning("Görüşme detayları kaydedilemedi")
+        }
+      }
+
       // 4) Geliştiriciye email bildirimi gönder
       void fetch("/api/email/application-status-changed", {
         method: "POST",
@@ -141,8 +181,8 @@ export function HrApplicationActions({
           body: `${jobTitle} pozisyonu için başvurunuz incelendi.`,
         },
         interview: {
-          title: "Görüşme talebi aldınız",
-          body: `${jobTitle} pozisyonu için görüşme talebi aldınız. Detaylar için başvurularınız sayfasını kontrol edin.`,
+          title: "Görüşme daveti gönderildi",
+          body: `${jobTitle} pozisyonu için görüşme daveti aldınız. Tarih ve saat seçeneklerini inceleyin.`,
         },
         rejected: {
           title: "Başvurunuz reddedildi",
@@ -159,7 +199,7 @@ export function HrApplicationActions({
         const { error: notifError } = await supabase.from("notifications").insert({
           recipient_id: developerId,
           actor_id: user.id,
-          type: "application_status_changed",
+          type: newStatus === "interview" ? "interview_invitation" : "application_status_changed",
           title: notification.title,
           body: notification.body,
           href: "/dashboard/gelistirici/basvurular",
@@ -184,6 +224,44 @@ export function HrApplicationActions({
     } finally {
       setLoading(false)
     }
+  }
+
+  const handleInterviewSubmit = async () => {
+    if (!pendingStatus) return
+    const trimmedTimes = interviewTimes.map((t) => t.trim()).filter(Boolean)
+    if (!interviewDate || trimmedTimes.length === 0) {
+      toast.error("Görüşme tarihi ve en az bir saat seçeneği girin")
+      return
+    }
+
+    await updateStatus(
+      pendingStatus,
+      feedbackText.trim()
+        ? {
+            content: feedbackText.trim(),
+            visibleToDev: feedbackVisibleToDev,
+          }
+        : undefined,
+      {
+        date: interviewDate,
+        timeOptions: trimmedTimes,
+        type: interviewType,
+        link: interviewLink.trim() || undefined,
+        location: interviewLocation.trim() || undefined,
+        note: interviewNote.trim() || undefined,
+      },
+    )
+
+    setFeedbackText("")
+    setFeedbackVisibleToDev(true)
+    setInterviewDate("")
+    setInterviewTimes(["", "", ""])
+    setInterviewType("video")
+    setInterviewLink("")
+    setInterviewLocation("")
+    setInterviewNote("")
+    setPendingStatus(null)
+    setInterviewOpen(false)
   }
 
   return (
@@ -215,6 +293,26 @@ export function HrApplicationActions({
           </DialogHeader>
 
           <div className="space-y-4">
+            <div className="space-y-2">
+              <Label>Hazır mesaj</Label>
+              <Select
+                onValueChange={(value) => {
+                  const template = APPLICATION_FEEDBACK_TEMPLATES.find((item) => item.value === value)
+                  if (template) setFeedbackText(template.value)
+                }}
+              >
+                <SelectTrigger className="w-full">
+                  <SelectValue placeholder="Bir kalıp seçin" />
+                </SelectTrigger>
+                <SelectContent>
+                  {APPLICATION_FEEDBACK_TEMPLATES.map((template) => (
+                    <SelectItem key={template.label} value={template.value}>
+                      {template.label}
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+            </div>
             <div className="space-y-2">
               <Label htmlFor="feedback">Mesaj</Label>
               <Textarea
@@ -253,6 +351,111 @@ export function HrApplicationActions({
             </Button>
             <Button type="button" onClick={handleFeedbackSubmit} disabled={loading}>
               Kaydet ve durumu güncelle
+            </Button>
+          </div>
+        </DialogContent>
+      </Dialog>
+
+      <Dialog open={interviewOpen} onOpenChange={setInterviewOpen}>
+        <DialogContent className="sm:max-w-lg">
+          <DialogHeader>
+            <DialogTitle>Görüşme daveti oluştur</DialogTitle>
+            <DialogDescription>
+              Görüşme tarihini ve adayın seçebileceği saat aralıklarını belirleyin. İsterseniz Meet linki veya konum
+              ekleyebilirsiniz.
+            </DialogDescription>
+          </DialogHeader>
+
+          <div className="space-y-4">
+            <div className="grid gap-3 sm:grid-cols-2">
+              <div className="space-y-2">
+                <Label htmlFor="interviewDate">Tarih</Label>
+                <Input
+                  id="interviewDate"
+                  type="date"
+                  value={interviewDate}
+                  onChange={(e) => setInterviewDate(e.target.value)}
+                />
+              </div>
+              <div className="space-y-2">
+                <Label>Görüşme türü</Label>
+                <Select value={interviewType} onValueChange={(value) => setInterviewType(value as typeof interviewType)}>
+                  <SelectTrigger>
+                    <SelectValue />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="video">Video (Meet)</SelectItem>
+                    <SelectItem value="phone">Telefon</SelectItem>
+                    <SelectItem value="onsite">Ofis</SelectItem>
+                  </SelectContent>
+                </Select>
+              </div>
+            </div>
+
+            <div className="space-y-2">
+              <Label>Saat seçenekleri</Label>
+              <div className="grid gap-2 sm:grid-cols-3">
+                {interviewTimes.map((time, index) => (
+                  <Input
+                    key={`time-${index}`}
+                    type="time"
+                    value={time}
+                    onChange={(e) => {
+                      const updated = [...interviewTimes]
+                      updated[index] = e.target.value
+                      setInterviewTimes(updated)
+                    }}
+                  />
+                ))}
+              </div>
+            </div>
+
+            <div className="space-y-2">
+              <Label htmlFor="interviewLink">Meet linki (opsiyonel)</Label>
+              <Input
+                id="interviewLink"
+                type="url"
+                placeholder="https://meet.google.com/..."
+                value={interviewLink}
+                onChange={(e) => setInterviewLink(e.target.value)}
+              />
+            </div>
+
+            <div className="space-y-2">
+              <Label htmlFor="interviewLocation">Konum (opsiyonel)</Label>
+              <Input
+                id="interviewLocation"
+                placeholder="Ofis adresi"
+                value={interviewLocation}
+                onChange={(e) => setInterviewLocation(e.target.value)}
+              />
+            </div>
+
+            <div className="space-y-2">
+              <Label htmlFor="interviewNote">Ek not (opsiyonel)</Label>
+              <Textarea
+                id="interviewNote"
+                value={interviewNote}
+                onChange={(e) => setInterviewNote(e.target.value)}
+                rows={3}
+              />
+            </div>
+          </div>
+
+          <div className="flex justify-end gap-2 mt-4">
+            <Button
+              type="button"
+              variant="outline"
+              onClick={() => {
+                setInterviewOpen(false)
+                setPendingStatus(null)
+              }}
+              disabled={loading}
+            >
+              İptal
+            </Button>
+            <Button type="button" onClick={handleInterviewSubmit} disabled={loading}>
+              Daveti gönder
             </Button>
           </div>
         </DialogContent>
