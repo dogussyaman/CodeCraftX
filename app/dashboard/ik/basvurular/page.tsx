@@ -1,9 +1,7 @@
 import { createClient } from "@/lib/supabase/server"
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
-import { Badge } from "@/components/ui/badge"
-import { Users, Clock } from "lucide-react"
-import { HrApplicationActions } from "../_components/HrApplicationActions"
-import { APPLICATION_STATUS_MAP } from "@/lib/status-variants"
+import { Card, CardContent } from "@/components/ui/card"
+import { Users } from "lucide-react"
+import { ApplicationsWithSegments } from "./_components/ApplicationsWithSegments"
 
 export default async function HRApplicationsPage() {
   const supabase = await createClient()
@@ -17,7 +15,6 @@ export default async function HRApplicationsPage() {
     .eq("id", user!.id)
     .single()
 
-  // Şirketin ilanlarını al
   const { data: myJobs } = await supabase
     .from("job_postings")
     .select("id")
@@ -25,7 +22,6 @@ export default async function HRApplicationsPage() {
 
   const jobIds = myJobs?.map((job) => job.id) || []
 
-  // Bu ilanlara yapılan başvuruları al
   const { data: applications } = await supabase
     .from("applications")
     .select(
@@ -48,18 +44,17 @@ export default async function HRApplicationsPage() {
     .in("job_id", jobIds.length > 0 ? jobIds : [""])
     .order("created_at", { ascending: false })
 
-  const getStatusBadge = (status: string) => {
-    const config = APPLICATION_STATUS_MAP[status] || { label: status, variant: "outline" as const }
-    return <Badge variant={config.variant}>{config.label}</Badge>
-  }
-
-  const formatDate = (date: string) => {
-    return new Date(date).toLocaleDateString("tr-TR", {
-      year: "numeric",
-      month: "long",
-      day: "numeric",
-    })
-  }
+  const applicationIds = applications?.map((a: { id: string }) => a.id) || []
+  const { data: myAssignments } = await supabase
+    .from("application_assignments")
+    .select("application_id")
+    .eq("assigned_to", user!.id)
+    .in("application_id", applicationIds.length > 0 ? applicationIds : [""])
+  const assignedApplicationIds = Array.from(
+    new Set(
+      (myAssignments || []).map((a: { application_id: string }) => a.application_id)
+    )
+  )
 
   return (
     <div className="container mx-auto px-4 py-8 space-y-8 min-h-screen max-w-7xl">
@@ -86,68 +81,10 @@ export default async function HRApplicationsPage() {
           </CardContent>
         </Card>
       ) : (
-        <div className="grid grid-cols-1 gap-4">
-          {applications.map((application: any) => (
-            <Card key={application.id} className="rounded-2xl border border-border bg-card shadow-sm hover:border-primary/30 transition-colors">
-              <CardHeader>
-                <div className="flex items-start justify-between">
-                  <div className="flex-1">
-                    <CardTitle className="text-lg">{application.profiles?.full_name}</CardTitle>
-                    <CardDescription className="mt-1">{application.job_postings?.title}</CardDescription>
-                  </div>
-                  {getStatusBadge(application.status)}
-                </div>
-              </CardHeader>
-              <CardContent className="space-y-3">
-                <div className="text-sm text-muted-foreground space-y-1">
-                  <div>Email: {application.profiles?.email}</div>
-                  {application.profiles?.phone && <div>Telefon: {application.profiles.phone}</div>}
-                  {typeof application.expected_salary === "number" && (
-                    <div>
-                      Maaş beklentisi:{" "}
-                      <span className="font-medium text-foreground">
-                        {application.expected_salary.toLocaleString("tr-TR")} ₺
-                      </span>
-                    </div>
-                  )}
-                  {application.cvs?.file_url && (
-                    <div>
-                      CV:{" "}
-                      <a
-                        href={application.cvs.file_url}
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        className="text-primary hover:underline"
-                      >
-                        {application.cvs.file_name || "CV'yi görüntüle"}
-                      </a>
-                    </div>
-                  )}
-                </div>
-                <div className="flex items-center gap-1 text-xs text-muted-foreground">
-                  <Clock className="size-3" />
-                  Başvuru: {formatDate(application.created_at)}
-                </div>
-                {application.cover_letter && (
-                  <div className="pt-2 border-t border-border/40 text-sm">
-                    <div className="font-medium text-foreground mb-1">Ön yazı</div>
-                    <p className="text-muted-foreground whitespace-pre-line line-clamp-4">
-                      {application.cover_letter}
-                    </p>
-                  </div>
-                )}
-                <div className="pt-2 border-t border-border/40 flex justify-end">
-                  <HrApplicationActions
-                    applicationId={application.id}
-                    initialStatus={application.status}
-                    developerId={application.developer_id}
-                    jobTitle={application.job_postings?.title || ""}
-                  />
-                </div>
-              </CardContent>
-            </Card>
-          ))}
-        </div>
+        <ApplicationsWithSegments
+          applications={applications as Parameters<typeof ApplicationsWithSegments>[0]["applications"]}
+          assignedApplicationIds={assignedApplicationIds}
+        />
       )}
     </div>
   )

@@ -1,8 +1,7 @@
 import { createClient } from "@/lib/supabase/server"
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
-import { Badge } from "@/components/ui/badge"
-import { Users, Clock } from "lucide-react"
-import { APPLICATION_STATUS_MAP } from "@/lib/status-variants"
+import { Card, CardContent } from "@/components/ui/card"
+import { Users } from "lucide-react"
+import { ApplicationsWithSegments } from "@/app/dashboard/ik/basvurular/_components/ApplicationsWithSegments"
 
 export default async function CompanyApplicationsPage() {
   const supabase = await createClient()
@@ -10,9 +9,7 @@ export default async function CompanyApplicationsPage() {
     data: { user },
   } = await supabase.auth.getUser()
 
-  if (!user) {
-    return null
-  }
+  if (!user) return null
 
   const { data: profile } = await supabase.from("profiles").select("company_id").eq("id", user.id).single()
 
@@ -35,24 +32,15 @@ export default async function CompanyApplicationsPage() {
         full_name,
         email,
         phone
+      ),
+      cvs:cv_id (
+        file_name,
+        file_url
       )
     `,
     )
     .in("job_id", jobIds.length > 0 ? jobIds : [""])
     .order("created_at", { ascending: false })
-
-  const getStatusBadge = (status: string) => {
-    const config = APPLICATION_STATUS_MAP[status] || { label: status, variant: "outline" as const }
-    return <Badge variant={config.variant}>{config.label}</Badge>
-  }
-
-  const formatDate = (date: string) => {
-    return new Date(date).toLocaleDateString("tr-TR", {
-      year: "numeric",
-      month: "long",
-      day: "numeric",
-    })
-  }
 
   return (
     <div className="container mx-auto px-4 py-8 space-y-8 min-h-screen">
@@ -72,36 +60,12 @@ export default async function CompanyApplicationsPage() {
           </CardContent>
         </Card>
       ) : (
-        <div className="grid grid-cols-1 gap-4">
-          {applications.map((application: any) => (
-            <Card
-              key={application.id}
-              className="bg-card border-border"
-            >
-              <CardHeader>
-                <div className="flex items-start justify-between">
-                  <div className="flex-1">
-                    <CardTitle className="text-lg">{application.profiles?.full_name}</CardTitle>
-                    <CardDescription className="mt-1">{application.job_postings?.title}</CardDescription>
-                  </div>
-                  {getStatusBadge(application.status)}
-                </div>
-              </CardHeader>
-              <CardContent className="space-y-2">
-                <div className="text-sm text-muted-foreground">
-                  <div>Email: {application.profiles?.email}</div>
-                  {application.profiles?.phone && <div>Telefon: {application.profiles.phone}</div>}
-                </div>
-                <div className="flex items-center gap-1 text-xs text-muted-foreground">
-                  <Clock className="size-3" />
-                  Başvuru: {formatDate(application.created_at)}
-                </div>
-              </CardContent>
-            </Card>
-          ))}
-        </div>
+        <ApplicationsWithSegments
+          applications={applications as Parameters<typeof ApplicationsWithSegments>[0]["applications"]}
+          assignedApplicationIds={[]}
+          showAssignButton={false}
+        />
       )}
     </div>
   )
 }
-

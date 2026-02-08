@@ -1,6 +1,6 @@
 "use client"
 
-import { useState } from "react"
+import { useState, useEffect, useRef } from "react"
 import { createClient } from "@/lib/supabase/client"
 import { Button } from "@/components/ui/button"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
@@ -8,6 +8,7 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } f
 import { Textarea } from "@/components/ui/textarea"
 import { Label } from "@/components/ui/label"
 import { Checkbox } from "@/components/ui/checkbox"
+import { Input } from "@/components/ui/input"
 import { toast } from "sonner"
 
 const STATUS_OPTIONS = [
@@ -31,23 +32,100 @@ export function HrApplicationActions({
   developerId,
   jobTitle,
 }: HrApplicationActionsProps) {
-  const supabase = createClient()
+  const supabaseRef = useRef(createClient())
+  const supabase = supabaseRef.current
   const [status, setStatus] = useState<string>(initialStatus || "pending")
   const [loading, setLoading] = useState(false)
   const [feedbackOpen, setFeedbackOpen] = useState(false)
+  const [interviewModalOpen, setInterviewModalOpen] = useState(false)
   const [pendingStatus, setPendingStatus] = useState<string | null>(null)
   const [feedbackText, setFeedbackText] = useState("")
   const [feedbackVisibleToDev, setFeedbackVisibleToDev] = useState(true)
+  const [meetLink, setMeetLink] = useState("")
+  const [proposedDate, setProposedDate] = useState("")
+  const [proposedTimeSlotsStr, setProposedTimeSlotsStr] = useState("")
+  const [feedbackTemplates, setFeedbackTemplates] = useState<{ id: string; title: string; body: string; type: string }[]>([])
+  const [selectedTemplateId, setSelectedTemplateId] = useState<string>("__none__")
+
+  useEffect(() => {
+    if (!feedbackOpen) return
+    const load = async () => {
+      const { data } = await supabaseRef.current
+        .from("feedback_templates")
+        .select("id, title, body, type")
+        .order("type")
+      setFeedbackTemplates((data as { id: string; title: string; body: string; type: string }[]) || [])
+      setSelectedTemplateId("__none__")
+      setFeedbackText("")
+    }
+    void load()
+  }, [feedbackOpen])
+
+  const onTemplateChange = (id: string) => {
+    setSelectedTemplateId(id)
+    if (id === "__none__") {
+      setFeedbackText("")
+      return
+    }
+    const t = feedbackTemplates.find((x) => x.id === id)
+    if (t) setFeedbackText(t.body)
+  }
 
   const startStatusChange = (value: string) => {
     if (value === status) return
 
-    // Red / kabul durumlarında geri bildirim iste
-    if (value === "rejected" || value === "accepted") {
+    if (value === "interview") {
+      setPendingStatus("interview")
+      setInterviewModalOpen(true)
+    } else if (value === "rejected" || value === "accepted") {
       setPendingStatus(value)
       setFeedbackOpen(true)
     } else {
       void updateStatus(value)
+    }
+  }
+
+  const handleInterviewInviteSubmit = async () => {
+    if (!pendingStatus || pendingStatus !== "interview") return
+    setLoading(true)
+    try {
+      const slots = proposedTimeSlotsStr
+        .split(/[,;\s]+/)
+        .map((s) => s.trim())
+        .filter(Boolean)
+      const res = await fetch("/api/applications/interview-invite", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          applicationId,
+          meetLink: meetLink.trim() || undefined,
+          proposedDate: proposedDate.trim() || undefined,
+          proposedTimeSlots: slots.length > 0 ? slots : undefined,
+        }),
+      })
+      const data = await res.json().catch(() => ({}))
+      if (!res.ok) {
+        toast.error(data.error || "Görüşme daveti gönderilemedi")
+        setLoading(false)
+        return
+      }
+      setStatus("interview")
+      setInterviewModalOpen(false)
+      setMeetLink("")
+      setProposedDate("")
+      setProposedTimeSlotsStr("")
+      setPendingStatus(null)
+      toast.success("Görüşme daveti gönderildi")
+      void fetch("/api/email/application-status-changed", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ applicationId, status: "interview" }),
+      }).catch(() => {})
+    } catch (e) {
+      console.error(e)
+      toast.error("İşlem başarısız")
+    } finally {
+      setLoading(false)
     }
   }
 
@@ -204,22 +282,96 @@ export function HrApplicationActions({
         </Select>
       </div>
 
+      <Dialog open={interviewModalOpen} onOpenChange={setInterviewModalOpen}>
+        <DialogContent className="sm:max-w-md">
+          <DialogHeader>
+            <DialogTitle>Görüşme daveti</DialogTitle>
+            <DialogDescription>
+              Meet linki girin veya tarih ve saat seçenekleri belirleyin. Aday uygun saati seçecek.
+            </DialogDescription>
+          </DialogHeader>
+          <div className="space-y-4 pt-2">
+            <div className="space-y-2">
+              <Label htmlFor="meetLink">Meet / toplantı linki (opsiyonel)</Label>
+              <Input
+                id="meetLink"
+                type="url"
+                placeholder="https://meet.google.com/..."
+                value={meetLink}
+                onChange={(e) => setMeetLink(e.target.value)}
+              />
+            </div>
+            <div className="space-y-2">
+              <Label htmlFor="proposedDate">Tarih (opsiyonel)</Label>
+              <Input
+                id="proposedDate"
+                type="date"
+                value={proposedDate}
+                onChange={(e) => setProposedDate(e.target.value)}
+              />
+            </div>
+            <div className="space-y-2">
+              <Label htmlFor="slots">Saat seçenekleri (virgülle ayırın, opsiyonel)</Label>
+              <Input
+                id="slots"
+                placeholder="09:00, 10:00, 14:00"
+                value={proposedTimeSlotsStr}
+                onChange={(e) => setProposedTimeSlotsStr(e.target.value)}
+              />
+            </div>
+            <div className="flex justify-end gap-2">
+              <Button
+                type="button"
+                variant="outline"
+                onClick={() => {
+                  setInterviewModalOpen(false)
+                  setPendingStatus(null)
+                }}
+                disabled={loading}
+              >
+                İptal
+              </Button>
+              <Button type="button" onClick={handleInterviewInviteSubmit} disabled={loading}>
+                Davet gönder
+              </Button>
+            </div>
+          </div>
+        </DialogContent>
+      </Dialog>
+
       <Dialog open={feedbackOpen} onOpenChange={setFeedbackOpen}>
         <DialogContent className="sm:max-w-md">
           <DialogHeader>
             <DialogTitle>Geri bildirim yaz</DialogTitle>
             <DialogDescription>
-              Adaya iletmek istediğiniz kısa bir mesaj yazabilirsiniz. İsterseniz bu mesajı adayın görmesini de
-              sağlayabilirsiniz.
+              Hazır kalıp seçebilir veya kendi mesajınızı yazabilirsiniz. Bu mesajı adayın görmesini sağlayabilirsiniz.
             </DialogDescription>
           </DialogHeader>
 
           <div className="space-y-4">
+            {feedbackTemplates.length > 0 && (
+              <div className="space-y-2">
+                <Label>Hazır kalıp (opsiyonel)</Label>
+                <Select value={selectedTemplateId} onValueChange={onTemplateChange}>
+                  <SelectTrigger>
+                    <SelectValue placeholder="Kalıp seçin..." />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="__none__">Özel mesaj yaz</SelectItem>
+                    {feedbackTemplates.map((t) => (
+                      <SelectItem key={t.id} value={t.id}>
+                        {t.title}
+                      </SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
+              </div>
+            )}
             <div className="space-y-2">
               <Label htmlFor="feedback">Mesaj</Label>
               <Textarea
                 id="feedback"
-                placeholder="Örn: Pozisyona uygun olmadığınızı düşündük, ancak ilginiz için teşekkür ederiz."
+                placeholder="Kalıp seçin veya kendi mesajınızı yazın..."
                 value={feedbackText}
                 onChange={(e) => setFeedbackText(e.target.value)}
                 rows={4}

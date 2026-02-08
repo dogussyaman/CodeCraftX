@@ -3,6 +3,7 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { Badge } from "@/components/ui/badge"
 import { Briefcase, Clock } from "lucide-react"
 import { APPLICATION_STATUS_MAP_DEV } from "@/lib/status-variants"
+import { DeveloperInterviewConfirm } from "./_components/DeveloperInterviewConfirm"
 
 export default async function ApplicationsPage() {
   const supabase = await createClient()
@@ -28,6 +29,14 @@ export default async function ApplicationsPage() {
         title,
         content,
         is_visible_to_developer
+      ),
+      interviews (
+        id,
+        meet_link,
+        proposed_date,
+        proposed_time_slots,
+        developer_confirmed_at,
+        developer_selected_slot
       )
     `,
     )
@@ -104,6 +113,26 @@ export default async function ApplicationsPage() {
                     </p>
                   </div>
                 )}
+                {application.status === "interview" &&
+                  application.interviews &&
+                  application.interviews.length > 0 && (
+                    <DeveloperInterviewConfirm
+                      interviewId={application.interviews[0].id}
+                      meetLink={application.interviews[0].meet_link}
+                      proposedDate={application.interviews[0].proposed_date}
+                      proposedTimeSlots={
+                        Array.isArray(application.interviews[0].proposed_time_slots)
+                          ? application.interviews[0].proposed_time_slots
+                          : []
+                      }
+                      developerConfirmedAt={
+                        application.interviews[0].developer_confirmed_at
+                      }
+                      developerSelectedSlot={
+                        application.interviews[0].developer_selected_slot
+                      }
+                    />
+                  )}
               </CardContent>
             </Card>
           ))}

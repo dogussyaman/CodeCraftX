@@ -15,6 +15,9 @@ export type NotificationType =
   | "new_match"
   | "cv_processed"
   | "cv_failed"
+  | "cv_downloaded"
+  | "interview_invitation"
+  | "interview_slot_confirmed"
   | "new_contact_message"
   | "support_ticket_resolved"
   | "system"
@@ -31,6 +34,9 @@ const NOTIFICATION_TYPE_MAP: Record<string, NotificationTypeMeta> = {
   cv_processed: { label: "İşlem", icon: CheckCircle2 },
   support_ticket_resolved: { label: "Destek", icon: CheckCircle2 },
   cv_failed: { label: "Hata", icon: XCircle },
+  cv_downloaded: { label: "CV indirildi", icon: FileText },
+  interview_invitation: { label: "Görüşme daveti", icon: Briefcase },
+  interview_slot_confirmed: { label: "Görüşme onayı", icon: CheckCircle2 },
   new_contact_message: { label: "İletişim", icon: Mail },
   system: { label: "Sistem", icon: AlertCircle },
 }
@@ -48,6 +54,9 @@ export function getNotificationCtaText(type: string): string {
     case "new_match":
       return "İlana git"
     case "application_status_changed":
+    case "cv_downloaded":
+    case "interview_invitation":
+    case "interview_slot_confirmed":
       return "Başvurularım"
     case "support_ticket_resolved":
       return "Destek"

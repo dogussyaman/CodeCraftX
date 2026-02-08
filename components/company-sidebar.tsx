@@ -31,6 +31,7 @@ const menuItems = [
   { title: "Üyelik", href: "/dashboard/company/uyelik", icon: CreditCard },
   { title: "Çalışanlar", href: "/dashboard/company/calisanlar", icon: Users },
   { title: "İş İlanları", href: "/dashboard/company/ilanlar", icon: Briefcase },
+  { title: "Başvurular", href: "/dashboard/company/basvurular", icon: Users },
   { title: "Eşleşmeler", href: "/dashboard/company/eslesmeler", icon: Star },
   { title: "Bildirimler", href: "/dashboard/company/bildirimler", icon: Bell },
   { title: "Destek Taleplerim", href: "/dashboard/company/destek", icon: Ticket },

@@ -218,21 +218,15 @@ export function JobApplyModal({ jobId, jobTitle, isOpen, onClose }: JobApplyModa
         })
       }
 
-            // Application match Edge Function'ını tetikle
+            // AI eşleşme skoru hesapla (API)
             if (applicationData?.id) {
-                try {
-                    const { error: matchError } = await supabase.functions.invoke("application-match", {
-                        body: { application_id: applicationData.id },
-                    })
-
-                    if (matchError) {
-                        console.warn("Match calculation failed:", matchError)
-                        // Hata olsa bile devam et, başvuru kaydedildi
-                    }
-                } catch (matchErr) {
-                    console.warn("Match function call failed:", matchErr)
-                    // Hata olsa bile devam et
-                }
+                fetch("/api/applications/match", {
+                    method: "POST",
+                    headers: { "Content-Type": "application/json" },
+                    body: JSON.stringify({ applicationId: applicationData.id }),
+                }).catch((err) => {
+                    console.warn("Match calculation failed:", err)
+                })
             }
 
             toast.success("Başvurunuz alındı!", {

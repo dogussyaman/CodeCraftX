@@ -68,9 +68,9 @@ export function ModernNavbar() {
 
   return (
     <motion.header
-      initial={{ y: -100 }}
+      initial={{ y: 0 }}
       animate={{ y: 0 }}
-      transition={springTransition}
+      transition={{ duration: 0 }}
       className={`fixed top-0 left-0 right-0 z-50 pt-[env(safe-area-inset-top)] transition-[background-color,border-color,box-shadow] duration-300 ease-out ${
         isScrolled
           ? "bg-background/80 backdrop-blur-xl border-b border-border/50 shadow-sm"
