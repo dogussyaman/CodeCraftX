@@ -54,7 +54,6 @@ export async function sendNewMatchExample() {
             'Remote çalışma modeli ile React, TypeScript ve Next.js teknolojilerinde deneyimli...',
         jobLocation: 'İstanbul (Remote)',
         jobType: 'remote' as const,
-        salary: '60.000 - 80.000 TL',
         jobUrl: 'https://www.codecraftx.xyz/is-ilanlari/senior-react-developer-123',
     };
 

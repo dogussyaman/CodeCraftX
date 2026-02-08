@@ -235,43 +235,7 @@ Return JSON only:`
 
     if (statusError) throw statusError
 
-    // Developer skills'i güncelle (cv_profiles'den)
-    if (parsedData.skills && Array.isArray(parsedData.skills)) {
-      // Skills tablosundan skill ID'lerini bul veya oluştur
-      for (const skillName of parsedData.skills) {
-        // Skill var mı kontrol et
-        let { data: skill } = await supabase
-          .from("skills")
-          .select("id")
-          .eq("name", skillName)
-          .single()
-
-        // Yoksa oluştur
-        if (!skill) {
-          const { data: newSkill } = await supabase
-            .from("skills")
-            .insert({ name: skillName, category: "other" })
-            .select()
-            .single()
-
-          skill = newSkill
-        }
-
-        if (skill) {
-          // Developer skill ekle (source: 'cv')
-          await supabase
-            .from("developer_skills")
-            .upsert(
-              {
-                developer_id: cv.developer_id,
-                skill_id: skill.id,
-                source: "cv",
-              },
-              { onConflict: "developer_id,skill_id" }
-            )
-        }
-      }
-    }
+    // Developer skills artık kullanıcı "Profilime ekle" ile CV yükleme sayfasından ekliyor (öneri odaklı akış).
 
     return new Response(
       JSON.stringify({

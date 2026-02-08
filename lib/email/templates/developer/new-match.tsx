@@ -14,7 +14,6 @@ export function NewMatchEmail({
     jobDescription,
     jobLocation,
     jobType,
-    salary,
     jobUrl,
 }: NewMatchEmailProps) {
     const jobTypeLabels = {
@@ -112,15 +111,6 @@ export function NewMatchEmail({
                                     <span style={{ fontSize: '14px', color: EMAIL_COLORS.text }}>{jobTypeLabels[jobType]}</span>
                                 </td>
                             </tr>
-                            {salary && (
-                                <tr>
-                                    <td style={{ padding: '8px 0' }}>
-                                        <span style={{ fontSize: '14px', color: EMAIL_COLORS.textMuted }}>💰</span>
-                                        {' '}
-                                        <span style={{ fontSize: '14px', color: EMAIL_COLORS.text }}>{salary}</span>
-                                    </td>
-                                </tr>
-                            )}
                         </table>
                     </div>
 

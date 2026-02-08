@@ -21,6 +21,12 @@ import { AssignApplicationToMeButton } from "../../_components/AssignApplication
 import { APPLICATION_STATUS_MAP } from "@/lib/status-variants"
 import { toast } from "sonner"
 
+type MatchDetails = {
+  matching_skills?: string[]
+  missing_skills?: string[]
+  missing_optional?: string[]
+}
+
 type ApplicationRow = {
   id: string
   developer_id: string
@@ -30,10 +36,16 @@ type ApplicationRow = {
   cover_letter?: string
   match_score?: number | null
   match_reason?: string | null
-  match_details?: { matching_skills?: string[]; missing_skills?: string[] } | null
+  match_details?: MatchDetails | null
   job_postings?: { title?: string } | null
   profiles?: { full_name?: string; email?: string; phone?: string } | null
   cvs?: { file_name?: string; file_url?: string } | null
+}
+
+type LocalAnalysisResult = {
+  match_score: number
+  match_reason: string
+  match_details: MatchDetails
 }
 
 const SEGMENTS = [
@@ -73,18 +85,53 @@ export function ApplicationsWithSegments({
   const [bulkRejectLoading, setBulkRejectLoading] = useState(false)
   const [feedbackTemplates, setFeedbackTemplates] = useState<{ id: string; title: string; body: string }[]>([])
   const [bulkTemplateId, setBulkTemplateId] = useState<string>("__none__")
+  const [analyzingId, setAnalyzingId] = useState<string | null>(null)
+  const [localAnalysis, setLocalAnalysis] = useState<Record<string, LocalAnalysisResult>>({})
   const supabase = createClient()
 
   const filtered = useMemo(() => {
     if (segment === "all") return applications
     return applications.filter((a) => {
-      const s = a.match_score ?? null
+      const display = localAnalysis[a.id] ?? a
+      const s = display.match_score ?? null
       if (s === null) return segment === "low"
       if (segment === "high") return s >= 80
       if (segment === "mid") return s >= 50 && s < 80
       return s < 50
     })
-  }, [applications, segment])
+  }, [applications, segment, localAnalysis])
+
+  const runAnalysis = async (applicationId: string) => {
+    setAnalyzingId(applicationId)
+    try {
+      const res = await fetch("/api/applications/match", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ applicationId }),
+      })
+      const data = await res.json().catch(() => ({}))
+      if (!res.ok) {
+        toast.error(data.error || "Analiz başarısız")
+        return
+      }
+      if (data.success && data.match_score != null) {
+        setLocalAnalysis((prev) => ({
+          ...prev,
+          [applicationId]: {
+            match_score: data.match_score,
+            match_reason: data.match_reason ?? "",
+            match_details: data.match_details ?? {},
+          },
+        }))
+        toast.success("Analiz tamamlandı")
+      }
+    } catch (e) {
+      console.error(e)
+      toast.error("Analiz başarısız")
+    } finally {
+      setAnalyzingId(null)
+    }
+  }
 
   const openBulkReject = () => {
     setBulkRejectOpen(true)
@@ -147,7 +194,13 @@ export function ApplicationsWithSegments({
       </div>
 
       <div className="grid grid-cols-1 gap-4">
-        {filtered.map((application) => (
+        {filtered.map((application) => {
+          const display = localAnalysis[application.id] ?? application
+          const hasAnalysis =
+            typeof display.match_score === "number" ||
+            display.match_reason ||
+            (display.match_details && (display.match_details.matching_skills?.length || display.match_details.missing_skills?.length || display.match_details.missing_optional?.length))
+          return (
           <Card
             key={application.id}
             className="rounded-2xl border border-border bg-card shadow-sm hover:border-primary/30 transition-colors"
@@ -158,38 +211,42 @@ export function ApplicationsWithSegments({
                   <CardTitle className="text-lg">{application.profiles?.full_name}</CardTitle>
                   <CardDescription className="mt-1">{application.job_postings?.title}</CardDescription>
                 </div>
-                <div className="flex items-center gap-2">
-                  {typeof application.match_score === "number" && (
+                <div className="flex items-center gap-2 flex-wrap">
+                  {typeof display.match_score === "number" && (
                     <Badge
                       variant={
-                        application.match_score >= 80
+                        display.match_score >= 80
                           ? "success"
-                          : application.match_score >= 50
+                          : display.match_score >= 50
                             ? "default"
                             : "destructive"
                       }
                     >
-                      %{application.match_score} eşleşme
+                      %{display.match_score} eşleşme
                     </Badge>
                   )}
+                  <Badge
+                    variant="secondary"
+                    className={
+                      analyzingId === application.id
+                        ? "px-3 py-1 opacity-70 cursor-wait"
+                        : "cursor-pointer px-3 py-1 hover:bg-secondary/80 transition-colors select-none"
+                    }
+                    role="button"
+                    tabIndex={analyzingId === application.id ? -1 : 0}
+                    onClick={() => analyzingId !== application.id && runAnalysis(application.id)}
+                    onKeyDown={(e) => {
+                      if ((e.key === "Enter" || e.key === " ") && analyzingId !== application.id) runAnalysis(application.id)
+                    }}
+                    aria-disabled={analyzingId === application.id}
+                  >
+                    {analyzingId === application.id ? "Analiz ediliyor" : "Analiz yap"}
+                  </Badge>
                   {getStatusBadge(application.status)}
                 </div>
               </div>
             </CardHeader>
             <CardContent className="space-y-3">
-              {application.match_reason && (
-                <p className="text-xs text-muted-foreground">{application.match_reason}</p>
-              )}
-              {application.match_details?.matching_skills?.length ? (
-                <p className="text-xs text-muted-foreground">
-                  Eşleşen: {application.match_details.matching_skills.join(", ")}
-                </p>
-              ) : null}
-              {application.match_details?.missing_skills?.length ? (
-                <p className="text-xs text-muted-foreground">
-                  Eksik: {application.match_details.missing_skills.join(", ")}
-                </p>
-              ) : null}
               <div className="text-sm text-muted-foreground space-y-1">
                 <div>Email: {application.profiles?.email}</div>
                 {application.profiles?.phone && <div>Telefon: {application.profiles.phone}</div>}
@@ -224,6 +281,29 @@ export function ApplicationsWithSegments({
                   </p>
                 </div>
               )}
+              {hasAnalysis && (
+                <div className="pt-2 border-t border-border/40 space-y-2">
+                  <div className="font-medium text-foreground text-sm">Analiz sonuçları</div>
+                  {display.match_reason && (
+                    <p className="text-xs text-muted-foreground">{display.match_reason}</p>
+                  )}
+                  {display.match_details?.matching_skills?.length ? (
+                    <p className="text-xs text-muted-foreground">
+                      Eşleşen: {display.match_details.matching_skills.join(", ")}
+                    </p>
+                  ) : null}
+                  {display.match_details?.missing_skills?.length ? (
+                    <p className="text-xs text-muted-foreground">
+                      Eksik: {display.match_details.missing_skills.join(", ")}
+                    </p>
+                  ) : null}
+                  {display.match_details?.missing_optional?.length ? (
+                    <p className="text-xs text-muted-foreground">
+                      Eksik tercih: {display.match_details.missing_optional.join(", ")}
+                    </p>
+                  ) : null}
+                </div>
+              )}
               <div className="pt-2 border-t border-border/40 flex flex-wrap items-center justify-between gap-2">
                 {showAssignButton && (
                   <AssignApplicationToMeButton
@@ -240,7 +320,8 @@ export function ApplicationsWithSegments({
               </div>
             </CardContent>
           </Card>
-        ))}
+          )
+        })}
       </div>
 
       {filtered.length === 0 && (

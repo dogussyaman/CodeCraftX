@@ -110,7 +110,6 @@ export async function sendTestEmailAction(type: string, recipientEmail: string) 
                     jobDescription: 'Remote çalışma modeli ile React, TypeScript ve Next.js deneyimli...',
                     jobLocation: 'İstanbul (Remote)',
                     jobType: 'remote' as const,
-                    salary: '60.000 - 80.000 TL',
                     jobUrl: `${siteUrl}/is-ilanlari/senior-react-developer-123`,
                 };
                 result = await sendEmail({

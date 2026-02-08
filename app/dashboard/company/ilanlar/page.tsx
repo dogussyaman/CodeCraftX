@@ -2,7 +2,7 @@ import { createClient } from "@/lib/supabase/server"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
 import { Badge } from "@/components/ui/badge"
-import { Briefcase, Plus, MapPin, DollarSign } from "lucide-react"
+import { Briefcase, Plus, MapPin } from "lucide-react"
 import Link from "next/link"
 
 export default async function CompanyJobsPage() {
@@ -38,13 +38,6 @@ export default async function CompanyJobsPage() {
     )
     .eq("company_id", profile?.company_id ?? "")
     .order("created_at", { ascending: false })
-
-  const formatSalary = (min?: number, max?: number) => {
-    if (!min && !max) return null
-    if (min && max) return `₺${min.toLocaleString()} - ₺${max.toLocaleString()}`
-    if (min) return `₺${min.toLocaleString()}+`
-    return null
-  }
 
   return (
     <div className="container mx-auto px-4 py-8 space-y-8 min-h-screen max-w-7xl">
@@ -145,12 +138,6 @@ export default async function CompanyJobsPage() {
                     <Badge variant="outline" className="capitalize">
                       {job.experience_level}
                     </Badge>
-                  )}
-                  {formatSalary(job.salary_min, job.salary_max) && (
-                    <div className="flex items-center gap-1 font-medium text-foreground">
-                      <DollarSign className="size-4" />
-                      {formatSalary(job.salary_min, job.salary_max)}
-                    </div>
                   )}
                 </div>
 

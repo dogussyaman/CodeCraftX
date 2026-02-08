@@ -23,8 +23,6 @@ export default async function MatchesPage() {
         location,
         job_type,
         experience_level,
-        salary_min,
-        salary_max,
         companies:company_id (
           name,
           logo_url
@@ -94,13 +92,6 @@ export default async function MatchesPage() {
                     </Badge>
                   )}
                 </div>
-
-                {match.job_postings?.salary_min && match.job_postings?.salary_max && (
-                  <div className="text-sm font-medium text-foreground">
-                    ₺{match.job_postings.salary_min.toLocaleString()} - ₺
-                    {match.job_postings.salary_max.toLocaleString()}
-                  </div>
-                )}
 
                 <div className="flex gap-2 pt-2">
                   <Button asChild className="flex-1">

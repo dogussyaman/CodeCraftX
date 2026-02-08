@@ -4,7 +4,7 @@ import { Button } from "@/components/ui/button"
 import { Card, CardContent } from "@/components/ui/card"
 import { Badge } from "@/components/ui/badge"
 import { Separator } from "@/components/ui/separator"
-import { Building2, MapPin, DollarSign, ArrowLeft } from "lucide-react"
+import { Building2, MapPin, ArrowLeft } from "lucide-react"
 import { createServerClient } from "@/lib/supabase/server"
 import { JobApplyButton } from "@/components/job-apply-button"
 import { JobSaveButton } from "@/components/job-save-button"
@@ -189,14 +189,6 @@ export default async function IsIlaniDetayPage({
                     <div className="flex items-center gap-2">
                       <MapPin className="size-4" />
                       <span>{locationDisplay}</span>
-                    </div>
-                  )}
-                  {(ilan.salary_min != null || ilan.salary_max != null) && (
-                    <div className="flex items-center gap-2">
-                      <DollarSign className="size-4" />
-                      <span>
-                        {ilan.salary_min?.toLocaleString("tr-TR")} - {ilan.salary_max?.toLocaleString("tr-TR")} ₺
-                      </span>
                     </div>
                   )}
                 </div>

@@ -14,14 +14,17 @@ interface NotificationItemProps {
   onMarkAsRead: (id: string) => void
   /** Verilirse tıklanınca önce detay açılır; verilmezse href varsa doğrudan sayfaya gider */
   onOpenDetail?: (notification: Notification) => void
+  /** Tıklanınca çağrılır (örn. navbar dropdown kapatmak için) */
+  onClose?: () => void
 }
 
-export function NotificationItem({ notification, onMarkAsRead, onOpenDetail }: NotificationItemProps) {
+export function NotificationItem({ notification, onMarkAsRead, onOpenDetail, onClose }: NotificationItemProps) {
   const isUnread = !notification.read_at
   const { label, icon: Icon } = getNotificationTypeMeta(notification.type)
   const ctaText = notification.href ? getNotificationCtaText(notification.type) : null
 
   const handleClick = (e: React.MouseEvent) => {
+    onClose?.()
     if (onOpenDetail) {
       e.preventDefault()
       onOpenDetail(notification)
@@ -80,7 +83,7 @@ export function NotificationItem({ notification, onMarkAsRead, onOpenDetail }: N
 
   if (!onOpenDetail && notification.href) {
     return (
-      <Link href={notification.href} className="block">
+      <Link href={notification.href} className="block" onClick={onClose}>
         {content}
       </Link>
     )
