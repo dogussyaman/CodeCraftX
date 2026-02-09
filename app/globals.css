@@ -5,7 +5,7 @@
 
 :root {
   /* Kurumsal renk token'ları – primary blue, secondary/accent primary-uyumlu mavi (turkuaz yok) */
-  --background: oklch(0.985 0.002 247);
+  --background: oklch(0.975 0.01 258);
   --foreground: oklch(0.13 0.02 265);
   --card: oklch(1 0 0);
   --card-foreground: oklch(0.13 0.02 265);
@@ -34,7 +34,7 @@
   --chart-4: oklch(0.7 0.18 120);
   --chart-5: oklch(0.55 0.22 320);
   --radius: 0.75rem;
-  --sidebar: oklch(0.985 0.002 247);
+  --sidebar: oklch(0.975 0.01 258);
   --sidebar-foreground: oklch(0.13 0.02 265);
   --sidebar-primary: oklch(0.488 0.243 264);
   --sidebar-primary-foreground: oklch(0.99 0 0);
@@ -45,7 +45,7 @@
 }
 
 .dark {
-  --background: oklch(0.13 0.015 265);
+  --background: oklch(0.115 0.02 262);
   --foreground: oklch(0.965 0.005 247);
   --card: oklch(0.17 0.015 265);
   --card-foreground: oklch(0.965 0.005 247);
@@ -73,7 +73,7 @@
   --chart-3: oklch(0.6 0.15 280);
   --chart-4: oklch(0.75 0.2 120);
   --chart-5: oklch(0.6 0.24 320);
-  --sidebar: oklch(0.17 0.015 265);
+  --sidebar: oklch(0.12 0.02 262);
   --sidebar-foreground: oklch(0.965 0.005 247);
   --sidebar-primary: oklch(0.55 0.22 265);
   --sidebar-primary-foreground: oklch(0.98 0 0);
