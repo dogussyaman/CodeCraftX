@@ -113,15 +113,16 @@ serve(async (req) => {
     // Debug: Key'in ilk 10 karakterini logla (güvenlik için tam key'i değil)
     console.log("OpenAI API Key loaded:", OPENAI_API_KEY ? `${OPENAI_API_KEY.substring(0, 10)}...` : "NOT FOUND")
 
-    // GEÇİCİ: OpenAI quota sorunu çözülene kadar mock data kullan
-    // TODO: OpenAI quota sorunu çözüldüğünde bu kısmı kaldır ve aşağıdaki OpenAI çağrısını aktif et
-    const USE_MOCK_DATA = true // OpenAI çalıştığında bunu false yap
+    const isTestEnvironment =
+      Deno.env.get("NODE_ENV") === "test" ||
+      Deno.env.get("DENO_ENV") === "test"
+    const useMockData =
+      Deno.env.get("CV_PARSE_USE_MOCK") === "true" && isTestEnvironment
 
     let parsedData
 
-    if (USE_MOCK_DATA) {
-      // Mock data - OpenAI quota sorunu çözülene kadar
-      console.log("Using mock data (OpenAI quota issue)")
+    if (useMockData) {
+      console.log("Using mock data for CV parsing (test environment only)")
       parsedData = {
         skills: ["JavaScript", "TypeScript", "React", "Node.js", "Next.js"],
         experience_years: 3,

@@ -142,6 +142,7 @@ Tarayıcıda **http://localhost:3000** adresini açın.
 | `NEXT_PUBLIC_SUPABASE_URL` | Supabase proje URL |
 | `NEXT_PUBLIC_SUPABASE_ANON_KEY` | Supabase anon (public) key |
 | `SUPABASE_SERVICE_ROLE_KEY` | Opsiyonel; şirket/HR API ve cron için sunucu tarafında |
+| `CV_PARSE_USE_MOCK` | `true` ise ve ortam `NODE_ENV=test`/`DENO_ENV=test` olduğunda CV parse mock verisi kullanılır |
 
 ---
 
