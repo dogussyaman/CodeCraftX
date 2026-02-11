@@ -7,7 +7,7 @@
   /* Kurumsal renk token'ları – primary blue, secondary/accent primary-uyumlu mavi (turkuaz yok) */
   --background: oklch(0.985 0.002 247);
   --foreground: oklch(0.13 0.02 265);
-  --card: oklch(1 0 0);
+  --card: oklch(0.97 0.004 247);
   --card-foreground: oklch(0.13 0.02 265);
   --popover: oklch(1 0 0);
   --popover-foreground: oklch(0.13 0.02 265);
@@ -47,7 +47,7 @@
 .dark {
   --background: oklch(0.13 0.015 265);
   --foreground: oklch(0.965 0.005 247);
-  --card: oklch(0.17 0.015 265);
+  --card: oklch(0.23 0.02 265);
   --card-foreground: oklch(0.965 0.005 247);
   --popover: oklch(0.17 0.015 265);
   --popover-foreground: oklch(0.965 0.005 247);
