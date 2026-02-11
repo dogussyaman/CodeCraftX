@@ -16,6 +16,7 @@ import {
   FileText,
   Code2,
   TestTube2,
+  Banknote,
 } from "lucide-react"
 import {
   Sidebar,
@@ -36,6 +37,7 @@ const baseMenuItems = [
   { title: "İş İlanları", href: "/dashboard/admin/ilanlar", icon: Briefcase },
   { title: "Eşleştirmeler", href: "/dashboard/admin/eslestirme", icon: Star },
   { title: "İstatistikler", href: "/dashboard/admin/istatistikler", icon: BarChart3 },
+  { title: "Gelir / Gider", href: "/dashboard/admin/gelir-gider", icon: Banknote },
   { title: "Bildirimler", href: "/dashboard/admin/bildirimler", icon: Bell },
   { title: "Blog", href: "/dashboard/admin/blog", icon: FileText },
   { title: "Bülten", href: "/dashboard/admin/bulten", icon: Mail },

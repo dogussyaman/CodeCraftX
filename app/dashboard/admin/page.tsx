@@ -314,6 +314,12 @@ export default async function AdminDashboardPage() {
                 </Link>
               </Button>
               <Button variant="outline" className="w-full justify-between" asChild>
+                <Link href="/dashboard/admin/gelir-gider">
+                  Gelir / Gider
+                  <ChevronRight className="size-4" />
+                </Link>
+              </Button>
+              <Button variant="outline" className="w-full justify-between" asChild>
                 <Link href="/dashboard/admin/destek">
                   Destek
                   <ChevronRight className="size-4" />
