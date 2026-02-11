@@ -23,8 +23,11 @@ serve(async (req) => {
     return new Response("ok", { headers: corsHeaders })
   }
 
+  let requestCvId: string | undefined
+
   try {
     const { cv_id }: CVProcessRequest = await req.json()
+    requestCvId = cv_id
 
     if (!cv_id) {
       return new Response(
@@ -91,18 +94,10 @@ serve(async (req) => {
     // veya text extraction için başka bir servis kullanılabilir
     // MVP için: Eğer raw_text zaten varsa onu kullan, yoksa OpenAI'ye gönder
 
-    let cvText = cv.raw_text
+    const cvText = cv.raw_text
 
-    // Eğer raw_text yoksa, OpenAI'ye dosyayı gönder (vision API veya text extraction)
     if (!cvText) {
-      // Basit yaklaşım: OpenAI'ye dosyayı gönder ve text extract et
-      // NOT: Bu MVP için basitleştirilmiş - production'da pdf-parse veya mammoth kullanılmalı
-      // Şimdilik: Kullanıcıdan raw_text bekliyoruz veya başka bir servis kullanılmalı
-      
-      // Geçici çözüm: OpenAI'ye prompt gönder (eğer dosya text formatındaysa)
-      // Production'da: pdf-parse veya mammoth gibi kütüphaneler kullanılmalı
-      
-      cvText = "CV text extraction henüz implement edilmedi. Lütfen raw_text alanını manuel olarak doldurun."
+      throw new Error("CV raw_text is missing; cannot parse CV without extracted text.")
     }
 
     // OpenAI API ile CV parsing
@@ -250,18 +245,17 @@ Return JSON only:`
     )
   } catch (error) {
     console.error("CV Process Error:", error)
+    const errorMessage = error instanceof Error ? error.message : "Internal server error"
 
     // Hata durumunda CV status'unu 'failed' yap
     try {
       const supabase = createClient(SUPABASE_URL, SUPABASE_SERVICE_ROLE_KEY)
-      const requestBody = await req.json().catch(() => ({}))
-      const { cv_id } = requestBody as CVProcessRequest
       
-      if (cv_id) {
+      if (requestCvId) {
         await supabase
           .from("cvs")
-          .update({ status: "failed" })
-          .eq("id", cv_id)
+          .update({ status: "failed", error_reason: errorMessage })
+          .eq("id", requestCvId)
       }
     } catch (updateError) {
       console.error("Failed to update CV status:", updateError)
@@ -269,7 +263,7 @@ Return JSON only:`
 
     return new Response(
       JSON.stringify({
-        error: error.message || "Internal server error",
+        error: errorMessage,
       }),
       {
         status: 500,
