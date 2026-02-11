@@ -110,8 +110,8 @@ serve(async (req) => {
       throw new Error("OPENAI_API_KEY is not set")
     }
 
-    // Debug: Key'in ilk 10 karakterini logla (güvenlik için tam key'i değil)
-    console.log("OpenAI API Key loaded:", OPENAI_API_KEY ? `${OPENAI_API_KEY.substring(0, 10)}...` : "NOT FOUND")
+    // Debug: API key yüklendi mi kontrolü (içerik taşımayan mesaj)
+    console.log("OpenAI API key present:", Boolean(OPENAI_API_KEY))
 
     // GEÇİCİ: OpenAI quota sorunu çözülene kadar mock data kullan
     // TODO: OpenAI quota sorunu çözüldüğünde bu kısmı kaldır ve aşağıdaki OpenAI çağrısını aktif et
