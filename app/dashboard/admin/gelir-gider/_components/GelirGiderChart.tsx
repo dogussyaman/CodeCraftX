@@ -7,6 +7,7 @@ import {
   XAxis,
   YAxis,
   Tooltip,
+  Legend,
   ResponsiveContainer,
   CartesianGrid,
 } from "recharts"
@@ -59,9 +60,9 @@ export function GelirGiderChart({ data, totalGelir, totalGider }: GelirGiderChar
           <div>
             <CardTitle>Gelir / Gider Özeti</CardTitle>
             <CardDescription className="mt-1">
-              Toplam bakiye {totalGelir.toLocaleString("tr-TR")} ₺ − {totalGider.toLocaleString("tr-TR")} ₺ ={" "}
+              Tarihe göre günlük gelir ve gider. Toplam: {totalGelir.toLocaleString("tr-TR")} ₺ gelir − {totalGider.toLocaleString("tr-TR")} ₺ gider ={" "}
               <span className={cn("font-medium", net >= 0 ? "text-green-600 dark:text-green-400" : "text-red-600 dark:text-red-400")}>
-                {net.toLocaleString("tr-TR")} ₺ ({netPercent}%)
+                {net.toLocaleString("tr-TR")} ₺ net ({netPercent}%)
               </span>
             </CardDescription>
           </div>
@@ -94,8 +95,12 @@ export function GelirGiderChart({ data, totalGelir, totalGider }: GelirGiderChar
               >
                 <defs>
                   <linearGradient id="fillGelir" x1="0" y1="0" x2="0" y2="1">
-                    <stop offset="0%" stopColor="hsl(var(--primary))" stopOpacity={0.4} />
-                    <stop offset="100%" stopColor="hsl(var(--primary))" stopOpacity={0} />
+                    <stop offset="0%" stopColor="hsl(142,76%,36%)" stopOpacity={0.4} />
+                    <stop offset="100%" stopColor="hsl(142,76%,36%)" stopOpacity={0} />
+                  </linearGradient>
+                  <linearGradient id="fillGider" x1="0" y1="0" x2="0" y2="1">
+                    <stop offset="0%" stopColor="hsl(38,92%,50%)" stopOpacity={0.4} />
+                    <stop offset="100%" stopColor="hsl(38,92%,50%)" stopOpacity={0} />
                   </linearGradient>
                 </defs>
                 <CartesianGrid strokeDasharray="3 3" className="stroke-muted" />
@@ -109,25 +114,61 @@ export function GelirGiderChart({ data, totalGelir, totalGider }: GelirGiderChar
                   tick={{ fontSize: 11 }}
                   tickLine={false}
                   axisLine={false}
-                  tickFormatter={(v) => `${(v / 1000).toFixed(0)}k`}
+                  tickFormatter={(v) => (v >= 1000 ? `${(v / 1000).toFixed(0)}k ₺` : `${v} ₺`)}
                 />
                 <Tooltip
                   contentStyle={{
                     borderRadius: "8px",
                     border: "1px solid hsl(var(--border))",
                   }}
-                  formatter={(value: number) => [value.toLocaleString("tr-TR") + " ₺", "Gelir"]}
                   labelFormatter={(_, payload) =>
                     (payload?.[0]?.payload as ChartDataPoint | undefined)?.dateLabel ?? ""
                   }
+                  formatter={(value: number, name: string) => [
+                    (value ?? 0).toLocaleString("tr-TR") + " ₺",
+                    name === "gelir" ? "Gelir" : name === "gider" ? "Gider" : "Net",
+                  ]}
+                  content={({ active, payload, label }) => {
+                    if (!active || !payload?.length) return null
+                    const d = payload[0]?.payload as ChartDataPoint | undefined
+                    if (!d) return null
+                    return (
+                      <div className="rounded-lg border border-border bg-card p-3 shadow-md text-sm">
+                        <p className="font-medium text-foreground mb-2">{d.dateLabel}</p>
+                        <div className="space-y-1">
+                          <p className="text-green-600 dark:text-green-400">
+                            Gelir: {d.gelir.toLocaleString("tr-TR")} ₺
+                          </p>
+                          <p className="text-amber-600 dark:text-amber-400">
+                            Gider: {d.gider.toLocaleString("tr-TR")} ₺
+                          </p>
+                          <p className={cn("font-medium", d.net >= 0 ? "text-green-600 dark:text-green-400" : "text-red-600 dark:text-red-400")}>
+                            Net: {d.net.toLocaleString("tr-TR")} ₺
+                          </p>
+                        </div>
+                      </div>
+                    )
+                  }}
+                />
+                <Legend
+                  wrapperStyle={{ paddingTop: 8 }}
+                  formatter={(value) => <span className="text-sm text-foreground">{value}</span>}
                 />
                 <Area
                   type="monotone"
                   dataKey="gelir"
                   name="Gelir"
-                  stroke="hsl(var(--primary))"
+                  stroke="hsl(142,76%,36%)"
                   strokeWidth={2}
                   fill="url(#fillGelir)"
+                />
+                <Area
+                  type="monotone"
+                  dataKey="gider"
+                  name="Gider"
+                  stroke="hsl(38,92%,50%)"
+                  strokeWidth={2}
+                  fill="url(#fillGider)"
                 />
               </AreaChart>
             </ResponsiveContainer>

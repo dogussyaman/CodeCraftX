@@ -227,7 +227,7 @@ export default async function AdminDashboardPage() {
                       </tr>
                     </thead>
                     <tbody>
-                      {recentJobs.map((job: { id: string; title: string; status: string; created_at: string; companies?: { name: string | null } | null }) => (
+                      {recentJobs.map((job) => (
                         <tr
                           key={job.id}
                           className="border-b border-border/50 hover:bg-muted/20 transition-colors"
@@ -241,7 +241,7 @@ export default async function AdminDashboardPage() {
                             </Link>
                           </td>
                           <td className="py-3 px-4 text-muted-foreground">
-                            {(job as { companies?: { name: string | null } }).companies?.name ?? "—"}
+                            {(Array.isArray(job.companies) ? job.companies[0]?.name : (job.companies as { name?: string | null } | null)?.name) ?? "—"}
                           </td>
                           <td className="py-3 px-4">
                             <Badge
@@ -328,7 +328,7 @@ export default async function AdminDashboardPage() {
             </CardContent>
           </Card>
 
-          <Card className="rounded-2xl border-0 overflow-hidden bg-gradient-to-b from-primary/20 via-primary/10 to-primary/5 dark:from-primary/30 dark:via-primary/15 dark:to-primary/10 shadow-sm">
+          <Card className="rounded-2xl border-0 overflow-hidden bg-linear-to-b from-primary/20 via-primary/10 to-primary/5 dark:from-primary/30 dark:via-primary/15 dark:to-primary/10 shadow-sm">
             <CardHeader>
               <CardTitle className="text-base text-foreground">Özet</CardTitle>
               <CardDescription className="text-muted-foreground">

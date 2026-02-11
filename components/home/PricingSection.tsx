@@ -15,8 +15,8 @@ import {
     TooltipProvider,
     TooltipTrigger,
 } from "@/components/ui/tooltip"
-
-type BillingPeriod = "monthly" | "annually"
+import { getPlanPrice } from "@/lib/billing/plans"
+import type { BillingPeriod } from "@/lib/payments/types"
 
 interface PlanFeature {
     text: string
@@ -27,8 +27,6 @@ interface PricingPlan {
     name: string
     slug: "free" | "orta" | "premium"
     description: string
-    monthlyPrice: number
-    yearlyPrice: number
     features: PlanFeature[]
     popular?: boolean
     cta: string
@@ -40,8 +38,6 @@ const plans: PricingPlan[] = [
         name: "Free",
         slug: "free",
         description: "Bireyler ve küçük projeler için ideal",
-        monthlyPrice: 0,
-        yearlyPrice: 0,
         features: [
             { text: "En fazla 5 ilan", tooltip: "Aktif iş ilanı hakkı" },
             { text: "Temel destek", tooltip: "Destek talebi ve yanıt" },
@@ -55,8 +51,6 @@ const plans: PricingPlan[] = [
         name: "Orta",
         slug: "orta",
         description: "Büyüyen takımlar ve işletmeler için ideal",
-        monthlyPrice: 35,
-        yearlyPrice: 28,
         popular: true,
         features: [
             { text: "100 ilan hakkı", tooltip: "Aylık aktif ilan limiti" },
@@ -72,8 +66,6 @@ const plans: PricingPlan[] = [
         name: "Premium",
         slug: "premium",
         description: "Büyük kurumlar ve ileri düzey ihtiyaçlar için",
-        monthlyPrice: 100,
-        yearlyPrice: 80,
         features: [
             { text: "Sınırsız ilan hakkı", tooltip: "Aktif ilan limiti yok" },
             { text: "Sınırsız İK çalışanı", tooltip: "Şirketinize ekleyebileceğiniz İK sayısı sınırsız" },
@@ -100,7 +92,12 @@ function PricingCard({
     isCurrentPlan?: boolean
     ctaLink: string
 }) {
-    const price = billingPeriod === "monthly" ? plan.monthlyPrice : plan.yearlyPrice
+    const price =
+        plan.slug === "free"
+            ? 0
+            : billingPeriod === "monthly"
+              ? getPlanPrice(plan.slug, "monthly")
+              : Math.round(getPlanPrice(plan.slug, "annually") / 12)
     const isHighlighted = plan.popular || isCurrentPlan
 
     return (
@@ -147,7 +144,9 @@ function PricingCard({
                                 <span className="text-5xl font-bold text-foreground">Ücretsiz</span>
                             ) : (
                                 <>
-                                    <span className="text-5xl font-bold text-foreground">${price}</span>
+                                    <span className="text-5xl font-bold text-foreground">
+                                        {price.toLocaleString("tr-TR")} ₺
+                                    </span>
                                     <span className="text-muted-foreground">/ay</span>
                                 </>
                             )}
@@ -158,10 +157,10 @@ function PricingCard({
                     <Button
                         asChild
                         className={cn(
-                            "w-full mb-8",
+                            "w-full mb-8 transition-colors",
                             isHighlighted
-                                ? "bg-primary text-primary-foreground hover:bg-primary/90"
-                                : "bg-muted text-foreground hover:bg-muted/80"
+                                ? "bg-primary text-primary-foreground border-2 border-primary hover:bg-primary/90 hover:border-primary/80 dark:hover:bg-primary/80 dark:hover:border-primary/70"
+                                : "bg-muted text-foreground border-2 border-border hover:bg-secondary hover:border-primary/50 dark:hover:bg-secondary/80 dark:hover:border-primary/40"
                         )}
                     >
                         <Link href={ctaLink}>{plan.cta}</Link>

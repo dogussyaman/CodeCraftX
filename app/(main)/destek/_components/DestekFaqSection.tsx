@@ -180,8 +180,8 @@ export function DestekFaqSection() {
                     </div>
                   </AccordionTrigger>
                   <AccordionContent className="text-muted-foreground">
-                    Geliştiriciler için platform tamamen ücretsizdir. Şirketler için Başlangıç (₺999/ay), Profesyonel
-                    (₺2.999/ay) ve Kurumsal (özel fiyatlandırma) paketlerimiz bulunmaktadır. Detaylar için
+                    Geliştiriciler için platform tamamen ücretsizdir. Şirketler için Orta (₺1.299/ay), Premium
+                    (₺2.999/ay) paketlerimiz bulunmaktadır; kurumsal ihtiyaçlar için özel fiyatlandırma talep edebilirsiniz. Detaylar için
                     fiyatlandırma sayfamızı ziyaret edin.
                   </AccordionContent>
                 </AccordionItem>
