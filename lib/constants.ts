@@ -8,9 +8,9 @@ export const MT_DASHBOARD_LOGIN_URL =
 
 /** Tek kaynak: iletişim bilgileri (footer, iletişim, KVKK, Gizlilik vb.) */
 export const CONTACT = {
-  email: process.env.NEXT_PUBLIC_CONTACT_EMAIL ?? "hello@codecrafters.xyz",
-  supportEmail: process.env.NEXT_PUBLIC_SUPPORT_EMAIL ?? "support@codecrafters.xyz",
-  kvkkEmail: process.env.NEXT_PUBLIC_KVKK_EMAIL ?? "kvkk@codecrafters.xyz",
+  email: process.env.NEXT_PUBLIC_CONTACT_EMAIL ?? "hello@codecraftx.xyz",
+  supportEmail: process.env.NEXT_PUBLIC_SUPPORT_EMAIL ?? "support@codecraftx.xyz",
+  kvkkEmail: process.env.NEXT_PUBLIC_KVKK_EMAIL ?? "kvkk@codecraftx.xyz",
   address: process.env.NEXT_PUBLIC_CONTACT_ADDRESS ?? "Gürsu, Bursa",
 } as const
 

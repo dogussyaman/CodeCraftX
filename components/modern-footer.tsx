@@ -3,7 +3,7 @@
 import type React from "react"
 
 import Link from "next/link"
-import { MapPin, Mail, Facebook, Twitter, Instagram, Linkedin, Send, Heart } from "lucide-react"
+import { MapPin, Mail, Twitter, Instagram, Linkedin, Send, Heart } from "lucide-react"
 import { CONTACT } from "@/lib/constants"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
@@ -80,11 +80,6 @@ export function ModernFooter() {
             <h3 className="text-lg font-semibold text-foreground">Hızlı Bağlantılar</h3>
             <ul className="space-y-2.5">
               {[
-                { label: "Ana Sayfa", href: "/" },
-                { label: "Hakkımızda", href: "/hakkimizda" },
-                { label: "İş İlanları", href: "/is-ilanlari" },
-                { label: "İşveren", href: "/isveren" },
-                { label: "Blog", href: "/blog" },
                 { label: "Yorumlar", href: "/yorumlar" },
                 { label: "Haberler", href: "/haberler" },
                 { label: "Terimler", href: "/terimler" },
@@ -92,7 +87,6 @@ export function ModernFooter() {
                 { label: "Topluluk", href: "/topluluk" },
                 { label: "Etkinlikler", href: "/etkinlikler" },
                 { label: "Destek", href: "/destek" },
-                { label: "İletişim", href: "/iletisim" },
               ].map((link) => (
                 <li key={link.label}>
                   <Link
@@ -133,7 +127,6 @@ export function ModernFooter() {
             <h3 className="text-lg font-semibold text-foreground">Bizi Takip Edin</h3>
             <div className="flex items-center gap-3">
               {[
-                { icon: Facebook, href: "https://facebook.com/codecrafters", label: "Facebook" },
                 { icon: Twitter, href: "https://twitter.com/codecrafters", label: "Twitter" },
                 { icon: Instagram, href: "https://instagram.com/codecrafters", label: "Instagram" },
                 { icon: Linkedin, href: "https://linkedin.com/company/codecrafters", label: "LinkedIn" },
