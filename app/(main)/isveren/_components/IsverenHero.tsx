@@ -4,6 +4,7 @@ import Link from "next/link"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent } from "@/components/ui/card"
 import { TypewriterEffect } from "@/components/ui/typewriter-effect"
+import { ButtonHero } from "@/components/moving-border"
 import {
   ArrowRight,
   Zap,
@@ -73,22 +74,26 @@ export function IsverenHero() {
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.5, delay: 0.3 }}
-          className="flex flex-col sm:flex-row gap-4 justify-center"
+          className="flex flex-col sm:flex-row gap-4 justify-center items-center"
         >
-          <Button size="lg" asChild className="text-base relative overflow-hidden group glow-effect">
-            <Link href="/isveren#sirket-talebi">
-              <span className="relative z-10 flex items-center gap-2">
-                Şirket Talebi Oluştur
-                <ArrowRight className="size-5" />
-              </span>
-              <div className="absolute inset-0 bg-linear-to-r from-primary via-secondary to-accent opacity-0 group-hover:opacity-100 transition-opacity" />
-            </Link>
-          </Button>
+          <ButtonHero
+            as={Link}
+            href="/isveren#sirket-talebi"
+            containerClassName="h-12 w-auto min-w-[12rem] sm:min-w-[14rem] text-base"
+            borderClassName="!h-28 !w-28 bg-[radial-gradient(circle,black_0%,transparent_70%)] dark:bg-[radial-gradient(circle,white_0%,transparent_70%)] opacity-100"
+            className="border-primary/40 bg-primary text-primary-foreground font-medium dark:text-white dark:bg-slate-900"
+            duration={4000}
+          >
+            <span className="flex items-center gap-2">
+              Şirket Talebi Oluştur
+              <ArrowRight className="size-5" />
+            </span>
+          </ButtonHero>
           <Button
             size="lg"
             variant="outline"
             asChild
-            className="text-base border-border/50 hover:border-primary/50 bg-background/50 backdrop-blur-sm"
+            className="text-base rounded-[1.75rem] border-border hover:border-primary/50 bg-background/50 backdrop-blur-sm h-12 min-w-48 sm:min-w-56 px-6"
           >
             <Link href="#ozellikler">Nasıl Çalışır?</Link>
           </Button>
