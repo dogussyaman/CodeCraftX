@@ -35,7 +35,7 @@ export default async function AdminSirketTalepleriPage() {
 
   const { data: requests, error } = await supabase
     .from("company_requests")
-    .select("id, user_id, company_name, company_website, company_description, company_size, industry, reason, status, created_at, created_company_id, plan")
+    .select("id, user_id, company_name, company_website, company_description, company_size, industry, reason, status, created_at, created_company_id, plan, billing_period")
     .order("created_at", { ascending: false })
 
   if (error) {

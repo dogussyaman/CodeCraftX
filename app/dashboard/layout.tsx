@@ -39,6 +39,11 @@ export default async function DashboardLayout({ children }: { children: ReactNod
     redirect("/auth/giris")
   }
 
+  // Emniyet amaçlı: must_change_password flag'i hala açıksa kullanıcıyı ilk giriş şifre değiştirme ekranına yönlendir
+  if ((profile as any).must_change_password) {
+    redirect("/auth/sifre-degistir?first_login=true")
+  }
+
   const role = getRole(profile as Profile)
 
   let company: { id: string; name: string | null; logo_url: string | null; plan?: string | null } | null = null

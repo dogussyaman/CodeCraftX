@@ -217,11 +217,14 @@ export function PricingSection({
     const freePlanIsCurrent = isCompanyOrEmployee
 
     const getCtaLink = (plan: PricingPlan) => {
+        const query = `plan=${plan.slug}&billing=${billingPeriod}`
         if (ctaPathPrefix) {
-            const base = `${ctaPathPrefix}?plan=${plan.slug}`
+            const base = `${ctaPathPrefix}?${query}`
             return ctaHashAnchor ? `${base}#${ctaHashAnchor}` : base
         }
-        return plan.ctaLink
+        const basePath = "/auth/kayit"
+        const full = `${basePath}?${query}`
+        return ctaHashAnchor ? `${full}#${ctaHashAnchor}` : full
     }
 
     return (

@@ -16,6 +16,7 @@ type CreateCompanyRequest = {
   phone?: string
   contactEmail?: string
   plan?: "free" | "orta" | "premium"
+  billingPeriod?: "monthly" | "annually"
   ownerFullName: string
   ownerEmail: string
   tempPassword?: string
@@ -114,6 +115,15 @@ export async function POST(request: Request) {
         { error: rpcError.message || "Şirket oluşturma fonksiyonu başarısız oldu" },
         { status: 500 },
       )
+    }
+
+    const newCompanyId = rpcResult?.company_id
+    const billingPeriod = body.billingPeriod === "annually" ? "annually" : "monthly"
+    if (newCompanyId) {
+      await supabase
+        .from("companies")
+        .update({ billing_period: billingPeriod })
+        .eq("id", newCompanyId)
     }
 
     return NextResponse.json({

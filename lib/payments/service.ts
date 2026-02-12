@@ -121,9 +121,6 @@ export class PaymentService {
   }> {
     const admin = createAdminClient()
     const now = new Date().toISOString()
-    const endsAt = new Date()
-    endsAt.setMonth(endsAt.getMonth() + 1)
-    const subscriptionEndsAt = endsAt.toISOString()
 
     const { data: payment, error: payErr } = await admin
       .from("company_payments")
@@ -145,8 +142,18 @@ export class PaymentService {
       .eq("id", payment.company_id)
       .single()
 
-    const subscriptionStartedAt =
-      existingCompany?.subscription_started_at ?? now
+    const subscriptionStartedAt = existingCompany?.subscription_started_at ?? now
+
+    // Faturalandırma dönemine göre bitiş tarihini hesapla
+    const baseDate = new Date(now)
+    const endsAt = new Date(baseDate)
+    if (payment.billing_period === "annually") {
+      endsAt.setFullYear(endsAt.getFullYear() + 1)
+    } else {
+      // varsayılan: aylık
+      endsAt.setMonth(endsAt.getMonth() + 1)
+    }
+    const subscriptionEndsAt = endsAt.toISOString()
 
     const { error: companyErr } = await admin
       .from("companies")

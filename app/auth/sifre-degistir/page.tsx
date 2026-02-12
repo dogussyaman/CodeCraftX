@@ -84,11 +84,30 @@ export function FirstLoginChangePasswordPage() {
         data: { user },
       } = await supabase.auth.getUser()
 
-      if (user?.id) {
-        await supabase
-          .from("profiles")
-          .update({ must_change_password: false })
-          .eq("id", user.id)
+      if (!user?.id) {
+        throw new Error("Kullanıcı oturumu bulunamadı. Lütfen tekrar giriş yapın.")
+      }
+
+      const { error: profileUpdateError } = await supabase
+        .from("profiles")
+        .update({ must_change_password: false })
+        .eq("id", user.id)
+
+      if (profileUpdateError) {
+        console.error("must_change_password update failed", profileUpdateError)
+        throw new Error("Şifre güncellendi fakat profil bilgileri güncellenirken bir hata oluştu.")
+      }
+
+      // Oturumu tazele (mevcut Supabase sürümüne uyumlu olması için güvenli çağrı)
+      try {
+        const authAny = supabase.auth as any
+        if (typeof authAny.refreshSession === "function") {
+          await authAny.refreshSession()
+        } else {
+          await supabase.auth.getSession()
+        }
+      } catch (sessionError) {
+        console.warn("Session refresh failed after password change", sessionError)
       }
 
       setSuccess(true)
@@ -122,6 +141,7 @@ export function FirstLoginChangePasswordPage() {
         }
 
         router.push(redirectPath)
+        router.refresh()
       }, 1500)
     } catch (error: any) {
       if (error instanceof Error) {

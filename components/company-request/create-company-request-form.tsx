@@ -24,10 +24,16 @@ function parsePlanParam(param: string | null): "free" | "orta" | "premium" {
   return "free"
 }
 
+function parseBillingParam(param: string | null): "monthly" | "annually" {
+  if (param === "monthly" || param === "annually") return param
+  return "monthly"
+}
+
 export function CreateCompanyRequestForm() {
   const { user, loading } = useAuth()
   const searchParams = useSearchParams()
   const planParam = parsePlanParam(searchParams.get("plan"))
+  const billingParam = parseBillingParam(searchParams.get("billing"))
 
   const {
     register,
@@ -47,6 +53,7 @@ export function CreateCompanyRequestForm() {
       contact_phone: "",
       contact_address: "",
       plan: planParam,
+      billing_period: billingParam,
     },
   })
 
@@ -71,6 +78,7 @@ export function CreateCompanyRequestForm() {
         contact_phone: data.contact_phone?.trim() || null,
         contact_address: data.contact_address?.trim() || null,
         plan: data.plan ?? "free",
+        billing_period: data.billing_period ?? "monthly",
       })
 
       if (error) throw error
@@ -101,24 +109,49 @@ export function CreateCompanyRequestForm() {
 
   return (
     <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
-      <div className="space-y-2">
-        <Label>Plan</Label>
-        <div className="flex flex-wrap gap-4">
-          {PLAN_OPTIONS.map((opt) => (
-            <label key={opt.value} className="flex items-center gap-2 cursor-pointer">
+      <div className="space-y-4">
+        <div className="space-y-2">
+          <Label>Plan</Label>
+          <div className="flex flex-wrap gap-4">
+            {PLAN_OPTIONS.map((opt) => (
+              <label key={opt.value} className="flex items-center gap-2 cursor-pointer">
+                <input
+                  type="radio"
+                  value={opt.value}
+                  {...register("plan")}
+                  className="rounded-full border-input"
+                />
+                <span className="text-sm">{opt.label}</span>
+              </label>
+            ))}
+          </div>
+          {errors.plan && (
+            <p className="text-sm text-destructive">{errors.plan.message}</p>
+          )}
+        </div>
+        <div className="space-y-2">
+          <Label>Faturalandırma</Label>
+          <div className="flex flex-wrap gap-4">
+            <label className="flex items-center gap-2 cursor-pointer">
               <input
                 type="radio"
-                value={opt.value}
-                {...register("plan")}
+                value="monthly"
+                {...register("billing_period")}
                 className="rounded-full border-input"
               />
-              <span className="text-sm">{opt.label}</span>
+              <span className="text-sm">Aylık</span>
             </label>
-          ))}
+            <label className="flex items-center gap-2 cursor-pointer">
+              <input
+                type="radio"
+                value="annually"
+                {...register("billing_period")}
+                className="rounded-full border-input"
+              />
+              <span className="text-sm">Yıllık</span>
+            </label>
+          </div>
         </div>
-        {errors.plan && (
-          <p className="text-sm text-destructive">{errors.plan.message}</p>
-        )}
       </div>
 
       <div className="space-y-2">

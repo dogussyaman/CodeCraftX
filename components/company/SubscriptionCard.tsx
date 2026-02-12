@@ -83,10 +83,12 @@ export function SubscriptionCard({
       }
       if (data.mustChangePassword) {
         toast({
-          title: "Ödeme tamamlandı",
-          description: "Aboneliğiniz aktif. İlk girişte şifrenizi değiştirmeniz gerekiyor.",
+          title: "Güvenlik uyarısı",
+          description:
+            "Hesabınız için şifre değişikliği zorunlu görünüyor. Lütfen yeniden giriş yapıp şifrenizi güncelleyin.",
+          variant: "destructive",
         })
-        router.push("/auth/sifre-degistir?first_login=true")
+        router.push("/auth/giris")
       } else {
         toast({
           title: "Ödeme tamamlandı",

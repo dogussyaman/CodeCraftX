@@ -192,6 +192,7 @@ export const companyRequestFormSchema = z.object({
   contact_phone: z.string().max(50).optional(),
   contact_address: z.string().max(500).optional(),
   plan: planEnum.optional().default("free"),
+  billing_period: z.enum(["monthly", "annually"]).optional().default("monthly"),
 })
 
 export type SignUpFormValues = z.infer<typeof signUpSchema>
