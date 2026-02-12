@@ -44,7 +44,10 @@ export default async function ApplicationsPage() {
     .order("created_at", { ascending: false })
 
   const getStatusBadge = (status: string) => {
-    const config = APPLICATION_STATUS_MAP_DEV[status] || { label: status, variant: "outline" as const }
+    const config = APPLICATION_STATUS_MAP_DEV[status as keyof typeof APPLICATION_STATUS_MAP_DEV] || {
+      label: status,
+      variant: "outline" as const,
+    }
     return <Badge variant={config.variant}>{config.label}</Badge>
   }
 
@@ -97,14 +100,6 @@ export default async function ApplicationsPage() {
                     <span className="capitalize">{application.job_postings.job_type.replace("-", " ")}</span>
                   )}
                 </div>
-                {typeof application.expected_salary === "number" && (
-                  <div className="text-sm text-muted-foreground">
-                    Sizin maaş beklentiniz:{" "}
-                    <span className="font-medium text-foreground">
-                      {application.expected_salary.toLocaleString("tr-TR")} ₺
-                    </span>
-                  </div>
-                )}
                 {application.application_notes && application.application_notes.length > 0 && (
                   <div className="pt-2 border-t border-border/40 text-sm">
                     <div className="font-medium text-foreground mb-1">Şirketten mesaj</div>

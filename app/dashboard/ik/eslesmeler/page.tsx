@@ -1,6 +1,5 @@
 import { createClient } from "@/lib/supabase/server"
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
-import { Badge } from "@/components/ui/badge"
+import { MatchesWithFilters } from "./_components/MatchesWithFilters"
 import { Star } from "lucide-react"
 
 export default async function HRMatchesPage() {
@@ -18,7 +17,7 @@ export default async function HRMatchesPage() {
   // Şirketin ilanlarını al
   const { data: myJobs } = await supabase
     .from("job_postings")
-    .select("id")
+    .select("id, title")
     .eq("company_id", profile?.company_id ?? "")
 
   const jobIds = myJobs?.map((job) => job.id) || []
@@ -35,7 +34,8 @@ export default async function HRMatchesPage() {
       ),
       profiles:developer_id (
         full_name,
-        email
+        email,
+        phone
       )
     `,
     )
@@ -51,43 +51,14 @@ export default async function HRMatchesPage() {
           </div>
           <div>
             <h1 className="text-2xl font-bold text-foreground">Eşleşmeler</h1>
-            <p className="text-sm text-muted-foreground">İş ilanlarınıza uygun bulunan adaylar</p>
+            <p className="text-sm text-muted-foreground">
+              İş ilanlarınıza uygun bulunan ve kabul edilen adaylar
+            </p>
           </div>
         </div>
       </div>
 
-      {!matches || matches.length === 0 ? (
-        <Card className="rounded-2xl border-dashed border-border bg-muted/30 shadow-sm">
-          <CardContent className="flex flex-col items-center justify-center py-16">
-            <Star className="size-16 text-muted-foreground mb-4 opacity-20" />
-            <h3 className="text-lg font-semibold mb-2">Henüz eşleşme yok</h3>
-            <p className="text-muted-foreground text-center max-w-md">
-              Geliştiriciler CV yükledikçe ilanlarınıza uygun adaylar burada görünecek
-            </p>
-          </CardContent>
-        </Card>
-      ) : (
-        <div className="grid grid-cols-1 gap-4">
-          {matches.map((match: any) => (
-            <Card key={match.id} className="rounded-2xl border border-border bg-card shadow-sm hover:border-primary/50 transition-colors">
-              <CardHeader>
-                <div className="flex items-start justify-between">
-                  <div className="flex-1">
-                    <CardTitle className="text-lg">{match.profiles?.full_name}</CardTitle>
-                    <CardDescription className="mt-1">
-                      {match.job_postings?.title} • {match.job_postings?.location}
-                    </CardDescription>
-                  </div>
-                  <Badge className="bg-primary/10 text-primary">%{match.match_score} Uyumlu</Badge>
-                </div>
-              </CardHeader>
-              <CardContent>
-                <div className="text-sm text-muted-foreground">{match.profiles?.email}</div>
-              </CardContent>
-            </Card>
-          ))}
-        </div>
-      )}
+      <MatchesWithFilters matches={matches || []} jobs={myJobs || []} />
     </div>
   )
 }

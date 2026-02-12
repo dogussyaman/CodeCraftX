@@ -4,6 +4,7 @@ import { useState } from "react"
 import { useRouter } from "next/navigation"
 import Link from "next/link"
 import { createClient } from "@/lib/supabase/client"
+import { sanitizeHtml } from "@/lib/sanitize"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import { Input } from "@/components/ui/input"
@@ -56,6 +57,9 @@ export default function AdminBultenOlusturPage() {
     toast.success("Taslak kaydedildi")
     router.push(`/dashboard/admin/bulten/${data.id}`)
   }
+
+  const previewLinks = links.filter((l) => l.text.trim() || l.url.trim())
+  const hasPreviewContent = title.trim() || imageUrl.trim() || bodyHtml.trim() || previewLinks.length > 0
 
   return (
     <div className="container mx-auto p-6 max-w-2xl min-h-screen space-y-6">
@@ -156,6 +160,67 @@ export default function AdminBultenOlusturPage() {
           </div>
         </CardContent>
       </Card>
+
+      {hasPreviewContent && (
+        <Card>
+          <CardHeader>
+            <CardTitle>E-posta önizleme</CardTitle>
+            <CardDescription>
+              Seçtiğin başlık, resim, detay ve linkler abonelere bu şekilde görünecek.
+            </CardDescription>
+          </CardHeader>
+          <CardContent className="space-y-4">
+            {title.trim() && (
+              <div>
+                <p className="text-sm font-medium text-muted-foreground mb-1">Başlık</p>
+                <p className="font-medium">{title}</p>
+              </div>
+            )}
+
+            {imageUrl.trim() && (
+              <div>
+                <p className="text-sm font-medium text-muted-foreground mb-1">Resim</p>
+                <img
+                  src={imageUrl}
+                  alt=""
+                  className="rounded-lg border border-border max-h-48 object-cover"
+                />
+              </div>
+            )}
+
+            {bodyHtml.trim() && (
+              <div>
+                <p className="text-sm font-medium text-muted-foreground mb-1">Detay</p>
+                <div
+                  className="rounded-lg border border-border p-4 bg-muted/30 text-sm prose prose-sm dark:prose-invert max-w-none"
+                  dangerouslySetInnerHTML={{ __html: sanitizeHtml(bodyHtml) }}
+                />
+              </div>
+            )}
+
+            {previewLinks.length > 0 && (
+              <div>
+                <p className="text-sm font-medium text-muted-foreground mb-2">Linkler</p>
+                <ul className="space-y-1">
+                  {previewLinks.map((link, i) => (
+                    <li key={i} className="flex items-center gap-2 text-sm">
+                      <span className="text-muted-foreground">•</span>
+                      <a
+                        href={link.url}
+                        className="text-primary hover:underline break-all"
+                        target="_blank"
+                        rel="noopener noreferrer"
+                      >
+                        {link.text || link.url}
+                      </a>
+                    </li>
+                  ))}
+                </ul>
+              </div>
+            )}
+          </CardContent>
+        </Card>
+      )}
     </div>
   )
 }

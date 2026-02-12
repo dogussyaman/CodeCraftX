@@ -56,8 +56,6 @@ export default function CompanyCreateJobPage() {
     workPreferenceList: [] as string[],
     job_type: "",
     experience_level: "",
-    salary_min: "",
-    salary_max: "",
     status: "draft",
   })
   const [loading, setLoading] = useState(false)
@@ -193,8 +191,6 @@ export default function CompanyCreateJobPage() {
         work_preference_list: common.workPreferenceList.length ? common.workPreferenceList : [],
         job_type: common.job_type || null,
         experience_level: common.experience_level || null,
-        salary_min: common.salary_min ? Number.parseInt(common.salary_min) : null,
-        salary_max: common.salary_max ? Number.parseInt(common.salary_max) : null,
         status: common.status,
         created_by: user.id,
       })
@@ -325,7 +321,7 @@ export default function CompanyCreateJobPage() {
                     subtitle=""
                     items={localeContent.tr.candidateCriteriaItems}
                     onTitleChange={(v) => updateLocale("tr", (p) => ({ ...p, candidateCriteriaTitle: v }))}
-                    onSubtitleChange={() => {}}
+                    onSubtitleChange={() => { }}
                     onItemsChange={(v) => updateLocale("tr", (p) => ({ ...p, candidateCriteriaItems: v }))}
                     titleLabel="Başlık"
                     subtitleLabel=""
@@ -339,8 +335,8 @@ export default function CompanyCreateJobPage() {
                     title=""
                     subtitle=""
                     items={localeContent.tr.responsibilitiesItems}
-                    onTitleChange={() => {}}
-                    onSubtitleChange={() => {}}
+                    onTitleChange={() => { }}
+                    onSubtitleChange={() => { }}
                     onItemsChange={(v) => updateLocale("tr", (p) => ({ ...p, responsibilitiesItems: v }))}
                     titleLabel=""
                     subtitleLabel=""
@@ -388,7 +384,7 @@ export default function CompanyCreateJobPage() {
                     subtitle=""
                     items={localeContent.en.candidateCriteriaItems}
                     onTitleChange={(v) => updateLocale("en", (p) => ({ ...p, candidateCriteriaTitle: v }))}
-                    onSubtitleChange={() => {}}
+                    onSubtitleChange={() => { }}
                     onItemsChange={(v) => updateLocale("en", (p) => ({ ...p, candidateCriteriaItems: v }))}
                     addLabel="Add item"
                     optional
@@ -400,8 +396,8 @@ export default function CompanyCreateJobPage() {
                     title=""
                     subtitle=""
                     items={localeContent.en.responsibilitiesItems}
-                    onTitleChange={() => {}}
-                    onSubtitleChange={() => {}}
+                    onTitleChange={() => { }}
+                    onSubtitleChange={() => { }}
                     onItemsChange={(v) => updateLocale("en", (p) => ({ ...p, responsibilitiesItems: v }))}
                     addLabel="Add item"
                     optional
@@ -447,7 +443,7 @@ export default function CompanyCreateJobPage() {
                     subtitle=""
                     items={localeContent.de.candidateCriteriaItems}
                     onTitleChange={(v) => updateLocale("de", (p) => ({ ...p, candidateCriteriaTitle: v }))}
-                    onSubtitleChange={() => {}}
+                    onSubtitleChange={() => { }}
                     onItemsChange={(v) => updateLocale("de", (p) => ({ ...p, candidateCriteriaItems: v }))}
                     addLabel="Eintrag hinzufügen"
                     optional
@@ -459,8 +455,8 @@ export default function CompanyCreateJobPage() {
                     title=""
                     subtitle=""
                     items={localeContent.de.responsibilitiesItems}
-                    onTitleChange={() => {}}
-                    onSubtitleChange={() => {}}
+                    onTitleChange={() => { }}
+                    onSubtitleChange={() => { }}
                     onItemsChange={(v) => updateLocale("de", (p) => ({ ...p, responsibilitiesItems: v }))}
                     addLabel="Eintrag hinzufügen"
                     optional
@@ -576,26 +572,6 @@ export default function CompanyCreateJobPage() {
                     <SelectItem value="active">Aktif</SelectItem>
                   </SelectContent>
                 </Select>
-              </div>
-              <div>
-                <Label>Minimum Maaş (₺)</Label>
-                <Input
-                  type="number"
-                  value={common.salary_min}
-                  onChange={(e) => setCommon((p) => ({ ...p, salary_min: e.target.value }))}
-                  placeholder="25000"
-                  className="mt-1"
-                />
-              </div>
-              <div>
-                <Label>Maksimum Maaş (₺)</Label>
-                <Input
-                  type="number"
-                  value={common.salary_max}
-                  onChange={(e) => setCommon((p) => ({ ...p, salary_max: e.target.value }))}
-                  placeholder="45000"
-                  className="mt-1"
-                />
               </div>
             </div>
 

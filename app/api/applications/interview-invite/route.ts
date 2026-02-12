@@ -6,16 +6,17 @@ type Body = {
   meetLink?: string
   proposedDate?: string
   proposedTimeSlots?: string[]
+  status?: string
 }
 
 /**
  * POST /api/applications/interview-invite
- * Creates or updates interview for application (Meet link or date+slots), updates status to interview, notifies developer.
+ * Creates or updates interview for application (Meet link or date+slots), updates status, notifies developer.
  */
 export async function POST(req: NextRequest) {
   try {
     const body = (await req.json()) as Body
-    const { applicationId, meetLink, proposedDate, proposedTimeSlots } = body
+    const { applicationId, meetLink, proposedDate, proposedTimeSlots, status } = body
     if (!applicationId) {
       return NextResponse.json(
         { success: false, error: "applicationId is required" },
@@ -145,8 +146,10 @@ export async function POST(req: NextRequest) {
     }
 
     await supabase
+    const newStatus = status || "interview"
+    await supabase
       .from("applications")
-      .update({ status: "interview" })
+      .update({ status: newStatus })
       .eq("id", applicationId)
 
     const bodyText = meetLink

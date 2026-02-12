@@ -13,7 +13,6 @@ import { Textarea } from "@/components/ui/textarea"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import { Checkbox } from "@/components/ui/checkbox"
-import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group"
 import { AlertCircle } from "lucide-react"
 import Link from "next/link"
 import { JobListEditor } from "@/components/job-form/JobListEditor"
@@ -40,7 +39,7 @@ const defaultLocaleContent = () => ({
 })
 
 export default function CreateJobPage() {
-  const [company, setCompany] = useState<{ id: string; name?: string; plan?: CompanyPlan; [key: string]: unknown } | null>(null)
+  const [company, setCompany] = useState<{ id: string; name?: string; plan?: CompanyPlan;[key: string]: unknown } | null>(null)
   const [activeJobCount, setActiveJobCount] = useState<number>(0)
   const [localeContent, setLocaleContent] = useState<Record<LocaleKey, ReturnType<typeof defaultLocaleContent>>>({
     tr: defaultLocaleContent(),
@@ -55,11 +54,7 @@ export default function CreateJobPage() {
     workPreferenceList: [] as string[],
     job_type: "",
     experience_level: "",
-    salary_min: "",
-    salary_max: "",
     status: "draft",
-    ask_expected_salary: false,
-    expected_salary_required: false,
   })
   const [loading, setLoading] = useState(false)
   const [loadingCompany, setLoadingCompany] = useState(true)
@@ -197,10 +192,6 @@ export default function CreateJobPage() {
         work_preference_list: common.workPreferenceList.length ? common.workPreferenceList : [],
         job_type: common.job_type || null,
         experience_level: common.experience_level || null,
-        salary_min: common.salary_min ? Number.parseInt(common.salary_min) : null,
-        salary_max: common.salary_max ? Number.parseInt(common.salary_max) : null,
-        ask_expected_salary: common.ask_expected_salary,
-        expected_salary_required: common.expected_salary_required,
         status: common.status,
         created_by: user.id,
       })
@@ -340,7 +331,7 @@ export default function CreateJobPage() {
                     subtitle=""
                     items={localeContent.tr.candidateCriteriaItems}
                     onTitleChange={(v) => updateLocale("tr", (p) => ({ ...p, candidateCriteriaTitle: v }))}
-                    onSubtitleChange={() => {}}
+                    onSubtitleChange={() => { }}
                     onItemsChange={(v) => updateLocale("tr", (p) => ({ ...p, candidateCriteriaItems: v }))}
                     addLabel="Kriter ekle"
                     optional
@@ -352,8 +343,8 @@ export default function CreateJobPage() {
                     title=""
                     subtitle=""
                     items={localeContent.tr.responsibilitiesItems}
-                    onTitleChange={() => {}}
-                    onSubtitleChange={() => {}}
+                    onTitleChange={() => { }}
+                    onSubtitleChange={() => { }}
                     onItemsChange={(v) => updateLocale("tr", (p) => ({ ...p, responsibilitiesItems: v }))}
                     addLabel="Madde ekle"
                     optional
@@ -399,7 +390,7 @@ export default function CreateJobPage() {
                     subtitle=""
                     items={localeContent.en.candidateCriteriaItems}
                     onTitleChange={(v) => updateLocale("en", (p) => ({ ...p, candidateCriteriaTitle: v }))}
-                    onSubtitleChange={() => {}}
+                    onSubtitleChange={() => { }}
                     onItemsChange={(v) => updateLocale("en", (p) => ({ ...p, candidateCriteriaItems: v }))}
                     addLabel="Add item"
                     optional
@@ -411,8 +402,8 @@ export default function CreateJobPage() {
                     title=""
                     subtitle=""
                     items={localeContent.en.responsibilitiesItems}
-                    onTitleChange={() => {}}
-                    onSubtitleChange={() => {}}
+                    onTitleChange={() => { }}
+                    onSubtitleChange={() => { }}
                     onItemsChange={(v) => updateLocale("en", (p) => ({ ...p, responsibilitiesItems: v }))}
                     addLabel="Add item"
                     optional
@@ -458,7 +449,7 @@ export default function CreateJobPage() {
                     subtitle=""
                     items={localeContent.de.candidateCriteriaItems}
                     onTitleChange={(v) => updateLocale("de", (p) => ({ ...p, candidateCriteriaTitle: v }))}
-                    onSubtitleChange={() => {}}
+                    onSubtitleChange={() => { }}
                     onItemsChange={(v) => updateLocale("de", (p) => ({ ...p, candidateCriteriaItems: v }))}
                     addLabel="Eintrag hinzufügen"
                     optional
@@ -470,8 +461,8 @@ export default function CreateJobPage() {
                     title=""
                     subtitle=""
                     items={localeContent.de.responsibilitiesItems}
-                    onTitleChange={() => {}}
-                    onSubtitleChange={() => {}}
+                    onTitleChange={() => { }}
+                    onSubtitleChange={() => { }}
                     onItemsChange={(v) => updateLocale("de", (p) => ({ ...p, responsibilitiesItems: v }))}
                     addLabel="Eintrag hinzufügen"
                     optional
@@ -588,94 +579,6 @@ export default function CreateJobPage() {
                   </SelectContent>
                 </Select>
               </div>
-              <div>
-                <Label>Minimum Maaş (₺)</Label>
-                <Input
-                  type="number"
-                  value={common.salary_min}
-                  onChange={(e) => setCommon((p) => ({ ...p, salary_min: e.target.value }))}
-                  placeholder="25000"
-                  className="mt-1"
-                />
-              </div>
-              <div>
-                <Label>Maksimum Maaş (₺)</Label>
-                <Input
-                  type="number"
-                  value={common.salary_max}
-                  onChange={(e) => setCommon((p) => ({ ...p, salary_max: e.target.value }))}
-                  placeholder="45000"
-                  className="mt-1"
-                />
-              </div>
-            </div>
-
-            <div className="rounded-md border border-border/50 p-4 space-y-4 border-t pt-6">
-              <div>
-                <Label className="text-base font-medium mb-2 block">
-                  Başvuru formunda adaydan net maaş beklentisi istenecek mi?
-                </Label>
-                <RadioGroup
-                  value={common.ask_expected_salary ? "yes" : "no"}
-                  onValueChange={(value) =>
-                    setCommon((prev) => ({
-                      ...prev,
-                      ask_expected_salary: value === "yes",
-                      expected_salary_required: value === "yes" ? prev.expected_salary_required : false,
-                    }))
-                  }
-                  className="flex gap-6"
-                >
-                  <div className="flex items-center space-x-2">
-                    <RadioGroupItem value="yes" id="ask_salary_yes" />
-                    <Label htmlFor="ask_salary_yes" className="font-normal cursor-pointer">
-                      Evet
-                    </Label>
-                  </div>
-                  <div className="flex items-center space-x-2">
-                    <RadioGroupItem value="no" id="ask_salary_no" />
-                    <Label htmlFor="ask_salary_no" className="font-normal cursor-pointer">
-                      Hayır
-                    </Label>
-                  </div>
-                </RadioGroup>
-              </div>
-
-              {common.ask_expected_salary && (
-                <div className="pt-2 border-t border-border/40">
-                  <Label className="text-base font-medium mb-2 block">
-                    Maaş beklentisi alanı zorunlu olsun mu?
-                  </Label>
-                  <RadioGroup
-                    value={common.expected_salary_required ? "yes" : "no"}
-                    onValueChange={(value) =>
-                      setCommon((prev) => ({
-                        ...prev,
-                        expected_salary_required: value === "yes",
-                      }))
-                    }
-                    className="flex gap-6"
-                  >
-                    <div className="flex items-center space-x-2">
-                      <RadioGroupItem value="yes" id="required_yes" />
-                      <Label htmlFor="required_yes" className="font-normal cursor-pointer">
-                        Evet
-                      </Label>
-                    </div>
-                    <div className="flex items-center space-x-2">
-                      <RadioGroupItem value="no" id="required_no" />
-                      <Label htmlFor="required_no" className="font-normal cursor-pointer">
-                        Hayır
-                      </Label>
-                    </div>
-                  </RadioGroup>
-                </div>
-              )}
-
-              <p className="text-xs text-muted-foreground pt-2">
-                Adaylar başvuru yaparken tek bir net maaş beklentisi yazacak. Bu bilgi sadece ilanınıza başvuran aday için
-                saklanır.
-              </p>
             </div>
 
             {error && (

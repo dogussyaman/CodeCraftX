@@ -23,7 +23,7 @@ export const APPLICATION_STATUS_MAP: Record<string, StatusOption> = {
   reviewed: { label: "İncelendi", variant: "default" },
   interview: { label: "Görüşme", variant: "accent" },
   rejected: { label: "Reddedildi", variant: "destructive" },
-  accepted: { label: "Kabul Edildi", variant: "success" },
+  accepted: { label: "Mülakat Aşamasında", variant: "success" },
 } as const
 
 /** Geliştirici başvuru sayfası için aynı map, "İnceleniyor" etiketi */

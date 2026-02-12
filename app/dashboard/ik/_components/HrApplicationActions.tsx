@@ -16,7 +16,7 @@ const STATUS_OPTIONS = [
   { value: "reviewed", label: "İncelendi" },
   { value: "interview", label: "Görüşme" },
   { value: "rejected", label: "Reddedildi" },
-  { value: "accepted", label: "Kabul Edildi" },
+  { value: "accepted", label: "Mülakat Aşamasında" },
 ]
 
 interface HrApplicationActionsProps {
@@ -74,10 +74,10 @@ export function HrApplicationActions({
   const startStatusChange = (value: string) => {
     if (value === status) return
 
-    if (value === "interview") {
-      setPendingStatus("interview")
+    if (value === "interview" || value === "accepted") {
+      setPendingStatus(value)
       setInterviewModalOpen(true)
-    } else if (value === "rejected" || value === "accepted") {
+    } else if (value === "rejected") {
       setPendingStatus(value)
       setFeedbackOpen(true)
     } else {
@@ -86,7 +86,7 @@ export function HrApplicationActions({
   }
 
   const handleInterviewInviteSubmit = async () => {
-    if (!pendingStatus || pendingStatus !== "interview") return
+    if (!pendingStatus || (pendingStatus !== "interview" && pendingStatus !== "accepted")) return
     setLoading(true)
     try {
       const slots = proposedTimeSlotsStr
@@ -101,26 +101,70 @@ export function HrApplicationActions({
           meetLink: meetLink.trim() || undefined,
           proposedDate: proposedDate.trim() || undefined,
           proposedTimeSlots: slots.length > 0 ? slots : undefined,
+          status: pendingStatus,
         }),
       })
       const data = await res.json().catch(() => ({}))
       if (!res.ok) {
-        toast.error(data.error || "Görüşme daveti gönderilemedi")
+        toast.error(data.error || "İşlem başarısız")
         setLoading(false)
         return
       }
-      setStatus("interview")
+
+      // If accepted, we need to do some client-side cleanup/updates similar to updateStatus
+      if (pendingStatus === "accepted") {
+        // We need to fetch application details to add to matches
+        const { data: appData } = await supabase
+          .from("applications")
+          .select("job_id, developer_id, match_score, match_details")
+          .eq("id", applicationId)
+          .single()
+
+        if (appData) {
+          const { error: matchError } = await supabase.from("matches").upsert(
+            {
+              job_id: appData.job_id,
+              developer_id: appData.developer_id,
+              match_score: appData.match_score || 0,
+              matching_skills: (appData.match_details as any)?.matching_skills || [],
+              missing_skills: (appData.match_details as any)?.missing_skills || [],
+              status: "hired", // This maps to "Görüşme Yapılacak" / "Mülakat Aşamasında"
+            },
+            { onConflict: "job_id,developer_id" },
+          )
+          if (!matchError) {
+            toast.success("Başvuru mülakat aşamasına alındı ve eşleşmelere eklendi")
+          }
+        }
+
+        // Add history entry
+        const { data: { user } } = await supabase.auth.getUser()
+        if (user) {
+          await supabase.from("application_status_history").insert({
+            application_id: applicationId,
+            old_status: status,
+            new_status: "accepted",
+            changed_by: user.id,
+            changed_reason: "Interview/Meeting Scheduled",
+          })
+        }
+      } else {
+        toast.success("Görüşme daveti gönderildi")
+      }
+
+      setStatus(pendingStatus)
       setInterviewModalOpen(false)
       setMeetLink("")
       setProposedDate("")
       setProposedTimeSlotsStr("")
       setPendingStatus(null)
-      toast.success("Görüşme daveti gönderildi")
-      void fetch("/api/email/application-status-changed", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ applicationId, status: "interview" }),
-      }).catch(() => {})
+
+      // Email notification is handled by the API now for both cases usually, 
+      // or we can trigger it manually if API doesn't. 
+      // The API sends "interview_invitation" notification. 
+      // For "accepted", we might want a slightly different one, but strictly speaking 
+      // if we are sending a meeting link, it IS an interview invitation.
+
     } catch (e) {
       console.error(e)
       toast.error("İşlem başarısız")
@@ -251,6 +295,47 @@ export function HrApplicationActions({
         if (notifError) {
           console.error("Bildirim gönderme hatası:", notifError)
           // Bildirim hatası kritik değil, sadece log'la
+        }
+      }
+
+      // 6) Eğer başvuru kabul edildiyse, matches tablosuna ekle
+      if (newStatus === "accepted") {
+        // Başvurunun match bilgilerini al
+        const { data: application } = await supabase
+          .from("applications")
+          .select("job_id, developer_id, match_score, match_details")
+          .eq("id", applicationId)
+          .single()
+
+        if (application) {
+          // Matches tablosuna ekle veya güncelle
+          const { error: matchError } = await supabase
+            .from("matches")
+            .upsert(
+              {
+                job_id: application.job_id,
+                developer_id: application.developer_id,
+                match_score: application.match_score || 0,
+                matching_skills: (application.match_details as any)?.matching_skills || [],
+                missing_skills: (application.match_details as any)?.missing_skills || [],
+                status: "hired",
+              },
+              {
+                onConflict: "job_id,developer_id",
+              }
+            )
+
+          if (matchError) {
+            console.error("Match entry oluşturma hatası:", matchError)
+            // Match hatası kritik değil, sadece log'la
+          } else {
+            toast.success("Başvuru kabul edildi ve eşleşmeler sayfasına eklendi", {
+              action: {
+                label: "Eşleşmelere Git",
+                onClick: () => window.location.href = "/dashboard/ik/eslesmeler",
+              },
+            })
+          }
         }
       }
 

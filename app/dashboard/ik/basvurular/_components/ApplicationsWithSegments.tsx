@@ -20,6 +20,7 @@ import { CvDownloadButton } from "@/components/cv-download-button"
 import { AssignApplicationToMeButton } from "../../_components/AssignApplicationToMeButton"
 import { APPLICATION_STATUS_MAP } from "@/lib/status-variants"
 import { toast } from "sonner"
+import { MatchAnalysisCard } from "./MatchAnalysisCard"
 
 type MatchDetails = {
   matching_skills?: string[]
@@ -193,7 +194,7 @@ export function ApplicationsWithSegments({
         )}
       </div>
 
-      <div className="grid grid-cols-1 gap-4">
+      <div className="grid grid-cols-1 gap-3">
         {filtered.map((application) => {
           const display = localAnalysis[application.id] ?? application
           const hasAnalysis =
@@ -201,125 +202,98 @@ export function ApplicationsWithSegments({
             display.match_reason ||
             (display.match_details && (display.match_details.matching_skills?.length || display.match_details.missing_skills?.length || display.match_details.missing_optional?.length))
           return (
-          <Card
-            key={application.id}
-            className="rounded-2xl border border-border bg-card shadow-sm hover:border-primary/30 transition-colors"
-          >
-            <CardHeader>
-              <div className="flex items-start justify-between flex-wrap gap-2">
-                <div className="flex-1">
-                  <CardTitle className="text-lg">{application.profiles?.full_name}</CardTitle>
-                  <CardDescription className="mt-1">{application.job_postings?.title}</CardDescription>
-                </div>
-                <div className="flex items-center gap-2 flex-wrap">
-                  {typeof display.match_score === "number" && (
-                    <Badge
-                      variant={
-                        display.match_score >= 80
-                          ? "success"
-                          : display.match_score >= 50
-                            ? "default"
-                            : "destructive"
-                      }
-                    >
-                      %{display.match_score} eşleşme
-                    </Badge>
-                  )}
-                  <Badge
-                    variant="secondary"
-                    className={
-                      analyzingId === application.id
-                        ? "px-3 py-1 opacity-70 cursor-wait"
-                        : "cursor-pointer px-3 py-1 hover:bg-secondary/80 transition-colors select-none"
-                    }
-                    role="button"
-                    tabIndex={analyzingId === application.id ? -1 : 0}
-                    onClick={() => analyzingId !== application.id && runAnalysis(application.id)}
-                    onKeyDown={(e) => {
-                      if ((e.key === "Enter" || e.key === " ") && analyzingId !== application.id) runAnalysis(application.id)
-                    }}
-                    aria-disabled={analyzingId === application.id}
-                  >
-                    {analyzingId === application.id ? "Analiz ediliyor" : "Analiz yap"}
-                  </Badge>
-                  {getStatusBadge(application.status)}
-                </div>
-              </div>
-            </CardHeader>
-            <CardContent className="space-y-3">
-              <div className="text-sm text-muted-foreground space-y-1">
-                <div>Email: {application.profiles?.email}</div>
-                {application.profiles?.phone && <div>Telefon: {application.profiles.phone}</div>}
-                {typeof application.expected_salary === "number" && (
-                  <div>
-                    Maaş beklentisi:{" "}
-                    <span className="font-medium text-foreground">
-                      {application.expected_salary.toLocaleString("tr-TR")} ₺
-                    </span>
+            <Card
+              key={application.id}
+              className="rounded-xl border border-border bg-card shadow-sm hover:border-primary/30 transition-colors"
+            >
+              <CardHeader className="pb-2">
+                <div className="flex items-start justify-between flex-wrap gap-2">
+                  <div className="flex-1">
+                    <CardTitle className="text-lg">{application.profiles?.full_name}</CardTitle>
+                    <CardDescription className="mt-1">{application.job_postings?.title}</CardDescription>
                   </div>
-                )}
-                {application.cvs?.file_url && (
                   <div className="flex items-center gap-2 flex-wrap">
-                    <span className="text-muted-foreground">CV:</span>
+                    {typeof display.match_score === "number" && (
+                      <Badge
+                        variant={
+                          display.match_score >= 80
+                            ? "success"
+                            : display.match_score >= 50
+                              ? "default"
+                              : "destructive"
+                        }
+                      >
+                        %{display.match_score} eşleşme
+                      </Badge>
+                    )}
+                    <Badge
+                      variant="secondary"
+                      className={
+                        analyzingId === application.id
+                          ? "px-3 py-1 opacity-70 cursor-wait"
+                          : "cursor-pointer px-3 py-1 hover:bg-secondary/80 transition-colors select-none"
+                      }
+                      role="button"
+                      tabIndex={analyzingId === application.id ? -1 : 0}
+                      onClick={() => analyzingId !== application.id && runAnalysis(application.id)}
+                      onKeyDown={(e) => {
+                        if ((e.key === "Enter" || e.key === " ") && analyzingId !== application.id) runAnalysis(application.id)
+                      }}
+                      aria-disabled={analyzingId === application.id}
+                    >
+                      {analyzingId === application.id ? "Analiz ediliyor" : "Analiz yap"}
+                    </Badge>
+                    {getStatusBadge(application.status)}
+                  </div>
+                </div>
+              </CardHeader>
+              <CardContent className="space-y-2 pt-0">
+                <div className="flex flex-wrap items-center gap-x-4 gap-y-0.5 text-xs text-muted-foreground">
+                  <span>{application.profiles?.email}</span>
+                  {application.profiles?.phone && <span>{application.profiles.phone}</span>}
+                  {application.cvs?.file_url && (
                     <CvDownloadButton
                       applicationId={application.id}
                       fileUrl={application.cvs.file_url}
                       fileName={application.cvs.file_name}
                     />
-                  </div>
-                )}
-              </div>
-              <div className="flex items-center gap-1 text-xs text-muted-foreground">
-                <Clock className="size-3" />
-                Başvuru: {formatDate(application.created_at)}
-              </div>
-              {application.cover_letter && (
-                <div className="pt-2 border-t border-border/40 text-sm">
-                  <div className="font-medium text-foreground mb-1">Ön yazı</div>
-                  <p className="text-muted-foreground whitespace-pre-line line-clamp-4">
+                  )}
+                  <span className="flex items-center gap-1">
+                    <Clock className="size-3" />
+                    {formatDate(application.created_at)}
+                  </span>
+                </div>
+                {application.cover_letter && (
+                  <p className="text-xs text-muted-foreground line-clamp-2">
+                    <span className="font-medium text-foreground">Ön yazı:</span>{" "}
                     {application.cover_letter}
                   </p>
-                </div>
-              )}
-              {hasAnalysis && (
-                <div className="pt-2 border-t border-border/40 space-y-2">
-                  <div className="font-medium text-foreground text-sm">Analiz sonuçları</div>
-                  {display.match_reason && (
-                    <p className="text-xs text-muted-foreground">{display.match_reason}</p>
-                  )}
-                  {display.match_details?.matching_skills?.length ? (
-                    <p className="text-xs text-muted-foreground">
-                      Eşleşen: {display.match_details.matching_skills.join(", ")}
-                    </p>
-                  ) : null}
-                  {display.match_details?.missing_skills?.length ? (
-                    <p className="text-xs text-muted-foreground">
-                      Eksik: {display.match_details.missing_skills.join(", ")}
-                    </p>
-                  ) : null}
-                  {display.match_details?.missing_optional?.length ? (
-                    <p className="text-xs text-muted-foreground">
-                      Eksik tercih: {display.match_details.missing_optional.join(", ")}
-                    </p>
-                  ) : null}
-                </div>
-              )}
-              <div className="pt-2 border-t border-border/40 flex flex-wrap items-center justify-between gap-2">
-                {showAssignButton && (
-                  <AssignApplicationToMeButton
-                    applicationId={application.id}
-                    alreadyAssigned={assignedApplicationIds.includes(application.id)}
-                  />
                 )}
-                <HrApplicationActions
-                  applicationId={application.id}
-                  initialStatus={application.status}
-                  developerId={application.developer_id}
-                  jobTitle={application.job_postings?.title || ""}
-                />
-              </div>
-            </CardContent>
-          </Card>
+                {hasAnalysis && (
+                  <div className="border-t border-border/40 pt-1">
+                    <MatchAnalysisCard
+                      matchScore={display.match_score || 0}
+                      matchReason={display.match_reason || undefined}
+                      matchDetails={display.match_details || undefined}
+                    />
+                  </div>
+                )}
+                <div className="pt-2 border-t border-border/40 flex flex-wrap items-center justify-between gap-2">
+                  {showAssignButton && (
+                    <AssignApplicationToMeButton
+                      applicationId={application.id}
+                      alreadyAssigned={assignedApplicationIds.includes(application.id)}
+                    />
+                  )}
+                  <HrApplicationActions
+                    applicationId={application.id}
+                    initialStatus={application.status}
+                    developerId={application.developer_id}
+                    jobTitle={application.job_postings?.title || ""}
+                  />
+                </div>
+              </CardContent>
+            </Card>
           )
         })}
       </div>
