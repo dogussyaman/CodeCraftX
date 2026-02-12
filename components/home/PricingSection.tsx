@@ -213,7 +213,7 @@ export function PricingSection({
 } = {}) {
     const [billingPeriod, setBillingPeriod] = useState<BillingPeriod>("annually")
     const { role } = useAuth()
-    const isCompanyOrEmployee = role && companyRoles.includes(role as (typeof companyRoles)[number])
+    const isCompanyOrEmployee = !!role && companyRoles.includes(role as (typeof companyRoles)[number])
     const freePlanIsCurrent = isCompanyOrEmployee
 
     const getCtaLink = (plan: PricingPlan) => {
