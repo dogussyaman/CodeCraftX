@@ -47,17 +47,20 @@ export function getNotificationTypeMeta(type: string): NotificationTypeMeta {
   return NOTIFICATION_TYPE_MAP[type] ?? DEFAULT_META
 }
 
-/** CTA text when notification has an action link */
-export function getNotificationCtaText(type: string): string {
+/** CTA text when notification has an action link. Role-based for interview types: "Başvurularım" only for developer. */
+export function getNotificationCtaText(type: string, userRole?: string): string {
   switch (type) {
     case "new_application":
     case "new_match":
       return "İlana git"
     case "application_status_changed":
     case "cv_downloaded":
+      return "Başvurularım"
     case "interview_invitation":
     case "interview_slot_confirmed":
-      return "Başvurularım"
+      if (userRole === "developer") return "Başvurularım"
+      if (userRole === "hr") return "Başvurular"
+      return "Detay"
     case "support_ticket_resolved":
       return "Destek"
     case "new_contact_message":

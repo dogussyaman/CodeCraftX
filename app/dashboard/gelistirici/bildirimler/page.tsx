@@ -4,5 +4,5 @@ import { DashboardNotificationsPage } from "@/components/notifications/dashboard
 export default async function DeveloperNotificationsPage() {
   const supabase = await createClient()
   const { data: { user } } = await supabase.auth.getUser()
-  return <DashboardNotificationsPage userId={user?.id} />
+  return <DashboardNotificationsPage userId={user?.id} userRole="developer" />
 }

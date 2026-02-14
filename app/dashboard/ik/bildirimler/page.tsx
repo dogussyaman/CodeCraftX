@@ -20,7 +20,7 @@ export default async function HRNotificationsPage() {
           </div>
         </div>
       </div>
-      <DashboardNotificationsPage userId={user?.id} subtitle="Tüm bildirimlerinizi buradan görüntüleyebilirsiniz." hideHeader />
+      <DashboardNotificationsPage userId={user?.id} subtitle="Tüm bildirimlerinizi buradan görüntüleyebilirsiniz." hideHeader userRole="hr" />
     </div>
   )
 }

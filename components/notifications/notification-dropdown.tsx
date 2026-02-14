@@ -18,9 +18,10 @@ import Link from "next/link"
 interface NotificationDropdownProps {
     userId: string
     dashboardPath: string
+    userRole?: string
 }
 
-export function NotificationDropdown({ userId, dashboardPath }: NotificationDropdownProps) {
+export function NotificationDropdown({ userId, dashboardPath, userRole }: NotificationDropdownProps) {
     const [open, setOpen] = useState(false)
     const { notifications, unreadCount, loading, markAsRead, markAllAsRead } = useNotifications(userId)
 
@@ -72,6 +73,7 @@ export function NotificationDropdown({ userId, dashboardPath }: NotificationDrop
                                     notification={notification}
                                     onMarkAsRead={markAsRead}
                                     onClose={() => setOpen(false)}
+                                    userRole={userRole}
                                 />
                             ))}
                         </div>

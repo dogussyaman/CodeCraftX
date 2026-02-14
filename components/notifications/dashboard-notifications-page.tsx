@@ -27,9 +27,11 @@ interface DashboardNotificationsPageProps {
   userId?: string
   /** Parent sayfa kendi header'ını kullanıyorsa true (company/ik bildirimler) */
   hideHeader?: boolean
+  /** Rol bazlı CTA metni (örn. "Başvurularım" sadece geliştirici için) */
+  userRole?: string
 }
 
-export function DashboardNotificationsPage({ subtitle = DEFAULT_SUBTITLE, userId: userIdProp, hideHeader }: DashboardNotificationsPageProps) {
+export function DashboardNotificationsPage({ subtitle = DEFAULT_SUBTITLE, userId: userIdProp, hideHeader, userRole }: DashboardNotificationsPageProps) {
   const [user, setUser] = useState<User | null>(null)
   const [filter, setFilter] = useState<"all" | "unread" | "read">("all")
   const supabase = createClient()
@@ -116,6 +118,7 @@ export function DashboardNotificationsPage({ subtitle = DEFAULT_SUBTITLE, userId
                   notification={notification}
                   onMarkAsRead={markAsRead}
                   onOpenDetail={handleOpenDetail}
+                  userRole={userRole}
                 />
               ))}
             </div>
@@ -128,6 +131,7 @@ export function DashboardNotificationsPage({ subtitle = DEFAULT_SUBTITLE, userId
         open={detailOpen}
         onOpenChange={setDetailOpen}
         onMarkAsRead={markAsRead}
+        userRole={userRole}
       />
     </>
   )

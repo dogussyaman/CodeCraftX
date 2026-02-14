@@ -22,6 +22,7 @@ interface NotificationDetailSheetProps {
   open: boolean
   onOpenChange: (open: boolean) => void
   onMarkAsRead?: (id: string) => void
+  userRole?: string
 }
 
 export function NotificationDetailSheet({
@@ -29,6 +30,7 @@ export function NotificationDetailSheet({
   open,
   onOpenChange,
   onMarkAsRead,
+  userRole,
 }: NotificationDetailSheetProps) {
   const isUnread = notification && !notification.read_at
 
@@ -41,7 +43,7 @@ export function NotificationDetailSheet({
   if (!notification) return null
 
   const { label, icon: Icon } = getNotificationTypeMeta(notification.type)
-  const ctaText = notification.href ? getNotificationCtaText(notification.type) : null
+  const ctaText = notification.href ? getNotificationCtaText(notification.type, userRole) : null
 
   const handleOpenChange = (next: boolean) => {
     onOpenChange(next)

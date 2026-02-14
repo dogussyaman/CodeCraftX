@@ -94,7 +94,7 @@ export function DashboardShellHeader({ profile, company, plan }: DashboardShellH
         </Link>
       </Button>
       <div className="flex flex-1 items-center justify-end gap-2">
-        <NotificationDropdown userId={profile.id} dashboardPath={dashboardPath} />
+        <NotificationDropdown userId={profile.id} dashboardPath={dashboardPath} userRole={profile.role} />
         <Button
           type="button"
           variant="ghost"

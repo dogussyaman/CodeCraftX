@@ -16,12 +16,14 @@ interface NotificationItemProps {
   onOpenDetail?: (notification: Notification) => void
   /** Tıklanınca çağrılır (örn. navbar dropdown kapatmak için) */
   onClose?: () => void
+  /** Rol bazlı CTA metni (örn. "Başvurularım" sadece geliştirici için) */
+  userRole?: string
 }
 
-export function NotificationItem({ notification, onMarkAsRead, onOpenDetail, onClose }: NotificationItemProps) {
+export function NotificationItem({ notification, onMarkAsRead, onOpenDetail, onClose, userRole }: NotificationItemProps) {
   const isUnread = !notification.read_at
   const { label, icon: Icon } = getNotificationTypeMeta(notification.type)
-  const ctaText = notification.href ? getNotificationCtaText(notification.type) : null
+  const ctaText = notification.href ? getNotificationCtaText(notification.type, userRole) : null
 
   const handleClick = (e: React.MouseEvent) => {
     onClose?.()

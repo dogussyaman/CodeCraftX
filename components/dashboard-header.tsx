@@ -70,7 +70,7 @@ export function DashboardHeader({ profile }: DashboardHeaderProps) {
         <div className="flex items-center gap-4">
           <ThemeToggle showLabel={false} />
           <div className="h-6 w-px bg-border/50" />
-          <NotificationDropdown userId={profile.id} dashboardPath={getDashboardPath()} />
+          <NotificationDropdown userId={profile.id} dashboardPath={getDashboardPath()} userRole={profile.role} />
           <div className="h-6 w-px bg-border/50" />
 
           <DropdownMenu>
