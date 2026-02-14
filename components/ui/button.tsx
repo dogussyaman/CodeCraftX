@@ -15,7 +15,7 @@ const buttonVariants = cva(
         success:
           'bg-success text-success-foreground hover:bg-success/90 focus-visible:ring-success/20 dark:focus-visible:ring-success/40',
         outline:
-          'border bg-background shadow-xs hover:bg-accent hover:text-accent-foreground dark:bg-input/30 dark:border-input dark:hover:bg-input/50',
+          'border-2 border-border bg-background shadow-xs hover:bg-accent hover:text-accent-foreground dark:bg-muted/40 dark:border-muted-foreground/50 dark:text-foreground dark:hover:bg-muted/60 dark:hover:border-muted-foreground',
         secondary:
           'bg-secondary text-secondary-foreground hover:bg-secondary/80',
         ghost:

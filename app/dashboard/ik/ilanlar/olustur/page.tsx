@@ -16,6 +16,8 @@ import { Checkbox } from "@/components/ui/checkbox"
 import { AlertCircle } from "lucide-react"
 import Link from "next/link"
 import { JobListEditor } from "@/components/job-form/JobListEditor"
+import { ProvinceDistrictSelect } from "@/components/location/ProvinceDistrictSelect"
+import { DEFAULT_COUNTRY } from "@/lib/provinces-types"
 
 const JOB_LIMITS: Record<Exclude<CompanyPlan, "premium">, number> = { free: 5, orta: 100 }
 
@@ -47,7 +49,7 @@ export default function CreateJobPage() {
     de: defaultLocaleContent(),
   })
   const [common, setCommon] = useState({
-    country: "",
+    country: DEFAULT_COUNTRY,
     city: "",
     district: "",
     location: "",
@@ -184,7 +186,7 @@ export default function CreateJobPage() {
         responsibilities: tr.responsibilitiesItems.filter((s) => s.trim()).length
           ? tr.responsibilitiesItems.filter((s) => s.trim()).join("\n")
           : null,
-        location: common.location.trim() || common.city.trim() ? [common.city, common.country].filter(Boolean).join(", ") || null : null,
+        location: common.location.trim() || common.city.trim() ? [common.city, common.district, common.country].filter(Boolean).join(", ") || null : null,
         country: common.country.trim() || null,
         city: common.city.trim() || null,
         district: common.district.trim() || null,
@@ -474,41 +476,23 @@ export default function CreateJobPage() {
 
             <div className="border-t pt-6 space-y-4">
               <h3 className="font-semibold">Konum ve çalışma şekli (opsiyonel)</h3>
-              <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-                <div>
-                  <Label>Ülke</Label>
-                  <Input
-                    value={common.country}
-                    onChange={(e) => setCommon((p) => ({ ...p, country: e.target.value }))}
-                    placeholder="Türkiye"
-                    className="mt-1"
-                  />
-                </div>
-                <div>
-                  <Label>Şehir</Label>
-                  <Input
-                    value={common.city}
-                    onChange={(e) => setCommon((p) => ({ ...p, city: e.target.value }))}
-                    placeholder="İstanbul"
-                    className="mt-1"
-                  />
-                </div>
-                <div>
-                  <Label>İlçe</Label>
-                  <Input
-                    value={common.district}
-                    onChange={(e) => setCommon((p) => ({ ...p, district: e.target.value }))}
-                    placeholder="İlçe"
-                    className="mt-1"
-                  />
-                </div>
+              <div>
+                <Label className="mb-2 block">İl / İlçe</Label>
+                <ProvinceDistrictSelect
+                  city={common.city}
+                  district={common.district}
+                  onChange={({ country, city, district }) =>
+                    setCommon((p) => ({ ...p, country, city, district }))
+                  }
+                  districtOptional
+                />
               </div>
               <div>
                 <Label>Lokasyon (metin, opsiyonel)</Label>
                 <Input
                   value={common.location}
                   onChange={(e) => setCommon((p) => ({ ...p, location: e.target.value }))}
-                  placeholder="Örn: İstanbul, Türkiye"
+                  placeholder={common.city ? `${common.city}${common.district ? `, ${common.district}` : ""}, ${common.country}` : "Örn: İstanbul, Türkiye"}
                   className="mt-1"
                 />
               </div>

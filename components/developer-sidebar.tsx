@@ -134,7 +134,7 @@ export function DeveloperSidebar({ profile }: DeveloperSidebarProps) {
                 </Avatar>
                 <div className="flex flex-col gap-0.5 min-w-0 flex-1">
                   <span className="truncate font-medium">{profile.full_name ?? "Geliştirici"}</span>
-                  <span className="truncate text-xs text-muted-foreground">{profile.email}</span>
+                  <span className="truncate text-xs text-muted-foreground dark:text-foreground/75">{profile.email}</span>
                 </div>
               </div>
             </SidebarMenuItem>

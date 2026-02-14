@@ -100,7 +100,7 @@ export function DashboardShellHeader({ profile, company, plan }: DashboardShellH
           variant="ghost"
           size="sm"
           onClick={handleSignOut}
-          className="rounded-md border border-border bg-transparent dark:bg-transparent hover:border-red-500/50 hover:bg-red-500/10 dark:hover:bg-red-500/10 hover:text-red-600 dark:hover:text-red-400"
+          className="rounded-md border-2 border-border bg-transparent dark:border-muted-foreground/50 dark:bg-muted/20 dark:text-foreground hover:border-red-500/50 hover:bg-red-500/10 dark:hover:border-red-400/60 dark:hover:bg-red-500/15 hover:text-red-600 dark:hover:text-red-400"
         >
           <LogOut className="size-4" />
           <span className="hidden sm:inline">Çıkış</span>

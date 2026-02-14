@@ -13,6 +13,13 @@ import {
   PopoverContent,
   PopoverTrigger,
 } from "@/components/ui/popover"
+import {
+  Sheet,
+  SheetContent,
+  SheetHeader,
+  SheetTitle,
+} from "@/components/ui/sheet"
+import { CalendarMonthView } from "@/components/calendar-month-view"
 import { Video, Clock, Building2, CalendarDays, Mail, Phone, FileText, Users, UserPlus, Briefcase, MapPin, Star } from "lucide-react"
 import type { CalendarEvent } from "@/lib/calendar-types"
 import { cn } from "@/lib/utils"
@@ -28,6 +35,8 @@ interface TakvimViewProps {
   emptyMessage?: string
   /** İK görünümünde toplantı notları ve katılımcı daveti düzenlenebilir */
   canEditNotes?: boolean
+  /** true ise big-calendar tarzı ay grid görünümü kullanılır */
+  useMonthGrid?: boolean
 }
 
 interface HrProfile {
@@ -42,9 +51,11 @@ export function TakvimView({
   subtitle = "Görüşme takviminiz",
   emptyMessage = "Bu tarihte görüşme yok",
   canEditNotes = false,
+  useMonthGrid = true,
 }: TakvimViewProps) {
   const today = startOfDay(new Date())
   const [selectedDate, setSelectedDate] = React.useState<Date | undefined>(today)
+  const [selectedEvent, setSelectedEvent] = React.useState<CalendarEvent | null>(null)
   const [editingNotes, setEditingNotes] = React.useState<Record<string, string>>({})
   const [savingId, setSavingId] = React.useState<string | null>(null)
   const [attendeesSavingId, setAttendeesSavingId] = React.useState<string | null>(null)
@@ -69,6 +80,11 @@ export function TakvimView({
     ? format(selectedDate, "yyyy-MM-dd")
     : null
   const dayEvents = selectedKey ? eventsByDate.get(selectedKey) ?? [] : []
+
+  const handleEventClick = React.useCallback((evt: CalendarEvent) => {
+    setSelectedDate(parseISO(evt.date + "T12:00:00"))
+    setSelectedEvent(evt)
+  }, [])
 
   const handleSaveNotes = async (interviewId: string, notes: string) => {
     setSavingId(interviewId)
@@ -103,6 +119,47 @@ export function TakvimView({
     } finally {
       setAttendeesSavingId(null)
     }
+  }
+
+  if (useMonthGrid) {
+    return (
+      <>
+        <CalendarMonthView
+          events={events}
+          viewTitle={title}
+          viewSubtitle={subtitle}
+          selectedDate={selectedDate ?? today}
+          onSelectDate={setSelectedDate}
+          onEventClick={handleEventClick}
+        />
+        <Sheet open={!!selectedEvent} onOpenChange={(open) => !open && setSelectedEvent(null)}>
+          <SheetContent className="w-full sm:max-w-lg overflow-y-auto">
+            <SheetHeader>
+              <SheetTitle className="flex items-center gap-2">
+                <Clock className="size-4" />
+                {selectedEvent?.title}
+              </SheetTitle>
+            </SheetHeader>
+            <ul className="mt-6 list-none p-0">
+              {selectedEvent && (
+                <EventDetailCard
+                  evt={selectedEvent}
+                  canEditNotes={canEditNotes}
+                  editingNotes={editingNotes}
+                  setEditingNotes={setEditingNotes}
+                  savingId={savingId}
+                  handleSaveNotes={handleSaveNotes}
+                  attendeesSavingId={attendeesSavingId}
+                  handleSaveAttendees={handleSaveAttendees}
+                  localAttendees={localAttendees}
+                  setLocalAttendees={setLocalAttendees}
+                />
+              )}
+            </ul>
+          </SheetContent>
+        </Sheet>
+      </>
+    )
   }
 
   return (
@@ -403,41 +460,82 @@ function EventDetailCard({
 
         {/* Toplantı notları */}
         {(evt.notes != null || canEditNotes) && evt.interviewId && (
-          <div className="rounded-lg border border-border/60 bg-muted/30 p-3 space-y-2">
+          <div className="rounded-lg border border-border/60 bg-muted/30 p-3 space-y-4">
             <div className="flex items-center gap-1.5 text-xs font-medium text-muted-foreground uppercase tracking-wider">
               <FileText className="size-3.5" />
               Toplantı notları
             </div>
             {canEditNotes ? (
-              <div className="space-y-2">
-                <Textarea
-                  placeholder="Görüşme notlarınızı yazın..."
-                  className="min-h-[80px] text-sm resize-none"
-                  value={editingNotes[evt.interviewId] ?? evt.notes ?? ""}
-                  onChange={(e) =>
-                    setEditingNotes((prev) => ({
-                      ...prev,
-                      [evt.interviewId!]: e.target.value,
-                    }))
-                  }
-                />
-                <Button
-                  size="sm"
-                  disabled={savingId === evt.interviewId}
-                  onClick={() =>
-                    handleSaveNotes(
-                      evt.interviewId!,
-                      editingNotes[evt.interviewId!] ?? evt.notes ?? ""
-                    )
-                  }
-                >
-                  {savingId === evt.interviewId ? "Kaydediliyor..." : "Kaydet"}
-                </Button>
+              <div className="space-y-3">
+                <div>
+                  <label className="text-xs text-muted-foreground block mb-1">Yeni not ekle</label>
+                  <Textarea
+                    placeholder="Görüşme notunu yazın..."
+                    className="min-h-[80px] text-sm resize-none rounded-lg"
+                    value={editingNotes[evt.interviewId] ?? evt.notes ?? ""}
+                    onChange={(e) =>
+                      setEditingNotes((prev) => ({
+                        ...prev,
+                        [evt.interviewId!]: e.target.value,
+                      }))
+                    }
+                  />
+                  <Button
+                    size="sm"
+                    className="mt-2 rounded-lg"
+                    disabled={savingId === evt.interviewId}
+                    onClick={() =>
+                      handleSaveNotes(
+                        evt.interviewId!,
+                        editingNotes[evt.interviewId!] ?? evt.notes ?? ""
+                      )
+                    }
+                  >
+                    {savingId === evt.interviewId ? "Kaydediliyor..." : "Kaydet"}
+                  </Button>
+                </div>
+                {/* Kaydedilen notlar listesi - input dışında alt tarafta */}
+                {((editingNotes[evt.interviewId] !== undefined ? editingNotes[evt.interviewId] : evt.notes) || "").trim() ? (
+                  <div>
+                    <p className="text-xs font-medium text-muted-foreground uppercase tracking-wider mb-2">Kaydedilen notlar</p>
+                    <ul className="space-y-2 list-none p-0">
+                      {((editingNotes[evt.interviewId] !== undefined ? editingNotes[evt.interviewId] : evt.notes) || "")
+                        .split(/\n\n+/)
+                        .map((paragraph) => paragraph.trim())
+                        .filter(Boolean)
+                        .map((paragraph, i) => (
+                          <li
+                            key={i}
+                            className="flex gap-2 rounded-lg border border-border/60 bg-background/80 px-3 py-2.5 text-sm text-foreground"
+                          >
+                            <span className="text-muted-foreground shrink-0">•</span>
+                            <span className="whitespace-pre-wrap">{paragraph}</span>
+                          </li>
+                        ))}
+                    </ul>
+                  </div>
+                ) : null}
               </div>
             ) : (
-              <p className="text-sm text-muted-foreground whitespace-pre-wrap">
-                {evt.notes || "—"}
-              </p>
+              <div>
+                <p className="text-xs font-medium text-muted-foreground uppercase tracking-wider mb-2">Notlar</p>
+                <ul className="space-y-2 list-none p-0">
+                  {(evt.notes || "")
+                    .split(/\n\n+/)
+                    .map((p) => p.trim())
+                    .filter(Boolean)
+                    .map((paragraph, i) => (
+                      <li
+                        key={i}
+                        className="flex gap-2 rounded-lg border border-border/60 bg-background/80 px-3 py-2.5 text-sm text-foreground"
+                      >
+                        <span className="text-muted-foreground shrink-0">•</span>
+                        <span className="whitespace-pre-wrap">{paragraph}</span>
+                      </li>
+                    ))}
+                </ul>
+                {!evt.notes?.trim() && <p className="text-sm text-muted-foreground italic">Henüz not eklenmedi</p>}
+              </div>
             )}
           </div>
         )}

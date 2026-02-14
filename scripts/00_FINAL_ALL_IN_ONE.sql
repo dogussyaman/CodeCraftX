@@ -599,6 +599,7 @@ CREATE INDEX IF NOT EXISTS idx_job_postings_status ON public.job_postings(status
 CREATE INDEX IF NOT EXISTS idx_job_postings_company ON public.job_postings(company_id);
 CREATE INDEX IF NOT EXISTS idx_job_postings_country ON public.job_postings(country) WHERE country IS NOT NULL;
 CREATE INDEX IF NOT EXISTS idx_job_postings_city ON public.job_postings(city) WHERE city IS NOT NULL;
+CREATE INDEX IF NOT EXISTS idx_job_postings_district ON public.job_postings(district) WHERE district IS NOT NULL;
 CREATE INDEX IF NOT EXISTS idx_job_postings_work_preference ON public.job_postings(work_preference) WHERE work_preference IS NOT NULL;
 CREATE INDEX IF NOT EXISTS idx_job_postings_work_preference_list ON public.job_postings USING GIN (work_preference_list);
 CREATE INDEX IF NOT EXISTS idx_cvs_developer ON public.cvs(developer_id);

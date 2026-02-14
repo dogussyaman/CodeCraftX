@@ -124,7 +124,7 @@ export function CompanySidebar({ profile, company }: CompanySidebarProps) {
             <SidebarMenuItem>
               <div className={cn("flex flex-col gap-0.5 rounded-lg px-3 py-2 text-sm", isPremium ? "bg-amber-500/10 text-amber-700 dark:bg-amber-500/20 dark:text-amber-300" : "bg-primary/10 text-primary-foreground")}>
                 <span className="truncate font-medium">{profile.full_name ?? "Şirket"}</span>
-                <span className="truncate text-xs text-muted-foreground">{profile.email}</span>
+                <span className="truncate text-xs text-muted-foreground dark:text-foreground/75">{profile.email}</span>
               </div>
             </SidebarMenuItem>
           </SidebarMenu>

@@ -12,7 +12,7 @@ import {
   BreadcrumbSeparator,
 } from "@/components/ui/breadcrumb"
 import { JobsHero } from "./_components/JobsHero"
-import { JobsFilters } from "./_components/JobsFilters"
+import { JobsFiltersSection } from "./_components/JobsFiltersSection"
 import { JobsActiveFilters } from "./_components/JobsActiveFilters"
 import { JobsList } from "./_components/JobsList"
 import { JobsCta } from "./_components/JobsCta"
@@ -73,6 +73,7 @@ export default async function IsIlanlariPage({ searchParams }: PageProps) {
   const workPreferenceParam = params.work_preference ?? ""
   const workPreferenceList = workPreferenceParam ? workPreferenceParam.split(",").filter(Boolean) : []
   const dateFilter = getDateFilter(params.date)
+  const firstTime = params.first_time === "1"
   const experienceLevel = params.experience_level
   const jobType = params.job_type
   const sort = params.sort ?? "date-desc"
@@ -133,6 +134,15 @@ export default async function IsIlanlariPage({ searchParams }: PageProps) {
     })
   }
 
+  if (firstTime) {
+    const ONE_MINUTE_MS = 60 * 1000
+    ilanlar = ilanlar.filter((ilan: any) => {
+      const created = new Date(ilan.created_at ?? 0).getTime()
+      const updated = new Date(ilan.updated_at ?? ilan.created_at ?? 0).getTime()
+      return Math.abs(created - updated) < ONE_MINUTE_MS
+    })
+  }
+
   const count = ilanlar.length
   const pageTitle = city
     ? `${count} ${city} İş İlanları`
@@ -168,11 +178,9 @@ export default async function IsIlanlariPage({ searchParams }: PageProps) {
         </Breadcrumb>
 
         <div className="flex flex-col gap-4 lg:flex-row lg:items-start lg:gap-6 xl:gap-8">
-          <aside className="order-2 w-full shrink-0 lg:order-1 lg:w-[280px]">
-            <Suspense fallback={<div className="h-64 rounded-lg border bg-muted/30 animate-pulse" />}>
-              <JobsFilters />
-            </Suspense>
-          </aside>
+          <Suspense fallback={<div className="h-64 shrink-0 lg:w-[280px] rounded-lg border bg-muted/30 animate-pulse" />}>
+            <JobsFiltersSection />
+          </Suspense>
           <div className="order-1 min-w-0 flex-1 lg:order-2">
             <JobsHero />
             <Suspense fallback={null}>

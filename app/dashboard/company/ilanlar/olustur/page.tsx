@@ -13,9 +13,12 @@ import { Textarea } from "@/components/ui/textarea"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import { Checkbox } from "@/components/ui/checkbox"
-import { AlertCircle } from "lucide-react"
+import { AlertCircle, ArrowLeft, FileText } from "lucide-react"
 import Link from "next/link"
+import { cn } from "@/lib/utils"
 import { JobListEditor } from "@/components/job-form/JobListEditor"
+import { ProvinceDistrictSelect } from "@/components/location/ProvinceDistrictSelect"
+import { DEFAULT_COUNTRY } from "@/lib/provinces-types"
 
 const JOB_LIMITS: Record<Exclude<CompanyPlan, "premium">, number> = { free: 5, orta: 100 }
 
@@ -49,7 +52,7 @@ export default function CompanyCreateJobPage() {
     de: defaultLocaleContent(),
   })
   const [common, setCommon] = useState({
-    country: "",
+    country: DEFAULT_COUNTRY,
     city: "",
     district: "",
     location: "",
@@ -183,7 +186,7 @@ export default function CompanyCreateJobPage() {
         responsibilities: tr.responsibilitiesItems.filter((s) => s.trim()).length
           ? tr.responsibilitiesItems.filter((s) => s.trim()).join("\n")
           : null,
-        location: common.location.trim() || common.city.trim() ? [common.city, common.country].filter(Boolean).join(", ") || null : null,
+        location: common.location.trim() || common.city.trim() ? [common.city, common.district, common.country].filter(Boolean).join(", ") || null : null,
         country: common.country.trim() || null,
         city: common.city.trim() || null,
         district: common.district.trim() || null,
@@ -207,79 +210,91 @@ export default function CompanyCreateJobPage() {
 
   if (!companyId) {
     return (
-      <div className="container mx-auto px-4 py-8 max-w-2xl min-h-screen">
-        <Card className="border-destructive/50">
-          <CardHeader>
-            <CardTitle>Şirket Bilgisi Bulunamadı</CardTitle>
-            <CardDescription>
-              Bu kullanıcıya bağlı bir şirket bulunamadı. Lütfen sistem yöneticiniz ile iletişime geçin.
-            </CardDescription>
-          </CardHeader>
-          <CardContent>
-            <Button variant="outline" asChild>
-              <Link href="/dashboard/company">Panele Dön</Link>
-            </Button>
-          </CardContent>
-        </Card>
+      <div className="min-h-screen from-muted/30 to-background">
+        <div className="container mx-auto px-4 py-8 max-w-xl">
+          <Card className="overflow-hidden rounded-2xl border-2 border-destructive/30 bg-card shadow-sm">
+            <CardHeader>
+              <CardTitle>Şirket Bilgisi Bulunamadı</CardTitle>
+              <CardDescription>
+                Bu kullanıcıya bağlı bir şirket bulunamadı. Lütfen sistem yöneticiniz ile iletişime geçin.
+              </CardDescription>
+            </CardHeader>
+            <CardContent>
+              <Button variant="outline" className="rounded-xl" asChild>
+                <Link href="/dashboard/company">Panele Dön</Link>
+              </Button>
+            </CardContent>
+          </Card>
+        </div>
       </div>
     )
   }
 
   return (
-    <div className="container mx-auto px-4 py-8 max-w-3xl min-h-screen">
-      <div className="mb-6">
-        <Link href="/dashboard/company/ilanlar" className="text-sm text-muted-foreground hover:text-foreground">
-          ← Geri Dön
+    <div className="min-h-screen from-muted/30 to-background">
+      <div className="container mx-auto px-4 py-8 max-w-3xl">
+        <Link
+          href="/dashboard/company/ilanlar"
+          className="inline-flex items-center gap-2 text-sm font-medium text-muted-foreground transition-colors hover:text-foreground mb-8"
+        >
+          <ArrowLeft className="size-4" />
+          İlanlara dön
         </Link>
-      </div>
 
-      {subscriptionInactive && (
-        <div className="mb-6 flex items-start gap-2 rounded-lg border border-warning/30 bg-warning/10 p-4 text-sm text-warning-foreground">
-          <AlertCircle className="size-5 shrink-0 mt-0.5" />
-          <div>
-            <p className="font-medium">Abonelik gerekli</p>
-            <p className="mt-1 text-muted-foreground">
-              İlan oluşturmak için aboneliğinizin aktif olması gerekir. Lütfen şirket panelinde ödeme adımını
-              tamamlayın.
-            </p>
+        {subscriptionInactive && (
+          <div className="mb-8 flex items-start gap-3 rounded-2xl border border-amber-200 bg-amber-50 p-4 text-sm dark:border-amber-900/50 dark:bg-amber-950/30 dark:text-amber-200">
+            <AlertCircle className="size-5 shrink-0 mt-0.5" />
+            <div>
+              <p className="font-semibold">Abonelik gerekli</p>
+              <p className="mt-1 text-muted-foreground dark:text-amber-200/80">
+                İlan oluşturmak için aboneliğinizin aktif olması gerekir. Şirket panelinden ödemeyi tamamlayın.
+              </p>
+            </div>
           </div>
-        </div>
-      )}
+        )}
 
-      {atJobLimit && (
-        <div className="mb-6 flex items-start gap-2 rounded-lg border border-warning/30 bg-warning/10 p-4 text-sm text-warning-foreground">
-          <AlertCircle className="size-5 shrink-0 mt-0.5" />
-          <div>
-            <p className="font-medium">İlan limitine ulaştınız</p>
-            <p className="mt-1 text-muted-foreground">
-              {companyPlan === "free" && "Free plan: en fazla 5 aktif ilan."}
-              {companyPlan === "orta" && "Orta plan: en fazla 100 aktif ilan."}
-              Plan yükseltmek için{" "}
-              <Link href="/#ucretlendirme" className="text-primary hover:underline font-medium">
-                fiyatlandırma sayfamızı
-              </Link>{" "}
-              inceleyin.
-            </p>
+        {atJobLimit && (
+          <div className="mb-8 flex items-start gap-3 rounded-2xl border border-amber-200 bg-amber-50 p-4 text-sm dark:border-amber-900/50 dark:bg-amber-950/30 dark:text-amber-200">
+            <AlertCircle className="size-5 shrink-0 mt-0.5" />
+            <div>
+              <p className="font-semibold">İlan limitine ulaştınız</p>
+              <p className="mt-1 text-muted-foreground dark:text-amber-200/80">
+                {companyPlan === "free" && "Free plan: en fazla 5 aktif ilan."}
+                {companyPlan === "orta" && "Orta plan: en fazla 100 aktif ilan."}
+                {" "}
+                <Link href="/#ucretlendirme" className="font-medium text-primary underline underline-offset-2 hover:no-underline">
+                  Fiyatlandırma
+                </Link>
+              </p>
+            </div>
           </div>
-        </div>
-      )}
+        )}
 
-      <Card>
-        <CardHeader>
-          <CardTitle className="text-2xl">Yeni İş İlanı Oluştur</CardTitle>
-          <CardDescription>İş ilanı detaylarını girin. Etiketler Türkçe; içerik dil seçeneğine göre TR/EN/DE girebilirsiniz.</CardDescription>
-        </CardHeader>
-        <CardContent>
-          <form onSubmit={handleSubmit} className="space-y-6">
+        <Card className="overflow-hidden rounded-2xl border border-border/80 bg-card shadow-sm">
+          <CardHeader className="border-b border-border/60 bg-muted/20 pb-6">
+            <div className="flex items-center gap-3">
+              <div className="flex size-12 items-center justify-center rounded-xl bg-primary/10">
+                <FileText className="size-6 text-primary" />
+              </div>
+              <div>
+                <CardTitle className="text-2xl tracking-tight">Yeni İş İlanı</CardTitle>
+                <CardDescription className="mt-1">
+                  Pozisyon bilgilerini girin. İçerik dil seçeneğine göre TR / EN / DE ekleyebilirsiniz.
+                </CardDescription>
+              </div>
+            </div>
+          </CardHeader>
+          <CardContent className="pt-6">
+          <form onSubmit={handleSubmit} className="space-y-8">
             <Tabs defaultValue="tr" className="w-full">
-              <TabsList className="grid w-full grid-cols-3 mb-6">
-                <TabsTrigger value="tr">Türkçe</TabsTrigger>
-                <TabsTrigger value="en">English</TabsTrigger>
-                <TabsTrigger value="de">Deutsch</TabsTrigger>
+              <TabsList className="grid w-full grid-cols-3 rounded-xl bg-muted/60 p-1 mb-8">
+                <TabsTrigger value="tr" className="rounded-lg data-[state=active]:bg-background data-[state=active]:shadow-sm">Türkçe</TabsTrigger>
+                <TabsTrigger value="en" className="rounded-lg data-[state=active]:bg-background data-[state=active]:shadow-sm">English</TabsTrigger>
+                <TabsTrigger value="de" className="rounded-lg data-[state=active]:bg-background data-[state=active]:shadow-sm">Deutsch</TabsTrigger>
               </TabsList>
               <TabsContent value="tr" className="space-y-6">
                 <div>
-                  <Label>
+                  <Label className="text-sm font-medium">
                     Pozisyon Adı (Türkçe) <span className="text-destructive">*</span>
                   </Label>
                   <Input
@@ -287,18 +302,18 @@ export default function CompanyCreateJobPage() {
                     value={localeContent.tr.title}
                     onChange={(e) => updateLocale("tr", (p) => ({ ...p, title: e.target.value }))}
                     placeholder="Örn: Senior Full Stack Developer"
-                    className="mt-1"
+                    className="mt-2 rounded-lg"
                   />
                 </div>
                 <div>
-                  <Label>Açıklama (Türkçe) <span className="text-destructive">*</span></Label>
+                  <Label className="text-sm font-medium">Açıklama (Türkçe) <span className="text-destructive">*</span></Label>
                   <Textarea
                     required
                     value={localeContent.tr.description}
                     onChange={(e) => updateLocale("tr", (p) => ({ ...p, description: e.target.value }))}
                     placeholder="Pozisyon hakkında detaylı açıklama..."
                     rows={4}
-                    className="mt-1"
+                    className="mt-2 rounded-lg resize-none"
                   />
                 </div>
                 <div>
@@ -466,54 +481,38 @@ export default function CompanyCreateJobPage() {
               </TabsContent>
             </Tabs>
 
-            <div className="border-t pt-6 space-y-4">
-              <h3 className="font-semibold">Konum ve çalışma şekli (opsiyonel)</h3>
-              <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-                <div>
-                  <Label>Ülke</Label>
-                  <Input
-                    value={common.country}
-                    onChange={(e) => setCommon((p) => ({ ...p, country: e.target.value }))}
-                    placeholder="Türkiye"
-                    className="mt-1"
-                  />
-                </div>
-                <div>
-                  <Label>Şehir</Label>
-                  <Input
-                    value={common.city}
-                    onChange={(e) => setCommon((p) => ({ ...p, city: e.target.value }))}
-                    placeholder="İstanbul"
-                    className="mt-1"
-                  />
-                </div>
-                <div>
-                  <Label>İlçe</Label>
-                  <Input
-                    value={common.district}
-                    onChange={(e) => setCommon((p) => ({ ...p, district: e.target.value }))}
-                    placeholder="İlçe"
-                    className="mt-1"
-                  />
-                </div>
-              </div>
+            <div className="rounded-2xl border border-border/60 bg-muted/20 p-6 space-y-5">
+              <h3 className="text-base font-semibold text-foreground">Konum ve çalışma şekli</h3>
+              <p className="text-sm text-muted-foreground -mt-1">Opsiyonel alanlar</p>
               <div>
-                <Label>Lokasyon (metin, opsiyonel)</Label>
-                <Input
-                  value={common.location}
-                  onChange={(e) => setCommon((p) => ({ ...p, location: e.target.value }))}
-                  placeholder="Örn: İstanbul, Türkiye"
-                  className="mt-1"
+                <Label className="mb-2 block text-sm font-medium">İl / İlçe</Label>
+                <ProvinceDistrictSelect
+                  city={common.city}
+                  district={common.district}
+                  onChange={({ country, city, district }) =>
+                    setCommon((p) => ({ ...p, country, city, district }))
+                  }
+                  districtOptional
                 />
               </div>
               <div>
-                <Label className="mb-2 block">Çalışma Tercihi</Label>
-                <div className="flex flex-wrap gap-4">
+                <Label className="text-sm font-medium">Lokasyon (metin)</Label>
+                <Input
+                  value={common.location}
+                  onChange={(e) => setCommon((p) => ({ ...p, location: e.target.value }))}
+                  placeholder={common.city ? `${common.city}${common.district ? `, ${common.district}` : ""}, ${common.country}` : "Örn: İstanbul, Türkiye"}
+                  className="mt-2 rounded-lg"
+                />
+              </div>
+              <div>
+                <Label className="mb-3 block text-sm font-medium">Çalışma tercihi</Label>
+                <div className="flex flex-wrap gap-6">
                   {WORK_PREFERENCE_OPTIONS.map((opt) => (
-                    <label key={opt.value} className="flex items-center gap-2 text-sm">
+                    <label key={opt.value} className="flex items-center gap-2.5 text-sm cursor-pointer">
                       <Checkbox
                         checked={common.workPreferenceList.includes(opt.value)}
                         onCheckedChange={(c) => setWorkPreference(opt.value, !!c)}
+                        className="rounded-md"
                       />
                       {opt.label}
                     </label>
@@ -522,14 +521,15 @@ export default function CompanyCreateJobPage() {
               </div>
             </div>
 
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-4 border-t pt-6">
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-5 rounded-2xl border border-border/60 bg-muted/20 p-6">
+              <h3 className="text-base font-semibold text-foreground col-span-full -mb-1">İlan ayarları</h3>
               <div>
-                <Label>Çalışma Şekli</Label>
+                <Label className="text-sm font-medium">Çalışma şekli</Label>
                 <Select
                   value={common.job_type}
                   onValueChange={(v) => setCommon((p) => ({ ...p, job_type: v }))}
                 >
-                  <SelectTrigger className="mt-1">
+                  <SelectTrigger className="mt-2 rounded-lg">
                     <SelectValue placeholder="Seçin" />
                   </SelectTrigger>
                   <SelectContent>
@@ -542,12 +542,12 @@ export default function CompanyCreateJobPage() {
                 </Select>
               </div>
               <div>
-                <Label>Deneyim Seviyesi</Label>
+                <Label className="text-sm font-medium">Deneyim seviyesi</Label>
                 <Select
                   value={common.experience_level}
                   onValueChange={(v) => setCommon((p) => ({ ...p, experience_level: v }))}
                 >
-                  <SelectTrigger className="mt-1">
+                  <SelectTrigger className="mt-2 rounded-lg">
                     <SelectValue placeholder="Seçin" />
                   </SelectTrigger>
                   <SelectContent>
@@ -558,13 +558,13 @@ export default function CompanyCreateJobPage() {
                   </SelectContent>
                 </Select>
               </div>
-              <div>
-                <Label>Durum</Label>
+              <div className="md:col-span-2">
+                <Label className="text-sm font-medium">Yayın durumu</Label>
                 <Select
                   value={common.status}
                   onValueChange={(v) => setCommon((p) => ({ ...p, status: v }))}
                 >
-                  <SelectTrigger className="mt-1">
+                  <SelectTrigger className="mt-2 rounded-lg w-full max-w-xs">
                     <SelectValue />
                   </SelectTrigger>
                   <SelectContent>
@@ -576,29 +576,37 @@ export default function CompanyCreateJobPage() {
             </div>
 
             {error && (
-              <div className="flex items-start gap-2 p-4 bg-destructive/10 border border-destructive/20 rounded-lg text-sm text-destructive">
+              <div className="flex items-start gap-3 rounded-xl border border-destructive/30 bg-destructive/10 p-4 text-sm text-destructive">
                 <AlertCircle className="size-5 shrink-0 mt-0.5" />
                 <p>{error}</p>
               </div>
             )}
 
-            <div className="flex gap-3 pt-4">
-              <Button type="submit" disabled={loading || atJobLimit || subscriptionInactive} className="flex-1">
+            <div className="flex flex-col-reverse gap-3 sm:flex-row sm:justify-end sm:gap-3 pt-2">
+              <Button type="button" variant="outline" className="rounded-xl" asChild>
+                <Link href="/dashboard/company/ilanlar">İptal</Link>
+              </Button>
+              <Button
+                type="submit"
+                disabled={loading || atJobLimit || subscriptionInactive}
+                className={cn(
+                  "rounded-xl min-w-[160px]",
+                  (atJobLimit || subscriptionInactive) && "opacity-90"
+                )}
+              >
                 {loading
                   ? "Oluşturuluyor..."
                   : subscriptionInactive
-                    ? "Abonelik Gerekli"
+                    ? "Abonelik gerekli"
                     : atJobLimit
-                      ? "İlan limitine ulaştınız"
-                      : "İlanı Oluştur"}
-              </Button>
-              <Button type="button" variant="outline" asChild>
-                <Link href="/dashboard/company/ilanlar">İptal</Link>
+                      ? "İlan limiti dolu"
+                      : "İlanı oluştur"}
               </Button>
             </div>
           </form>
-        </CardContent>
-      </Card>
+          </CardContent>
+        </Card>
+      </div>
     </div>
   )
 }

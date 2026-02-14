@@ -59,3 +59,10 @@ ehthumbs.db
 
 # local / API collection (may contain project URLs or env var names)
 codecrafters.json
+
+
+json/
+
+# Root-level provinces.json ignored; public copy is tracked
+/provinces.json
+!public/provinces.json

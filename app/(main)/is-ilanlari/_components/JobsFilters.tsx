@@ -1,11 +1,12 @@
 "use client"
 
 import { useRouter, useSearchParams } from "next/navigation"
+import { useEffect, useState } from "react"
 import { Button } from "@/components/ui/button"
-import { Input } from "@/components/ui/input"
-import { Label } from "@/components/ui/label"
 import { Checkbox } from "@/components/ui/checkbox"
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group"
+import { ProvinceDistrictSelect } from "@/components/location/ProvinceDistrictSelect"
+import { DEFAULT_COUNTRY } from "@/lib/provinces-types"
 import { cn } from "@/lib/utils"
 
 const EXPERIENCE_FILTERS = [
@@ -45,11 +46,20 @@ export function JobsFilters() {
   const router = useRouter()
   const searchParams = useSearchParams()
 
-  const country = searchParams.get("country") ?? ""
-  const city = searchParams.get("city") ?? ""
-  const district = searchParams.get("district") ?? ""
+  const [localCountry, setLocalCountry] = useState(searchParams.get("country") ?? DEFAULT_COUNTRY)
+  const [localCity, setLocalCity] = useState(searchParams.get("city") ?? "")
+  const [localDistrict, setLocalDistrict] = useState(searchParams.get("district") ?? "")
+
+  const cityParam = searchParams.get("city") ?? ""
+  const districtParam = searchParams.get("district") ?? ""
+  useEffect(() => {
+    setLocalCountry(searchParams.get("country") ?? DEFAULT_COUNTRY)
+    setLocalCity(cityParam)
+    setLocalDistrict(districtParam)
+  }, [cityParam, districtParam])
+
   const workPreferenceRaw = searchParams.get("work_preference") ?? ""
-  const workPreferenceList = workPreferenceRaw ? workPreferenceRaw.split(",").filter(Boolean) : []
+  const workPreferenceList = workPreferenceRaw ? workPreferenceRaw.split(",").map((w) => w.trim()).filter(Boolean) : []
   const date = searchParams.get("date") ?? ""
   const firstTime = searchParams.get("first_time") === "1"
   const experience = searchParams.get("experience_level") ?? ""
@@ -57,9 +67,19 @@ export function JobsFilters() {
 
   const setParam = (key: string, value: string | null) => {
     const next = new URLSearchParams(searchParams.toString())
-    if (value) next.set(key, value)
+    if (value && value.trim()) next.set(key, value.trim())
     else next.delete(key)
     router.push(`/is-ilanlari?${next.toString()}`, { scroll: false })
+  }
+
+  const applyLocation = () => {
+    if (localCity || localDistrict) {
+      setParam("country", localCountry || DEFAULT_COUNTRY)
+    } else {
+      setParam("country", null)
+    }
+    setParam("city", localCity || null)
+    setParam("district", localDistrict || null)
   }
 
   const setWorkPreference = (value: string, checked: boolean) => {
@@ -82,48 +102,21 @@ export function JobsFilters() {
   return (
     <aside className="w-full shrink-0 space-y-4 md:w-[280px] md:space-y-6">
       <div className="space-y-3 rounded-lg border border-border bg-card p-3 sm:p-4">
-        <h3 className="text-sm font-semibold">Ülke / Şehir / İlçe</h3>
-        <div className="space-y-3">
-          <div>
-            <Label htmlFor="filter-country" className="text-xs text-muted-foreground">
-              Ülke
-            </Label>
-            <Input
-              id="filter-country"
-              placeholder="Türkiye"
-              value={country}
-              onChange={(e) => setParam("country", e.target.value || null)}
-              onBlur={(e) => setParam("country", e.target.value.trim() || null)}
-              className="mt-1 h-9"
-            />
-          </div>
-          <div>
-            <Label htmlFor="filter-city" className="text-xs text-muted-foreground">
-              Şehir
-            </Label>
-            <Input
-              id="filter-city"
-              placeholder="Şehir seçin"
-              value={city}
-              onChange={(e) => setParam("city", e.target.value || null)}
-              onBlur={(e) => setParam("city", e.target.value.trim() || null)}
-              className="mt-1 h-9"
-            />
-          </div>
-          <div>
-            <Label htmlFor="filter-district" className="text-xs text-muted-foreground">
-              İlçe
-            </Label>
-            <Input
-              id="filter-district"
-              placeholder="İlçe seçin"
-              value={district}
-              onChange={(e) => setParam("district", e.target.value || null)}
-              onBlur={(e) => setParam("district", e.target.value.trim() || null)}
-              className="mt-1 h-9"
-            />
-          </div>
-        </div>
+        <h3 className="text-sm font-semibold">İl / İlçe</h3>
+        <ProvinceDistrictSelect
+          city={localCity}
+          district={localDistrict}
+          onChange={({ country, city, district }) => {
+            setLocalCountry(country)
+            setLocalCity(city)
+            setLocalDistrict(district)
+          }}
+          districtOptional
+          compact
+        />
+        <Button type="button" variant="secondary" size="sm" className="w-full" onClick={applyLocation}>
+          Konumu Uygula
+        </Button>
       </div>
 
       <div className="space-y-3 rounded-lg border border-border bg-card p-3 sm:p-4">
