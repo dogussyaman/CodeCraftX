@@ -1,0 +1,2145 @@
+[
+    {
+      "term": "API",
+      "category": "Genel Yazılım",
+      "description": "Uygulamaların birbiriyle haberleşmesini sağlayan arayüzdür.",
+      "detailed_description": "API, bir yazılımın başka yazılımlara sunduğu fonksiyonları ve veri erişim kurallarını tanımlar. Genellikle HTTP üzerinden çalışır.",
+      "example_usage": "Mobil uygulama, kullanıcı bilgilerini almak için backend API çağrısı yapar.",
+      "example_code": "fetch('/api/users')",
+      "level": "beginner"
+    },
+    {
+      "term": "Authentication",
+      "category": "Güvenlik",
+      "description": "Kullanıcının kimliğinin doğrulanması sürecidir.",
+      "detailed_description": "Authentication, kullanıcının gerçekten iddia ettiği kişi olup olmadığını belirler. JWT, OAuth ve session tabanlı yöntemler yaygındır.",
+      "example_usage": "Kullanıcı giriş yaptıktan sonra token alır.",
+      "example_code": "Authorization: Bearer token",
+      "level": "beginner"
+    },
+    {
+      "term": "Authorization",
+      "category": "Güvenlik",
+      "description": "Kullanıcının hangi işlemleri yapabileceğini belirler.",
+      "detailed_description": "Authorization, authentication sonrası devreye girer ve rol veya yetkilere göre erişimi sınırlar.",
+      "example_usage": "Admin rolü olan kullanıcılar paneli görebilir.",
+      "example_code": "if(user.role === 'admin')",
+      "level": "intermediate"
+    },
+    {
+      "term": "Backend",
+      "category": "Mimari",
+      "description": "Uygulamanın sunucu tarafında çalışan kısmıdır.",
+      "detailed_description": "Backend; veri tabanı işlemleri, iş mantığı ve güvenliği yönetir. API'ler aracılığıyla frontend ile iletişim kurar.",
+      "example_usage": "Backend kullanıcı kayıt işlemlerini yönetir.",
+      "example_code": "app.post('/users')",
+      "level": "beginner"
+    },
+    {
+      "term": "Bug",
+      "category": "Genel Yazılım",
+      "description": "Yazılımda istenmeyen hatalı davranıştır.",
+      "detailed_description": "Bug'lar yanlış sonuç, çökme veya güvenlik açığına sebep olabilir.",
+      "example_usage": "Login ekranında kullanıcı giremiyor.",
+      "example_code": "// unexpected behavior",
+      "level": "beginner"
+    }
+  ,
+    {
+      "term": "API",
+      "category": "Genel Yazılım",
+      "description": "Uygulamaların birbiriyle iletişim kurmasını sağlayan arayüzdür.",
+      "detailed_description": "API, bir yazılımın başka yazılımlara hangi verileri ve fonksiyonları hangi kurallarla açtığını tanımlar. En yaygın türü REST API'dir.",
+      "example_usage": "Frontend, kullanıcı listesini backend API üzerinden çeker.",
+      "example_code": "fetch('/api/users')",
+      "level": "beginner"
+    },
+    {
+      "term": "Algorithm",
+      "category": "Bilgisayar Bilimleri",
+      "description": "Bir problemi çözmek için izlenen adımlar bütünüdür.",
+      "detailed_description": "Algoritmalar, belirli girdilerden belirli çıktılar üretmek için kullanılan mantıksal işlem sıralarıdır.",
+      "example_usage": "Sıralama algoritması ile veriler küçükten büyüğe dizilir.",
+      "example_code": "array.sort((a,b) => a-b)",
+      "level": "beginner"
+    },
+    {
+      "term": "Authentication",
+      "category": "Güvenlik",
+      "description": "Kullanıcının kimliğinin doğrulanması sürecidir.",
+      "detailed_description": "Authentication, kullanıcının gerçekten iddia ettiği kişi olup olmadığını belirler. Şifre, token veya biyometrik yöntemler kullanılır.",
+      "example_usage": "Kullanıcı giriş yaptıktan sonra sisteme erişir.",
+      "example_code": "POST /login",
+      "level": "beginner"
+    },
+    {
+      "term": "Authorization",
+      "category": "Güvenlik",
+      "description": "Kullanıcının hangi işlemleri yapabileceğini belirler.",
+      "detailed_description": "Authorization, authentication sonrasında devreye girer ve rol veya yetkilere göre erişimi sınırlar.",
+      "example_usage": "Admin rolü raporları görüntüleyebilir.",
+      "example_code": "if(user.role === 'admin')",
+      "level": "intermediate"
+    },
+    {
+      "term": "Async",
+      "category": "Programlama",
+      "description": "İşlemlerin bloklanmadan çalışmasını ifade eder.",
+      "detailed_description": "Asenkron yapı sayesinde uzun süren işlemler uygulamanın donmasına sebep olmaz.",
+      "example_usage": "API isteği beklenirken kullanıcı arayüzü çalışmaya devam eder.",
+      "example_code": "async function loadData() {}",
+      "level": "beginner"
+    },
+    {
+      "term": "Backend",
+      "category": "Mimari",
+      "description": "Uygulamanın sunucu tarafında çalışan bölümüdür.",
+      "detailed_description": "Backend; iş mantığı, veritabanı işlemleri ve güvenliği yönetir.",
+      "example_usage": "Backend kullanıcı kayıtlarını işler.",
+      "example_code": "app.post('/users')",
+      "level": "beginner"
+    },
+    {
+      "term": "Binary",
+      "category": "Bilgisayar Bilimleri",
+      "description": "İkili sayı sistemi.",
+      "detailed_description": "Binary sistem yalnızca 0 ve 1 değerlerini kullanır ve bilgisayarların temelini oluşturur.",
+      "example_usage": "Dosyalar binary olarak saklanır.",
+      "example_code": "101010",
+      "level": "beginner"
+    },
+    {
+      "term": "Boolean",
+      "category": "Programlama",
+      "description": "Doğru veya yanlış değerini ifade eder.",
+      "detailed_description": "Boolean veri tipi genellikle koşullarda kullanılır.",
+      "example_usage": "Kullanıcı giriş yaptı mı kontrol edilir.",
+      "example_code": "isLoggedIn === true",
+      "level": "beginner"
+    },
+    {
+      "term": "Bug",
+      "category": "Genel Yazılım",
+      "description": "Yazılımda oluşan hatalı davranıştır.",
+      "detailed_description": "Bug'lar yanlış sonuçlara, performans sorunlarına veya güvenlik açıklarına yol açabilir.",
+      "example_usage": "Login ekranı çalışmıyor.",
+      "example_code": "// unexpected behavior",
+      "level": "beginner"
+    },
+    {
+      "term": "Build",
+      "category": "DevOps",
+      "description": "Uygulamanın çalışabilir hale getirilmesi sürecidir.",
+      "detailed_description": "Build sırasında kaynak kod derlenir ve dağıtıma hazır hale gelir.",
+      "example_usage": "CI pipeline build aşamasında hata verdi.",
+      "example_code": "npm run build",
+      "level": "beginner"
+    },
+    {
+      "term": "Cache",
+      "category": "Performans",
+      "description": "Veriye daha hızlı erişmek için geçici saklama alanıdır.",
+      "detailed_description": "Cache, sık kullanılan verilerin tekrar hesaplanmasını veya çekilmesini önler.",
+      "example_usage": "API yanıtları cache'e alınır.",
+      "example_code": "redis.set(key, value)",
+      "level": "intermediate"
+    },
+    {
+      "term": "Callback",
+      "category": "Programlama",
+      "description": "Başka bir fonksiyona parametre olarak verilen fonksiyondur.",
+      "detailed_description": "Callback fonksiyonlar genellikle asenkron işlemler sonrası çalıştırılır.",
+      "example_usage": "API isteği tamamlandığında callback çağrılır.",
+      "example_code": "setTimeout(() => {}, 1000)",
+      "level": "beginner"
+    },
+    {
+      "term": "Client",
+      "category": "Mimari",
+      "description": "Sunucuya istek atan taraf.",
+      "detailed_description": "Client genellikle tarayıcı veya mobil uygulamadır.",
+      "example_usage": "Web tarayıcısı client olarak çalışır.",
+      "example_code": "GET /api/data",
+      "level": "beginner"
+    },
+    {
+      "term": "CLI",
+      "category": "Araçlar",
+      "description": "Komut satırı arayüzü.",
+      "detailed_description": "CLI, grafik arayüz olmadan komutlarla işlem yapmayı sağlar.",
+      "example_usage": "Git işlemleri CLI üzerinden yapılır.",
+      "example_code": "git status",
+      "level": "beginner"
+    },
+    {
+      "term": "Cloud Computing",
+      "category": "Bulut",
+      "description": "İnternet üzerinden bilişim kaynaklarının kullanılmasıdır.",
+      "detailed_description": "Sunucu, depolama ve veritabanları fiziksel makine olmadan sunulur.",
+      "example_usage": "Uygulama AWS üzerinde çalışır.",
+      "example_code": "EC2 instance",
+      "level": "beginner"
+    },
+    {
+      "term": "Compilation",
+      "category": "Programlama",
+      "description": "Kaynak kodun makine koduna dönüştürülmesi süreci.",
+      "detailed_description": "Derleme hataları kod çalışmadan önce yakalanır.",
+      "example_usage": "TypeScript kodu JavaScript'e derlenir.",
+      "example_code": "tsc index.ts",
+      "level": "beginner"
+    },
+    {
+      "term": "Component",
+      "category": "Frontend",
+      "description": "Yeniden kullanılabilir arayüz parçası.",
+      "detailed_description": "Component'ler UI'ı modüler hale getirir.",
+      "example_usage": "Button component birçok sayfada kullanılır.",
+      "example_code": "<Button />",
+      "level": "beginner"
+    },
+    {
+      "term": "Concurrency",
+      "category": "Programlama",
+      "description": "Birden fazla işlemin aynı zaman diliminde ilerlemesi.",
+      "detailed_description": "Concurrency performans ve verimlilik sağlar.",
+      "example_usage": "Sunucu birden fazla isteği işler.",
+      "example_code": "Promise.all([])",
+      "level": "intermediate"
+    },
+    {
+      "term": "Container",
+      "category": "DevOps",
+      "description": "Uygulamanın izole bir ortamda çalışmasını sağlar.",
+      "detailed_description": "Container'lar Docker gibi araçlarla yönetilir.",
+      "example_usage": "Uygulama Docker container içinde çalışır.",
+      "example_code": "docker run app",
+      "level": "beginner"
+    },
+    {
+      "term": "CPU",
+      "category": "Donanım",
+      "description": "Merkezi işlem birimi.",
+      "detailed_description": "CPU, bilgisayardaki tüm hesaplamaları gerçekleştirir.",
+      "example_usage": "Yoğun işlemler CPU kullanımını artırır.",
+      "example_code": "CPU %80",
+      "level": "beginner"
+    }
+  ,
+    {
+      "term": "CRUD",
+      "category": "Veri Yönetimi",
+      "description": "Create, Read, Update, Delete işlemlerinin kısaltmasıdır.",
+      "detailed_description": "CRUD, bir sistemde veri üzerinde yapılabilecek temel işlemleri tanımlar.",
+      "example_usage": "Kullanıcı oluşturma, listeleme, güncelleme ve silme işlemleri CRUD kapsamındadır.",
+      "example_code": "POST /users",
+      "level": "beginner"
+    },
+    {
+      "term": "CSS",
+      "category": "Frontend",
+      "description": "Web sayfalarının görsel stilini tanımlayan dil.",
+      "detailed_description": "CSS ile renkler, fontlar, konumlandırma ve responsive tasarım yapılır.",
+      "example_usage": "Butonun rengi CSS ile ayarlanır.",
+      "example_code": "color: red;",
+      "level": "beginner"
+    },
+    {
+      "term": "CSV",
+      "category": "Veri Formatı",
+      "description": "Virgülle ayrılmış veri dosyası formatı.",
+      "detailed_description": "CSV dosyaları tablo şeklinde veri saklamak için kullanılır.",
+      "example_usage": "Excel verisi CSV olarak dışa aktarılır.",
+      "example_code": "name,age",
+      "level": "beginner"
+    },
+    {
+      "term": "Cross Platform",
+      "category": "Genel Yazılım",
+      "description": "Birden fazla platformda çalışabilen yazılım.",
+      "detailed_description": "Tek kod tabanı ile web, mobil ve masaüstü uygulamalar geliştirilebilir.",
+      "example_usage": "React Native cross platform bir çözümdür.",
+      "example_code": "// same codebase",
+      "level": "beginner"
+    },
+    {
+      "term": "CORS",
+      "category": "Güvenlik",
+      "description": "Tarayıcılar arası kaynak paylaşımını kontrol eden mekanizma.",
+      "detailed_description": "CORS, farklı domainlerden gelen isteklerin güvenliğini sağlar.",
+      "example_usage": "API isteği CORS hatası verdi.",
+      "example_code": "Access-Control-Allow-Origin",
+      "level": "intermediate"
+    },
+    {
+      "term": "CI",
+      "category": "DevOps",
+      "description": "Sürekli entegrasyon süreci.",
+      "detailed_description": "CI, kod değişikliklerinin otomatik olarak test edilmesini sağlar.",
+      "example_usage": "Her commit sonrası testler çalışır.",
+      "example_code": "GitHub Actions",
+      "level": "beginner"
+    },
+    {
+      "term": "CD",
+      "category": "DevOps",
+      "description": "Sürekli dağıtım veya teslim süreci.",
+      "detailed_description": "CD, başarılı build sonrası kodun otomatik olarak canlıya alınmasını sağlar.",
+      "example_usage": "Merge sonrası uygulama otomatik deploy edilir.",
+      "example_code": "deploy pipeline",
+      "level": "beginner"
+    },
+    {
+      "term": "Class",
+      "category": "Programlama",
+      "description": "Nesne yönelimli programlamada bir şablon.",
+      "detailed_description": "Class, nesnelerin özelliklerini ve davranışlarını tanımlar.",
+      "example_usage": "User class oluşturulur.",
+      "example_code": "class User {}",
+      "level": "beginner"
+    },
+    {
+      "term": "Clean Code",
+      "category": "Yazılım Kalitesi",
+      "description": "Okunabilir ve sürdürülebilir kod yazma yaklaşımı.",
+      "detailed_description": "Clean Code prensipleri kodun anlaşılır olmasını hedefler.",
+      "example_usage": "Anlamlı değişken isimleri kullanılır.",
+      "example_code": "// readable function",
+      "level": "beginner"
+    },
+    {
+      "term": "Code Review",
+      "category": "Geliştirme Süreci",
+      "description": "Kodun başka geliştiriciler tarafından incelenmesi.",
+      "detailed_description": "Code review hataları erken yakalamayı sağlar.",
+      "example_usage": "Pull request açıldı.",
+      "example_code": "PR review",
+      "level": "beginner"
+    },
+    {
+      "term": "Commit",
+      "category": "Versiyon Kontrol",
+      "description": "Kod değişikliklerinin kayıt altına alınması.",
+      "detailed_description": "Commit mesajları yapılan değişikliği özetler.",
+      "example_usage": "Yeni özellik commit edildi.",
+      "example_code": "git commit -m",
+      "level": "beginner"
+    },
+    {
+      "term": "Compiler",
+      "category": "Programlama",
+      "description": "Kaynak kodu makine koduna çeviren program.",
+      "detailed_description": "Derleme işlemini gerçekleştiren yazılımdır.",
+      "example_usage": "C++ kodu compiler ile derlenir.",
+      "example_code": "gcc main.c",
+      "level": "beginner"
+    },
+    {
+      "term": "Configuration",
+      "category": "Genel Yazılım",
+      "description": "Uygulama ayarlarının tanımlanması.",
+      "detailed_description": "Config dosyaları ortam bazlı ayarları içerir.",
+      "example_usage": "Prod ve dev ayarları farklıdır.",
+      "example_code": ".env",
+      "level": "beginner"
+    },
+    {
+      "term": "Connection Pool",
+      "category": "Veritabanı",
+      "description": "Veritabanı bağlantılarının yönetimi.",
+      "detailed_description": "Connection pool performansı artırır.",
+      "example_usage": "Çoklu kullanıcı için bağlantılar paylaşılır.",
+      "example_code": "pool.getConnection()",
+      "level": "intermediate"
+    },
+    {
+      "term": "Context",
+      "category": "Programlama",
+      "description": "Kodun çalıştığı ortam bilgisi.",
+      "detailed_description": "Context, fonksiyonun hangi verilerle çalışacağını belirler.",
+      "example_usage": "React Context ile state paylaşılır.",
+      "example_code": "useContext()",
+      "level": "intermediate"
+    },
+    {
+      "term": "Controller",
+      "category": "Mimari",
+      "description": "İstekleri karşılayan katman.",
+      "detailed_description": "Controller, gelen request'i iş mantığına yönlendirir.",
+      "example_usage": "UserController kullanıcı işlemlerini yönetir.",
+      "example_code": "class UserController",
+      "level": "beginner"
+    },
+    {
+      "term": "Cookie",
+      "category": "Web",
+      "description": "Tarayıcıda saklanan küçük veri.",
+      "detailed_description": "Cookie'ler oturum ve tercih bilgilerini saklar.",
+      "example_usage": "Login sonrası cookie set edilir.",
+      "example_code": "document.cookie",
+      "level": "beginner"
+    },
+    {
+      "term": "Cron Job",
+      "category": "Sunucu",
+      "description": "Zamanlanmış görev.",
+      "detailed_description": "Belirli aralıklarla otomatik çalışan işlemlerdir.",
+      "example_usage": "Gece backup alınır.",
+      "example_code": "0 0 * * *",
+      "level": "beginner"
+    },
+    {
+      "term": "CPU Bound",
+      "category": "Performans",
+      "description": "İşlemin CPU gücüyle sınırlı olması.",
+      "detailed_description": "Yoğun hesaplama gerektiren işlemler CPU bound'dur.",
+      "example_usage": "Video encode işlemi.",
+      "example_code": "// heavy computation",
+      "level": "intermediate"
+    },
+    {
+      "term": "Crash",
+      "category": "Genel Yazılım",
+      "description": "Uygulamanın beklenmedik şekilde kapanması.",
+      "detailed_description": "Crash genellikle exception veya bellek sorunlarından kaynaklanır.",
+      "example_usage": "Mobil uygulama açılırken crash oldu.",
+      "example_code": "Segmentation fault",
+      "level": "beginner"
+    }
+  ,
+    {
+      "term": "CRUD",
+      "category": "Veri Yönetimi",
+      "description": "Create, Read, Update, Delete işlemlerinin kısaltmasıdır.",
+      "detailed_description": "CRUD, bir sistemde veri üzerinde yapılabilecek temel işlemleri tanımlar.",
+      "example_usage": "Kullanıcı oluşturma, listeleme, güncelleme ve silme işlemleri CRUD kapsamındadır.",
+      "example_code": "POST /users",
+      "level": "beginner"
+    },
+    {
+      "term": "CSS",
+      "category": "Frontend",
+      "description": "Web sayfalarının görsel stilini tanımlayan dil.",
+      "detailed_description": "CSS ile renkler, fontlar, konumlandırma ve responsive tasarım yapılır.",
+      "example_usage": "Butonun rengi CSS ile ayarlanır.",
+      "example_code": "color: red;",
+      "level": "beginner"
+    },
+    {
+      "term": "CSV",
+      "category": "Veri Formatı",
+      "description": "Virgülle ayrılmış veri dosyası formatı.",
+      "detailed_description": "CSV dosyaları tablo şeklinde veri saklamak için kullanılır.",
+      "example_usage": "Excel verisi CSV olarak dışa aktarılır.",
+      "example_code": "name,age",
+      "level": "beginner"
+    },
+    {
+      "term": "Cross Platform",
+      "category": "Genel Yazılım",
+      "description": "Birden fazla platformda çalışabilen yazılım.",
+      "detailed_description": "Tek kod tabanı ile web, mobil ve masaüstü uygulamalar geliştirilebilir.",
+      "example_usage": "React Native cross platform bir çözümdür.",
+      "example_code": "// same codebase",
+      "level": "beginner"
+    },
+    {
+      "term": "CORS",
+      "category": "Güvenlik",
+      "description": "Tarayıcılar arası kaynak paylaşımını kontrol eden mekanizma.",
+      "detailed_description": "CORS, farklı domainlerden gelen isteklerin güvenliğini sağlar.",
+      "example_usage": "API isteği CORS hatası verdi.",
+      "example_code": "Access-Control-Allow-Origin",
+      "level": "intermediate"
+    },
+    {
+      "term": "CI",
+      "category": "DevOps",
+      "description": "Sürekli entegrasyon süreci.",
+      "detailed_description": "CI, kod değişikliklerinin otomatik olarak test edilmesini sağlar.",
+      "example_usage": "Her commit sonrası testler çalışır.",
+      "example_code": "GitHub Actions",
+      "level": "beginner"
+    },
+    {
+      "term": "CD",
+      "category": "DevOps",
+      "description": "Sürekli dağıtım veya teslim süreci.",
+      "detailed_description": "CD, başarılı build sonrası kodun otomatik olarak canlıya alınmasını sağlar.",
+      "example_usage": "Merge sonrası uygulama otomatik deploy edilir.",
+      "example_code": "deploy pipeline",
+      "level": "beginner"
+    },
+    {
+      "term": "Class",
+      "category": "Programlama",
+      "description": "Nesne yönelimli programlamada bir şablon.",
+      "detailed_description": "Class, nesnelerin özelliklerini ve davranışlarını tanımlar.",
+      "example_usage": "User class oluşturulur.",
+      "example_code": "class User {}",
+      "level": "beginner"
+    },
+    {
+      "term": "Clean Code",
+      "category": "Yazılım Kalitesi",
+      "description": "Okunabilir ve sürdürülebilir kod yazma yaklaşımı.",
+      "detailed_description": "Clean Code prensipleri kodun anlaşılır olmasını hedefler.",
+      "example_usage": "Anlamlı değişken isimleri kullanılır.",
+      "example_code": "// readable function",
+      "level": "beginner"
+    },
+    {
+      "term": "Code Review",
+      "category": "Geliştirme Süreci",
+      "description": "Kodun başka geliştiriciler tarafından incelenmesi.",
+      "detailed_description": "Code review hataları erken yakalamayı sağlar.",
+      "example_usage": "Pull request açıldı.",
+      "example_code": "PR review",
+      "level": "beginner"
+    },
+    {
+      "term": "Commit",
+      "category": "Versiyon Kontrol",
+      "description": "Kod değişikliklerinin kayıt altına alınması.",
+      "detailed_description": "Commit mesajları yapılan değişikliği özetler.",
+      "example_usage": "Yeni özellik commit edildi.",
+      "example_code": "git commit -m",
+      "level": "beginner"
+    },
+    {
+      "term": "Compiler",
+      "category": "Programlama",
+      "description": "Kaynak kodu makine koduna çeviren program.",
+      "detailed_description": "Derleme işlemini gerçekleştiren yazılımdır.",
+      "example_usage": "C++ kodu compiler ile derlenir.",
+      "example_code": "gcc main.c",
+      "level": "beginner"
+    },
+    {
+      "term": "Configuration",
+      "category": "Genel Yazılım",
+      "description": "Uygulama ayarlarının tanımlanması.",
+      "detailed_description": "Config dosyaları ortam bazlı ayarları içerir.",
+      "example_usage": "Prod ve dev ayarları farklıdır.",
+      "example_code": ".env",
+      "level": "beginner"
+    },
+    {
+      "term": "Connection Pool",
+      "category": "Veritabanı",
+      "description": "Veritabanı bağlantılarının yönetimi.",
+      "detailed_description": "Connection pool performansı artırır.",
+      "example_usage": "Çoklu kullanıcı için bağlantılar paylaşılır.",
+      "example_code": "pool.getConnection()",
+      "level": "intermediate"
+    },
+    {
+      "term": "Context",
+      "category": "Programlama",
+      "description": "Kodun çalıştığı ortam bilgisi.",
+      "detailed_description": "Context, fonksiyonun hangi verilerle çalışacağını belirler.",
+      "example_usage": "React Context ile state paylaşılır.",
+      "example_code": "useContext()",
+      "level": "intermediate"
+    },
+    {
+      "term": "Controller",
+      "category": "Mimari",
+      "description": "İstekleri karşılayan katman.",
+      "detailed_description": "Controller, gelen request'i iş mantığına yönlendirir.",
+      "example_usage": "UserController kullanıcı işlemlerini yönetir.",
+      "example_code": "class UserController",
+      "level": "beginner"
+    },
+    {
+      "term": "Cookie",
+      "category": "Web",
+      "description": "Tarayıcıda saklanan küçük veri.",
+      "detailed_description": "Cookie'ler oturum ve tercih bilgilerini saklar.",
+      "example_usage": "Login sonrası cookie set edilir.",
+      "example_code": "document.cookie",
+      "level": "beginner"
+    },
+    {
+      "term": "Cron Job",
+      "category": "Sunucu",
+      "description": "Zamanlanmış görev.",
+      "detailed_description": "Belirli aralıklarla otomatik çalışan işlemlerdir.",
+      "example_usage": "Gece backup alınır.",
+      "example_code": "0 0 * * *",
+      "level": "beginner"
+    },
+    {
+      "term": "CPU Bound",
+      "category": "Performans",
+      "description": "İşlemin CPU gücüyle sınırlı olması.",
+      "detailed_description": "Yoğun hesaplama gerektiren işlemler CPU bound'dur.",
+      "example_usage": "Video encode işlemi.",
+      "example_code": "// heavy computation",
+      "level": "intermediate"
+    },
+    {
+      "term": "Crash",
+      "category": "Genel Yazılım",
+      "description": "Uygulamanın beklenmedik şekilde kapanması.",
+      "detailed_description": "Crash genellikle exception veya bellek sorunlarından kaynaklanır.",
+      "example_usage": "Mobil uygulama açılırken crash oldu.",
+      "example_code": "Segmentation fault",
+      "level": "beginner"
+    }
+  ,
+    {
+      "term": "Daemon",
+      "category": "Sistem",
+      "description": "Arka planda sürekli çalışan servis programıdır.",
+      "detailed_description": "Daemon süreçleri genellikle kullanıcı etkileşimi olmadan çalışır ve sistem servislerini yönetir.",
+      "example_usage": "Web sunucusu bir daemon olarak çalışır.",
+      "example_code": "systemctl start nginx",
+      "level": "intermediate"
+    },
+    {
+      "term": "Data Structure",
+      "category": "Bilgisayar Bilimleri",
+      "description": "Verilerin organize edilme biçimidir.",
+      "detailed_description": "Array, linked list, stack ve queue gibi yapılar veri yapılarıdır.",
+      "example_usage": "Listeleme işlemleri için array kullanılır.",
+      "example_code": "let arr = []",
+      "level": "beginner"
+    },
+    {
+      "term": "Database",
+      "category": "Veritabanı",
+      "description": "Verilerin kalıcı olarak saklandığı sistem.",
+      "detailed_description": "Database'ler veriyi düzenli, güvenli ve hızlı erişilebilir şekilde tutar.",
+      "example_usage": "Kullanıcı bilgileri veritabanında tutulur.",
+      "example_code": "SELECT * FROM users",
+      "level": "beginner"
+    },
+    {
+      "term": "Deadlock",
+      "category": "Eşzamanlılık",
+      "description": "İki veya daha fazla sürecin birbirini beklemesi durumu.",
+      "detailed_description": "Deadlock, sistemin ilerleyememesine sebep olur.",
+      "example_usage": "Thread'ler kilitleri serbest bırakmıyor.",
+      "example_code": "// deadlock scenario",
+      "level": "intermediate"
+    },
+    {
+      "term": "Debug",
+      "category": "Geliştirme",
+      "description": "Hataları tespit etme ve düzeltme süreci.",
+      "detailed_description": "Debug işlemi loglar, breakpoint'ler ve debugger araçlarıyla yapılır.",
+      "example_usage": "Hata debug edilerek çözüldü.",
+      "example_code": "console.log(value)",
+      "level": "beginner"
+    },
+    {
+      "term": "Dependency",
+      "category": "Genel Yazılım",
+      "description": "Bir yazılımın çalışmak için ihtiyaç duyduğu başka paket.",
+      "detailed_description": "Dependency'ler paket yöneticileriyle yönetilir.",
+      "example_usage": "Proje yeni bir dependency ekledi.",
+      "example_code": "npm install axios",
+      "level": "beginner"
+    },
+    {
+      "term": "Deployment",
+      "category": "DevOps",
+      "description": "Uygulamanın canlı ortama alınması süreci.",
+      "detailed_description": "Deployment manuel veya otomatik olabilir.",
+      "example_usage": "Yeni sürüm production'a deploy edildi.",
+      "example_code": "kubectl apply",
+      "level": "beginner"
+    },
+    {
+      "term": "Design Pattern",
+      "category": "Yazılım Tasarımı",
+      "description": "Yaygın problemlere yönelik tekrar kullanılabilir çözümler.",
+      "detailed_description": "Singleton, Factory ve Observer yaygın design pattern'lerdir.",
+      "example_usage": "Factory pattern ile nesne üretimi yapıldı.",
+      "example_code": "// Factory Pattern",
+      "level": "intermediate"
+    },
+    {
+      "term": "DevOps",
+      "category": "Kültür",
+      "description": "Geliştirme ve operasyon süreçlerini birleştiren yaklaşım.",
+      "detailed_description": "DevOps otomasyon, hız ve güvenilirlik sağlar.",
+      "example_usage": "CI/CD DevOps'un temelidir.",
+      "example_code": "pipeline.yml",
+      "level": "beginner"
+    },
+    {
+      "term": "Distributed System",
+      "category": "Mimari",
+      "description": "Birden fazla makine üzerinde çalışan sistem.",
+      "detailed_description": "Distributed sistemler ölçeklenebilirlik sağlar.",
+      "example_usage": "Microservice mimarisi dağıtıktır.",
+      "example_code": "// multiple nodes",
+      "level": "intermediate"
+    },
+    {
+      "term": "Docker",
+      "category": "DevOps",
+      "description": "Container tabanlı sanallaştırma aracı.",
+      "detailed_description": "Docker, uygulamaların her ortamda aynı şekilde çalışmasını sağlar.",
+      "example_usage": "Uygulama Docker image olarak paketlendi.",
+      "example_code": "docker build .",
+      "level": "beginner"
+    },
+    {
+      "term": "Domain",
+      "category": "Web",
+      "description": "Bir web sitesinin adresi.",
+      "detailed_description": "Domain, IP adresinin insan tarafından okunabilir halidir.",
+      "example_usage": "example.com bir domain'dir.",
+      "example_code": "DNS record",
+      "level": "beginner"
+    },
+    {
+      "term": "Downtime",
+      "category": "Operasyon",
+      "description": "Sistemin hizmet veremediği süre.",
+      "detailed_description": "Downtime kullanıcı deneyimini olumsuz etkiler.",
+      "example_usage": "Bakım sırasında downtime yaşandı.",
+      "example_code": "// service unavailable",
+      "level": "beginner"
+    },
+    {
+      "term": "Driver",
+      "category": "Donanım",
+      "description": "Donanım ile işletim sistemi arasında köprü.",
+      "detailed_description": "Driver'lar donanımın doğru çalışmasını sağlar.",
+      "example_usage": "Ekran kartı driver'ı güncellendi.",
+      "example_code": "// device driver",
+      "level": "beginner"
+    },
+    {
+      "term": "Dynamic Typing",
+      "category": "Programlama",
+      "description": "Değişken tiplerinin çalışma anında belirlenmesi.",
+      "detailed_description": "JavaScript ve Python dinamik tipli dillerdir.",
+      "example_usage": "Değişken tipi otomatik atanır.",
+      "example_code": "let x = 5",
+      "level": "beginner"
+    },
+    {
+      "term": "Edge Case",
+      "category": "Test",
+      "description": "Nadir veya sınır durumlar.",
+      "detailed_description": "Edge case'ler genellikle hatalara yol açar.",
+      "example_usage": "Boş input edge case'dir.",
+      "example_code": "if(!value)",
+      "level": "beginner"
+    },
+    {
+      "term": "Encapsulation",
+      "category": "OOP",
+      "description": "Veri ve davranışın birlikte saklanması.",
+      "detailed_description": "Encapsulation, dış erişimi kısıtlayarak güvenliği artırır.",
+      "example_usage": "Private değişkenler kullanılır.",
+      "example_code": "private value",
+      "level": "intermediate"
+    },
+    {
+      "term": "Endpoint",
+      "category": "API",
+      "description": "API üzerinde erişilen adres.",
+      "detailed_description": "Endpoint'ler belirli bir işlemi temsil eder.",
+      "example_usage": "/users endpoint'i çağrıldı.",
+      "example_code": "GET /users",
+      "level": "beginner"
+    },
+    {
+      "term": "Environment",
+      "category": "Genel Yazılım",
+      "description": "Uygulamanın çalıştığı ortam.",
+      "detailed_description": "Development, staging ve production ortamları yaygındır.",
+      "example_usage": "Prod ortamında farklı ayar var.",
+      "example_code": "NODE_ENV=production",
+      "level": "beginner"
+    },
+    {
+      "term": "Exception",
+      "category": "Programlama",
+      "description": "Çalışma sırasında oluşan hata durumu.",
+      "detailed_description": "Exception'lar try-catch ile yakalanır.",
+      "example_usage": "Hata fırlatıldı.",
+      "example_code": "throw new Error()",
+      "level": "beginner"
+    },
+    {
+      "term": "Export",
+      "category": "Programlama",
+      "description": "Bir modülün dışa açılması.",
+      "detailed_description": "Export edilen fonksiyonlar başka dosyalarda kullanılabilir.",
+      "example_usage": "Fonksiyon export edildi.",
+      "example_code": "export default function(){}",
+      "level": "beginner"
+    },
+    {
+      "term": "Failover",
+      "category": "Sistem",
+      "description": "Arıza durumunda yedek sisteme geçiş.",
+      "detailed_description": "Failover yüksek erişilebilirlik sağlar.",
+      "example_usage": "Ana sunucu düştü, failover oldu.",
+      "example_code": "// standby server",
+      "level": "intermediate"
+    },
+    {
+      "term": "Feature",
+      "category": "Ürün",
+      "description": "Yazılımın sunduğu bir işlev.",
+      "detailed_description": "Feature'lar kullanıcı ihtiyaçlarına göre geliştirilir.",
+      "example_usage": "Yeni bildirim feature'ı eklendi.",
+      "example_code": "// new feature",
+      "level": "beginner"
+    },
+    {
+      "term": "Firewall",
+      "category": "Güvenlik",
+      "description": "Ağ trafiğini kontrol eden güvenlik sistemi.",
+      "detailed_description": "Firewall izinsiz erişimleri engeller.",
+      "example_usage": "Sunucu firewall ile korunur.",
+      "example_code": "allow 443",
+      "level": "beginner"
+    },
+    {
+      "term": "Framework",
+      "category": "Genel Yazılım",
+      "description": "Uygulama geliştirmek için hazır yapı.",
+      "detailed_description": "Framework'ler standartlar ve hız kazandırır.",
+      "example_usage": "React bir frontend framework'tür.",
+      "example_code": "import React from 'react'",
+      "level": "beginner"
+    },
+    {
+      "term": "Frontend",
+      "category": "Mimari",
+      "description": "Kullanıcının gördüğü arayüz kısmı.",
+      "detailed_description": "Frontend tarayıcıda çalışır ve kullanıcı etkileşimini yönetir.",
+      "example_usage": "Buton tasarımı frontend işidir.",
+      "example_code": "<button>Click</button>",
+      "level": "beginner"
+    },
+    {
+      "term": "Function",
+      "category": "Programlama",
+      "description": "Belirli bir işi yapan kod bloğu.",
+      "detailed_description": "Fonksiyonlar kod tekrarını azaltır.",
+      "example_usage": "Hesaplama fonksiyonu çağrıldı.",
+      "example_code": "function sum(a,b){}",
+      "level": "beginner"
+    },
+    {
+      "term": "Fuzzy Search",
+      "category": "Algoritma",
+      "description": "Yaklaşık eşleşme ile arama.",
+      "detailed_description": "Yazım hatalarına toleranslı arama sağlar.",
+      "example_usage": "Autocomplete fuzzy search kullanır.",
+      "example_code": "// levenshtein",
+      "level": "intermediate"
+    }
+  ,
+    {
+      "term": "Garbage Collection",
+      "category": "Bellek Yönetimi",
+      "description": "Kullanılmayan belleğin otomatik olarak temizlenmesi.",
+      "detailed_description": "Garbage Collection, bellek sızıntılarını önlemek için çalışır ve geliştiricinin manuel bellek yönetimini azaltır.",
+      "example_usage": "JavaScript çalışma zamanı belleği otomatik temizler.",
+      "example_code": "// automatic memory cleanup",
+      "level": "intermediate"
+    },
+    {
+      "term": "Gateway",
+      "category": "Ağ",
+      "description": "Ağlar arasında geçiş noktası.",
+      "detailed_description": "Gateway, farklı ağ protokolleri veya servisleri arasında iletişim sağlar.",
+      "example_usage": "API Gateway tüm istekleri karşılar.",
+      "example_code": "gateway.route()",
+      "level": "intermediate"
+    },
+    {
+      "term": "Git",
+      "category": "Versiyon Kontrol",
+      "description": "Dağıtık versiyon kontrol sistemi.",
+      "detailed_description": "Git, kod değişikliklerini takip etmeyi ve ekip çalışmasını kolaylaştırır.",
+      "example_usage": "Kod Git ile versiyonlandı.",
+      "example_code": "git push origin main",
+      "level": "beginner"
+    },
+    {
+      "term": "GraphQL",
+      "category": "API",
+      "description": "Esnek veri sorgulama dili.",
+      "detailed_description": "GraphQL, istemcinin sadece ihtiyaç duyduğu veriyi almasını sağlar.",
+      "example_usage": "Tek istekle çoklu veri çekildi.",
+      "example_code": "{ users { name } }",
+      "level": "intermediate"
+    },
+    {
+      "term": "Hash",
+      "category": "Güvenlik",
+      "description": "Veriyi sabit uzunlukta çıktıya dönüştürme işlemi.",
+      "detailed_description": "Hash fonksiyonları şifre saklama ve veri bütünlüğü için kullanılır.",
+      "example_usage": "Şifre hash olarak kaydedilir.",
+      "example_code": "bcrypt.hash()",
+      "level": "beginner"
+    },
+    {
+      "term": "Heap",
+      "category": "Bellek Yönetimi",
+      "description": "Dinamik bellek alanı.",
+      "detailed_description": "Heap üzerinde oluşturulan nesneler Garbage Collector tarafından yönetilir.",
+      "example_usage": "Büyük nesneler heap'te tutulur.",
+      "example_code": "// heap allocation",
+      "level": "intermediate"
+    },
+    {
+      "term": "Hook",
+      "category": "Frontend",
+      "description": "Fonksiyonel bileşenlere özellik ekleyen yapı.",
+      "detailed_description": "React Hook'ları state ve lifecycle yönetimi sağlar.",
+      "example_usage": "useState ile state tutulur.",
+      "example_code": "useState(0)",
+      "level": "beginner"
+    },
+    {
+      "term": "Hotfix",
+      "category": "Operasyon",
+      "description": "Acil hata düzeltmesi.",
+      "detailed_description": "Hotfix'ler genellikle production ortamında hızlı müdahale için yapılır.",
+      "example_usage": "Kritik bug hotfix ile çözüldü.",
+      "example_code": "// urgent patch",
+      "level": "beginner"
+    },
+    {
+      "term": "HTTP",
+      "category": "Web",
+      "description": "Web veri iletişim protokolü.",
+      "detailed_description": "HTTP, istemci ve sunucu arasında veri alışverişini sağlar.",
+      "example_usage": "Tarayıcı HTTP isteği gönderir.",
+      "example_code": "GET /index.html",
+      "level": "beginner"
+    },
+    {
+      "term": "HTTPS",
+      "category": "Güvenlik",
+      "description": "Şifreli HTTP protokolü.",
+      "detailed_description": "HTTPS, veri iletimini SSL/TLS ile güvenli hale getirir.",
+      "example_usage": "Login işlemleri HTTPS ile yapılır.",
+      "example_code": "https://example.com",
+      "level": "beginner"
+    },
+    {
+      "term": "Index",
+      "category": "Veritabanı",
+      "description": "Veriye hızlı erişim sağlayan yapı.",
+      "detailed_description": "Index, sorgu performansını artırır ancak yazma maliyeti vardır.",
+      "example_usage": "Arama alanı index'lendi.",
+      "example_code": "CREATE INDEX",
+      "level": "intermediate"
+    },
+    {
+      "term": "Infrastructure",
+      "category": "DevOps",
+      "description": "Sistemin çalıştığı teknik temel.",
+      "detailed_description": "Sunucular, ağlar ve servisler altyapıyı oluşturur.",
+      "example_usage": "Bulut altyapısı kuruldu.",
+      "example_code": "// infra setup",
+      "level": "beginner"
+    },
+    {
+      "term": "Instance",
+      "category": "Bulut",
+      "description": "Çalışan bir sunucu kopyası.",
+      "detailed_description": "Bulut ortamında her sanal sunucu bir instance'dır.",
+      "example_usage": "Yeni EC2 instance açıldı.",
+      "example_code": "// virtual machine",
+      "level": "beginner"
+    },
+    {
+      "term": "Interface",
+      "category": "Programlama",
+      "description": "Sınıflar için davranış sözleşmesi.",
+      "detailed_description": "Interface, hangi metodların uygulanacağını tanımlar.",
+      "example_usage": "Servis interface üzerinden çağrılır.",
+      "example_code": "interface UserService {}",
+      "level": "intermediate"
+    },
+    {
+      "term": "Iteration",
+      "category": "Algoritma",
+      "description": "Bir işlemin tekrar edilmesi.",
+      "detailed_description": "Döngüler iteration örneğidir.",
+      "example_usage": "Liste üzerinde iteration yapıldı.",
+      "example_code": "for(let i=0;i<n;i++)",
+      "level": "beginner"
+    },
+    {
+      "term": "JSON",
+      "category": "Veri Formatı",
+      "description": "Hafif veri değişim formatı.",
+      "detailed_description": "JSON, okunabilirliği ve kullanım kolaylığıyla yaygındır.",
+      "example_usage": "API yanıtı JSON döner.",
+      "example_code": "{ \"id\": 1 }",
+      "level": "beginner"
+    },
+    {
+      "term": "JWT",
+      "category": "Güvenlik",
+      "description": "Token tabanlı kimlik doğrulama standardı.",
+      "detailed_description": "JWT, stateless authentication sağlar.",
+      "example_usage": "Kullanıcı token ile yetkilendirilir.",
+      "example_code": "Authorization: Bearer",
+      "level": "beginner"
+    },
+    {
+      "term": "Kubernetes",
+      "category": "DevOps",
+      "description": "Container orkestrasyon sistemi.",
+      "detailed_description": "Kubernetes container'ların yönetimini ve ölçeklenmesini sağlar.",
+      "example_usage": "Pod'lar Kubernetes ile yönetilir.",
+      "example_code": "kubectl get pods",
+      "level": "beginner"
+    },
+    {
+      "term": "Latency",
+      "category": "Performans",
+      "description": "Yanıt gecikme süresi.",
+      "detailed_description": "Düşük latency daha hızlı kullanıcı deneyimi sağlar.",
+      "example_usage": "API latency düşürüldü.",
+      "example_code": "// response time",
+      "level": "beginner"
+    },
+    {
+      "term": "Library",
+      "category": "Genel Yazılım",
+      "description": "Belirli işlevleri sunan kod paketi.",
+      "detailed_description": "Library'ler geliştiriciye esneklik sağlar.",
+      "example_usage": "UI için bir library kullanıldı.",
+      "example_code": "import axios",
+      "level": "beginner"
+    },
+    {
+      "term": "Load Balancer",
+      "category": "Ağ",
+      "description": "Trafiği birden fazla sunucuya dağıtan sistem.",
+      "detailed_description": "Load balancer performans ve yüksek erişilebilirlik sağlar.",
+      "example_usage": "Trafik sunuculara dağıtıldı.",
+      "example_code": "// nginx lb",
+      "level": "beginner"
+    },
+    {
+      "term": "Log",
+      "category": "Geliştirme",
+      "description": "Sistem olaylarının kaydı.",
+      "detailed_description": "Log'lar hata ayıklama ve izleme için kullanılır.",
+      "example_usage": "Hata log'lara yazıldı.",
+      "example_code": "console.error(err)",
+      "level": "beginner"
+    },
+    {
+      "term": "Loop",
+      "category": "Programlama",
+      "description": "Tekrarlayan işlem yapısı.",
+      "detailed_description": "Loop'lar belirli koşula kadar çalışır.",
+      "example_usage": "Liste elemanları loop ile gezildi.",
+      "example_code": "while(true){}",
+      "level": "beginner"
+    },
+    {
+      "term": "Middleware",
+      "category": "Backend",
+      "description": "İstek ve yanıt arasında çalışan ara katman.",
+      "detailed_description": "Middleware doğrulama, loglama gibi işlemler yapar.",
+      "example_usage": "Auth middleware eklendi.",
+      "example_code": "app.use(auth)",
+      "level": "beginner"
+    },
+    {
+      "term": "Microservice",
+      "category": "Mimari",
+      "description": "Küçük ve bağımsız servislerden oluşan mimari.",
+      "detailed_description": "Microservice'ler ölçeklenebilirlik ve esneklik sağlar.",
+      "example_usage": "Sipariş servisi ayrıldı.",
+      "example_code": "// order-service",
+      "level": "intermediate"
+    },
+    {
+      "term": "Monitoring",
+      "category": "Operasyon",
+      "description": "Sistem durumunun izlenmesi.",
+      "detailed_description": "Monitoring performans ve hata takibi sağlar.",
+      "example_usage": "CPU kullanımı izleniyor.",
+      "example_code": "// prometheus",
+      "level": "beginner"
+    },
+    {
+      "term": "Mutation",
+      "category": "Programlama",
+      "description": "Verinin değiştirilmesi.",
+      "detailed_description": "State mutation kontrolsüz yapılırsa hatalara yol açar.",
+      "example_usage": "State doğrudan değiştirildi.",
+      "example_code": "state.value = 5",
+      "level": "intermediate"
+    },
+    {
+      "term": "Namespace",
+      "category": "Programlama",
+      "description": "İsim çakışmalarını önleyen yapı.",
+      "detailed_description": "Namespace, kod organizasyonunu sağlar.",
+      "example_usage": "Modüller namespace ile ayrıldı.",
+      "example_code": "namespace App",
+      "level": "intermediate"
+    },
+    {
+      "term": "Node",
+      "category": "Sistem",
+      "description": "Ağ üzerindeki birim.",
+      "detailed_description": "Kubernetes'te node bir makineyi temsil eder.",
+      "example_usage": "Yeni node eklendi.",
+      "example_code": "kubectl get nodes",
+      "level": "beginner"
+    }
+  ,
+    {
+      "term": "Gateway",
+      "category": "Ağ",
+      "description": "Ağlar veya servisler arasında geçiş noktası.",
+      "detailed_description": "Gateway, farklı protokoller veya sistemler arasında iletişimi sağlar. API Gateway yaygın bir kullanım örneğidir.",
+      "example_usage": "Tüm API istekleri gateway üzerinden geçer.",
+      "example_code": "api-gateway.route()",
+      "level": "intermediate"
+    },
+    {
+      "term": "Garbage Collection",
+      "category": "Bellek Yönetimi",
+      "description": "Kullanılmayan belleğin otomatik temizlenmesi.",
+      "detailed_description": "Garbage Collection, bellek sızıntılarını önler ve manuel bellek yönetimi ihtiyacını azaltır.",
+      "example_usage": "JavaScript motoru belleği otomatik temizler.",
+      "example_code": "// automatic memory cleanup",
+      "level": "intermediate"
+    },
+    {
+      "term": "Git Branch",
+      "category": "Versiyon Kontrol",
+      "description": "Kodun paralel geliştirilmesini sağlayan dal.",
+      "detailed_description": "Branch'ler yeni özellik veya hata düzeltmeleri için ana koddan ayrılır.",
+      "example_usage": "Yeni özellik için branch açıldı.",
+      "example_code": "git checkout -b feature/login",
+      "level": "beginner"
+    },
+    {
+      "term": "Git Merge",
+      "category": "Versiyon Kontrol",
+      "description": "Branch'lerin birleştirilmesi işlemi.",
+      "detailed_description": "Merge işlemi sırasında conflict oluşabilir.",
+      "example_usage": "Feature branch main ile merge edildi.",
+      "example_code": "git merge feature/login",
+      "level": "beginner"
+    },
+    {
+      "term": "Graph",
+      "category": "Veri Yapıları",
+      "description": "Düğümler ve kenarlardan oluşan veri yapısı.",
+      "detailed_description": "Graph, sosyal ağlar ve yol bulma algoritmalarında kullanılır.",
+      "example_usage": "Kullanıcı ilişkileri graph olarak tutulur.",
+      "example_code": "// node-edge structure",
+      "level": "intermediate"
+    },
+    {
+      "term": "GraphQL Query",
+      "category": "API",
+      "description": "GraphQL ile veri sorgulama işlemi.",
+      "detailed_description": "Query, istemcinin hangi alanları istediğini belirtir.",
+      "example_usage": "Sadece gerekli alanlar sorgulandı.",
+      "example_code": "{ users { id name } }",
+      "level": "intermediate"
+    },
+    {
+      "term": "Hash Table",
+      "category": "Veri Yapıları",
+      "description": "Anahtar-değer ilişkisiyle çalışan veri yapısı.",
+      "detailed_description": "Hash table hızlı arama, ekleme ve silme sağlar.",
+      "example_usage": "Cache yapısı hash table kullanır.",
+      "example_code": "map[key] = value",
+      "level": "beginner"
+    },
+    {
+      "term": "Heap Memory",
+      "category": "Bellek Yönetimi",
+      "description": "Dinamik olarak ayrılan bellek alanı.",
+      "detailed_description": "Nesneler genellikle heap üzerinde tutulur.",
+      "example_usage": "Büyük objeler heap'te saklanır.",
+      "example_code": "// heap allocation",
+      "level": "intermediate"
+    },
+    {
+      "term": "Horizontal Scaling",
+      "category": "Mimari",
+      "description": "Sisteme yeni sunucular ekleyerek ölçekleme.",
+      "detailed_description": "Yatay ölçekleme, yüksek trafik durumlarında tercih edilir.",
+      "example_usage": "Yeni node eklenerek yük dağıtıldı.",
+      "example_code": "// add server",
+      "level": "beginner"
+    },
+    {
+      "term": "Hot Reload",
+      "category": "Geliştirme",
+      "description": "Kod değişikliklerinin uygulama kapanmadan yansıması.",
+      "detailed_description": "Hot reload geliştirme hızını artırır.",
+      "example_usage": "UI değişikliği anında görüldü.",
+      "example_code": "// hot reload enabled",
+      "level": "beginner"
+    },
+    {
+      "term": "HTTP Status Code",
+      "category": "Web",
+      "description": "HTTP isteğinin sonucunu belirten kod.",
+      "detailed_description": "200, 404, 500 gibi kodlar istemciye bilgi verir.",
+      "example_usage": "404 sayfa bulunamadı.",
+      "example_code": "res.status(200)",
+      "level": "beginner"
+    },
+    {
+      "term": "Immutable",
+      "category": "Programlama",
+      "description": "Değiştirilemez veri yapısı.",
+      "detailed_description": "Immutable yapılar yan etkileri azaltır.",
+      "example_usage": "State immutable tutulur.",
+      "example_code": "const newArr = [...arr]",
+      "level": "intermediate"
+    },
+    {
+      "term": "Index Scan",
+      "category": "Veritabanı",
+      "description": "Index kullanılarak yapılan sorgu taraması.",
+      "detailed_description": "Index scan performansı artırır.",
+      "example_usage": "Sorgu index üzerinden çalıştı.",
+      "example_code": "EXPLAIN SELECT",
+      "level": "intermediate"
+    },
+    {
+      "term": "Input Validation",
+      "category": "Güvenlik",
+      "description": "Kullanıcı girdilerinin kontrol edilmesi.",
+      "detailed_description": "Validation güvenlik açıklarını önler.",
+      "example_usage": "Boş input reddedildi.",
+      "example_code": "if(!email)",
+      "level": "beginner"
+    },
+    {
+      "term": "Instance Variable",
+      "category": "OOP",
+      "description": "Sınıfa ait değişken.",
+      "detailed_description": "Her nesne kendi instance variable değerine sahiptir.",
+      "example_usage": "User nesnesinin adı tutulur.",
+      "example_code": "this.name",
+      "level": "beginner"
+    },
+    {
+      "term": "Integration Test",
+      "category": "Test",
+      "description": "Bileşenlerin birlikte test edilmesi.",
+      "detailed_description": "Integration test, modüller arası uyumu kontrol eder.",
+      "example_usage": "API ve DB entegrasyonu test edildi.",
+      "example_code": "// integration test",
+      "level": "beginner"
+    },
+    {
+      "term": "Interpreter",
+      "category": "Programlama",
+      "description": "Kodu satır satır çalıştıran sistem.",
+      "detailed_description": "Python ve JavaScript interpreter kullanır.",
+      "example_usage": "Script anında çalıştırıldı.",
+      "example_code": "python app.py",
+      "level": "beginner"
+    },
+    {
+      "term": "Iteration Depth",
+      "category": "Algoritma",
+      "description": "Döngü veya tekrar derinliği.",
+      "detailed_description": "Derin iteration performansı etkileyebilir.",
+      "example_usage": "Nested loop sorun yarattı.",
+      "example_code": "for(...) { for(...) {} }",
+      "level": "intermediate"
+    },
+    {
+      "term": "Key-Value Store",
+      "category": "Veritabanı",
+      "description": "Anahtar-değer mantığıyla çalışan veritabanı.",
+      "detailed_description": "Redis gibi sistemler key-value store örneğidir.",
+      "example_usage": "Session bilgisi Redis'te tutulur.",
+      "example_code": "SET key value",
+      "level": "beginner"
+    },
+    {
+      "term": "KPI",
+      "category": "Ürün",
+      "description": "Performans ölçüm metriği.",
+      "detailed_description": "KPI'lar sistem ve ekip performansını ölçer.",
+      "example_usage": "Response time KPI olarak belirlendi.",
+      "example_code": "// metrics",
+      "level": "beginner"
+    },
+    {
+      "term": "Latency Optimization",
+      "category": "Performans",
+      "description": "Yanıt süresini düşürme çalışmaları.",
+      "detailed_description": "Cache ve CDN latency'yi azaltır.",
+      "example_usage": "API yanıt süresi optimize edildi.",
+      "example_code": "// optimize latency",
+      "level": "intermediate"
+    },
+    {
+      "term": "Lazy Loading",
+      "category": "Performans",
+      "description": "İçeriğin ihtiyaç anında yüklenmesi.",
+      "detailed_description": "Lazy loading başlangıç yükünü azaltır.",
+      "example_usage": "Görseller scroll ile yüklendi.",
+      "example_code": "loading='lazy'",
+      "level": "beginner"
+    },
+    {
+      "term": "Lexical Scope",
+      "category": "Programlama",
+      "description": "Değişkenlerin tanımlandığı kapsama göre erişimi.",
+      "detailed_description": "JavaScript'te scope tanımı kod yapısına bağlıdır.",
+      "example_usage": "Inner function outer değişkene erişir.",
+      "example_code": "// lexical scope",
+      "level": "intermediate"
+    },
+    {
+      "term": "Library Dependency",
+      "category": "Genel Yazılım",
+      "description": "Harici kütüphane bağımlılığı.",
+      "detailed_description": "Güncel tutulmazsa güvenlik riski oluşturur.",
+      "example_usage": "Eski dependency güncellendi.",
+      "example_code": "npm update",
+      "level": "beginner"
+    },
+    {
+      "term": "Load Test",
+      "category": "Test",
+      "description": "Sistemin yük altındaki davranışını ölçme.",
+      "detailed_description": "Yük testi kapasite planlamasında kullanılır.",
+      "example_usage": "1000 kullanıcı simüle edildi.",
+      "example_code": "// load testing",
+      "level": "beginner"
+    },
+    {
+      "term": "Local Storage",
+      "category": "Web",
+      "description": "Tarayıcıda kalıcı veri saklama alanı.",
+      "detailed_description": "LocalStorage oturumdan bağımsızdır.",
+      "example_usage": "Tema tercihi saklandı.",
+      "example_code": "localStorage.setItem()",
+      "level": "beginner"
+    },
+    {
+      "term": "Lock Mechanism",
+      "category": "Eşzamanlılık",
+      "description": "Kaynaklara eşzamanlı erişimi kontrol etme.",
+      "detailed_description": "Lock'lar race condition'ı önler.",
+      "example_usage": "DB kaydı kilitlendi.",
+      "example_code": "mutex.lock()",
+      "level": "intermediate"
+    },
+    {
+      "term": "Logging Level",
+      "category": "Geliştirme",
+      "description": "Log detay seviyeleri.",
+      "detailed_description": "Debug, info, warn ve error yaygındır.",
+      "example_usage": "Prod ortamında debug kapalı.",
+      "example_code": "logger.error()",
+      "level": "beginner"
+    },
+    {
+      "term": "Loose Coupling",
+      "category": "Yazılım Tasarımı",
+      "description": "Bileşenlerin zayıf bağımlı olması.",
+      "detailed_description": "Loose coupling bakım ve test kolaylığı sağlar.",
+      "example_usage": "Servisler bağımsız geliştirildi.",
+      "example_code": "// loosely coupled",
+      "level": "intermediate"
+    }
+  ,
+    {
+      "term": "Machine Learning",
+      "category": "Yapay Zeka",
+      "description": "Verilerden öğrenerek tahmin yapan sistemler.",
+      "detailed_description": "Machine Learning, açıkça programlanmadan veriye dayalı modeller oluşturur.",
+      "example_usage": "Kullanıcı davranışı ML modeliyle analiz edildi.",
+      "example_code": "// train model",
+      "level": "beginner"
+    },
+    {
+      "term": "Managed Service",
+      "category": "Bulut",
+      "description": "Bakımı servis sağlayıcı tarafından yapılan hizmet.",
+      "detailed_description": "Veritabanı ve cache servisleri genellikle managed sunulur.",
+      "example_usage": "Managed database tercih edildi.",
+      "example_code": "// managed service",
+      "level": "beginner"
+    },
+    {
+      "term": "Memory Leak",
+      "category": "Bellek Yönetimi",
+      "description": "Kullanılmayan belleğin serbest bırakılmaması.",
+      "detailed_description": "Memory leak uzun vadede performans sorunlarına yol açar.",
+      "example_usage": "Uygulama uzun sürede yavaşladı.",
+      "example_code": "// memory leak",
+      "level": "intermediate"
+    },
+    {
+      "term": "Message Queue",
+      "category": "Mimari",
+      "description": "Mesajların kuyruklanarak iletilmesi.",
+      "detailed_description": "Asenkron ve dayanıklı iletişim sağlar.",
+      "example_usage": "Siparişler kuyruğa alındı.",
+      "example_code": "publish(message)",
+      "level": "beginner"
+    },
+    {
+      "term": "Metadata",
+      "category": "Veri",
+      "description": "Veriyi tanımlayan ek bilgiler.",
+      "detailed_description": "Metadata arama ve sınıflandırmada kullanılır.",
+      "example_usage": "Dosya metadata bilgisi tutulur.",
+      "example_code": "// meta info",
+      "level": "beginner"
+    },
+    {
+      "term": "Method",
+      "category": "Programlama",
+      "description": "Bir sınıfa ait fonksiyon.",
+      "detailed_description": "Method'lar nesnenin davranışlarını tanımlar.",
+      "example_usage": "User.getName() çağrıldı.",
+      "example_code": "getName() {}",
+      "level": "beginner"
+    },
+    {
+      "term": "Mock",
+      "category": "Test",
+      "description": "Gerçek bileşeni taklit eden yapı.",
+      "detailed_description": "Mock'lar testlerde bağımlılıkları izole eder.",
+      "example_usage": "API çağrısı mocklandı.",
+      "example_code": "jest.mock()",
+      "level": "beginner"
+    },
+    {
+      "term": "Module",
+      "category": "Programlama",
+      "description": "Bağımsız kod birimi.",
+      "detailed_description": "Module'ler kod organizasyonu sağlar.",
+      "example_usage": "Auth modülü ayrıldı.",
+      "example_code": "import auth from './auth'",
+      "level": "beginner"
+    },
+    {
+      "term": "Monolith",
+      "category": "Mimari",
+      "description": "Tek parça halinde çalışan uygulama.",
+      "detailed_description": "Monolith yapılar küçük projelerde avantajlıdır.",
+      "example_usage": "Eski sistem monolith idi.",
+      "example_code": "// single app",
+      "level": "beginner"
+    },
+    {
+      "term": "Mutation Testing",
+      "category": "Test",
+      "description": "Testlerin gücünü ölçen test yöntemi.",
+      "detailed_description": "Kodda bilinçli hatalar oluşturularak test edilir.",
+      "example_usage": "Test coverage ölçüldü.",
+      "example_code": "// mutation test",
+      "level": "advanced"
+    },
+    {
+      "term": "Network Latency",
+      "category": "Ağ",
+      "description": "Ağ gecikme süresi.",
+      "detailed_description": "Fiziksel mesafe latency'yi etkiler.",
+      "example_usage": "Uzak sunucu latency artırdı.",
+      "example_code": "// ping",
+      "level": "beginner"
+    },
+    {
+      "term": "Node.js",
+      "category": "Backend",
+      "description": "JavaScript çalışma zamanı.",
+      "detailed_description": "Node.js sunucu tarafında JS çalıştırır.",
+      "example_usage": "API Node.js ile yazıldı.",
+      "example_code": "node app.js",
+      "level": "beginner"
+    },
+    {
+      "term": "Normalization",
+      "category": "Veritabanı",
+      "description": "Veri tekrarını azaltma süreci.",
+      "detailed_description": "Normalization veri tutarlılığını artırır.",
+      "example_usage": "Tablolar normalize edildi.",
+      "example_code": "// 3NF",
+      "level": "intermediate"
+    },
+    {
+      "term": "Null Pointer",
+      "category": "Programlama",
+      "description": "Boş referans hatası.",
+      "detailed_description": "Null pointer hataları crash'e yol açabilir.",
+      "example_usage": "Null kontrolü yapılmadı.",
+      "example_code": "if(obj == null)",
+      "level": "beginner"
+    },
+    {
+      "term": "Object",
+      "category": "OOP",
+      "description": "Veri ve davranışı bir arada tutan yapı.",
+      "detailed_description": "Class'tan türetilir.",
+      "example_usage": "User objesi oluşturuldu.",
+      "example_code": "new User()",
+      "level": "beginner"
+    },
+    {
+      "term": "Observer Pattern",
+      "category": "Yazılım Tasarımı",
+      "description": "Durum değişikliklerini izleme deseni.",
+      "detailed_description": "Event tabanlı sistemlerde yaygındır.",
+      "example_usage": "UI state değişimini dinler.",
+      "example_code": "// observer",
+      "level": "intermediate"
+    },
+    {
+      "term": "ORM",
+      "category": "Veritabanı",
+      "description": "Nesne-ilişkisel eşleme aracı.",
+      "detailed_description": "ORM SQL yazmadan DB işlemi yapmayı sağlar.",
+      "example_usage": "Sequelize ORM kullanıldı.",
+      "example_code": "User.findAll()",
+      "level": "beginner"
+    },
+    {
+      "term": "Overhead",
+      "category": "Performans",
+      "description": "Ek işlem maliyeti.",
+      "detailed_description": "Soyutlama katmanları overhead oluşturabilir.",
+      "example_usage": "Logging overhead yarattı.",
+      "example_code": "// performance cost",
+      "level": "intermediate"
+    },
+    {
+      "term": "Pagination",
+      "category": "Backend",
+      "description": "Verilerin sayfalara bölünmesi.",
+      "detailed_description": "Pagination performans ve UX iyileştirir.",
+      "example_usage": "Liste sayfalı getirildi.",
+      "example_code": "LIMIT 10 OFFSET 20",
+      "level": "beginner"
+    },
+    {
+      "term": "Parallel Processing",
+      "category": "Performans",
+      "description": "İşlemlerin aynı anda çalıştırılması.",
+      "detailed_description": "Çok çekirdekli sistemlerde kullanılır.",
+      "example_usage": "Görevler paralel çalıştı.",
+      "example_code": "// parallel jobs",
+      "level": "intermediate"
+    },
+    {
+      "term": "Pipeline",
+      "category": "DevOps",
+      "description": "Otomatik işlem zinciri.",
+      "detailed_description": "Build, test ve deploy adımlarını içerir.",
+      "example_usage": "CI/CD pipeline çalıştı.",
+      "example_code": "pipeline.yml",
+      "level": "beginner"
+    },
+    {
+      "term": "Polymorphism",
+      "category": "OOP",
+      "description": "Farklı nesnelerin aynı arayüzü kullanması.",
+      "detailed_description": "OOP'nin temel prensiplerinden biridir.",
+      "example_usage": "Override edilmiş method çağrıldı.",
+      "example_code": "@Override",
+      "level": "intermediate"
+    },
+    {
+      "term": "Queue",
+      "category": "Veri Yapıları",
+      "description": "FIFO mantığıyla çalışan yapı.",
+      "detailed_description": "Mesaj kuyruklarında sık kullanılır.",
+      "example_usage": "İstekler kuyruğa alındı.",
+      "example_code": "queue.push()",
+      "level": "beginner"
+    },
+    {
+      "term": "Race Condition",
+      "category": "Eşzamanlılık",
+      "description": "İşlemlerin sırasız çalışmasından doğan hata.",
+      "detailed_description": "Lock mekanizmaları ile önlenir.",
+      "example_usage": "Aynı veri eşzamanlı değişti.",
+      "example_code": "// race condition",
+      "level": "intermediate"
+    },
+    {
+      "term": "Refactoring",
+      "category": "Yazılım Kalitesi",
+      "description": "Kodun davranışını bozmadan iyileştirme.",
+      "detailed_description": "Refactoring okunabilirliği artırır.",
+      "example_usage": "Kod refactor edildi.",
+      "example_code": "// refactor",
+      "level": "beginner"
+    },
+    {
+      "term": "Repository",
+      "category": "Versiyon Kontrol",
+      "description": "Kodun saklandığı depo.",
+      "detailed_description": "GitHub bir repository barındırır.",
+      "example_usage": "Repo klonlandı.",
+      "example_code": "git clone",
+      "level": "beginner"
+    },
+    {
+      "term": "REST",
+      "category": "API",
+      "description": "Kaynak tabanlı API mimarisi.",
+      "detailed_description": "HTTP metodlarıyla çalışır.",
+      "example_usage": "REST API geliştirildi.",
+      "example_code": "GET /users",
+      "level": "beginner"
+    },
+    {
+      "term": "Rollback",
+      "category": "Operasyon",
+      "description": "Önceki sürüme geri dönüş.",
+      "detailed_description": "Hatalı deploy sonrası kullanılır.",
+      "example_usage": "Deploy rollback edildi.",
+      "example_code": "// rollback",
+      "level": "beginner"
+    },
+    {
+      "term": "Runtime",
+      "category": "Genel Yazılım",
+      "description": "Kodun çalıştığı an.",
+      "detailed_description": "Runtime hataları çalışma sırasında oluşur.",
+      "example_usage": "Runtime error alındı.",
+      "example_code": "// runtime",
+      "level": "beginner"
+    }
+  ,
+    {
+      "term": "Microservice",
+      "category": "Mimari",
+      "description": "Bağımsız çalışan küçük servislerden oluşan mimari.",
+      "detailed_description": "Microservice mimarisi, her servisin kendi veritabanı ve deploy süreci olmasını sağlar.",
+      "example_usage": "Auth ve ödeme servisleri ayrıldı.",
+      "example_code": "// microservice",
+      "level": "intermediate"
+    },
+    {
+      "term": "Middleware",
+      "category": "Backend",
+      "description": "İstek ve cevap arasına giren ara katman.",
+      "detailed_description": "Middleware loglama, auth ve validation için kullanılır.",
+      "example_usage": "Auth middleware eklendi.",
+      "example_code": "app.use(auth)",
+      "level": "beginner"
+    },
+    {
+      "term": "Migration",
+      "category": "Veritabanı",
+      "description": "Veritabanı şema değişikliği süreci.",
+      "detailed_description": "Migration ile tablo ve kolon değişiklikleri versiyonlanır.",
+      "example_usage": "Yeni kolon migration ile eklendi.",
+      "example_code": "npx prisma migrate",
+      "level": "beginner"
+    },
+    {
+      "term": "Mock Server",
+      "category": "Test",
+      "description": "Gerçek API yerine sahte servis.",
+      "detailed_description": "Frontend geliştirmede backend olmadan çalışmayı sağlar.",
+      "example_usage": "Mock server ile test yapıldı.",
+      "example_code": "// mock api",
+      "level": "beginner"
+    },
+    {
+      "term": "Modular Design",
+      "category": "Yazılım Tasarımı",
+      "description": "Sistemi bağımsız modüllere ayırma yaklaşımı.",
+      "detailed_description": "Bakım ve ölçeklenebilirliği artırır.",
+      "example_usage": "Sistem modüler tasarlandı.",
+      "example_code": "// modules",
+      "level": "beginner"
+    },
+    {
+      "term": "Monorepo",
+      "category": "Versiyon Kontrol",
+      "description": "Tek repo içinde çoklu proje yapısı.",
+      "detailed_description": "Paylaşılan kod ve paket yönetimini kolaylaştırır.",
+      "example_usage": "Frontend ve backend aynı repoda.",
+      "example_code": "// monorepo",
+      "level": "intermediate"
+    },
+    {
+      "term": "MVC",
+      "category": "Mimari",
+      "description": "Model-View-Controller mimari deseni.",
+      "detailed_description": "İş mantığı, arayüz ve kontrol katmanlarını ayırır.",
+      "example_usage": "MVC yapı kullanıldı.",
+      "example_code": "// controller",
+      "level": "beginner"
+    },
+    {
+      "term": "Namespace",
+      "category": "Programlama",
+      "description": "İsim çakışmalarını önleyen yapı.",
+      "detailed_description": "Büyük projelerde kod organizasyonu sağlar.",
+      "example_usage": "Utility namespace tanımlandı.",
+      "example_code": "namespace Utils",
+      "level": "beginner"
+    },
+    {
+      "term": "Network Protocol",
+      "category": "Ağ",
+      "description": "İletişim kurallarını belirleyen standart.",
+      "detailed_description": "HTTP, TCP, UDP yaygın protokollerdir.",
+      "example_usage": "HTTP protokolü kullanıldı.",
+      "example_code": "// protocol",
+      "level": "beginner"
+    },
+    {
+      "term": "NoSQL",
+      "category": "Veritabanı",
+      "description": "İlişkisel olmayan veritabanı türü.",
+      "detailed_description": "Esnek şema ve yüksek ölçeklenebilirlik sunar.",
+      "example_usage": "MongoDB tercih edildi.",
+      "example_code": "db.collection.find()",
+      "level": "beginner"
+    },
+    {
+      "term": "Observer",
+      "category": "Yazılım Tasarımı",
+      "description": "Olay tabanlı bildirim sistemi.",
+      "detailed_description": "Bir nesnedeki değişikliği diğerlerine bildirir.",
+      "example_usage": "State değişimi izlendi.",
+      "example_code": "// observer",
+      "level": "intermediate"
+    },
+    {
+      "term": "Open Source",
+      "category": "Genel Yazılım",
+      "description": "Kaynak kodu açık yazılım.",
+      "detailed_description": "Topluluk katkısına açıktır.",
+      "example_usage": "Open source kütüphane kullanıldı.",
+      "example_code": "// github repo",
+      "level": "beginner"
+    },
+    {
+      "term": "Optimization",
+      "category": "Performans",
+      "description": "Kaynak kullanımını iyileştirme.",
+      "detailed_description": "Hız, bellek ve maliyet azaltmayı hedefler.",
+      "example_usage": "Query optimize edildi.",
+      "example_code": "// optimize",
+      "level": "beginner"
+    },
+    {
+      "term": "Package Manager",
+      "category": "Araçlar",
+      "description": "Bağımlılıkları yöneten araç.",
+      "detailed_description": "npm, yarn, pnpm örnektir.",
+      "example_usage": "Paket npm ile yüklendi.",
+      "example_code": "npm install",
+      "level": "beginner"
+    },
+    {
+      "term": "Parallelism",
+      "category": "Performans",
+      "description": "İşlerin aynı anda yürütülmesi.",
+      "detailed_description": "CPU çekirdekleri etkin kullanılır.",
+      "example_usage": "Task'ler paralel çalıştı.",
+      "example_code": "// parallel",
+      "level": "intermediate"
+    },
+    {
+      "term": "Payload",
+      "category": "API",
+      "description": "İstek veya cevap içeriği.",
+      "detailed_description": "Genellikle JSON formatındadır.",
+      "example_usage": "Payload boyutu küçültüldü.",
+      "example_code": "{ \"id\": 1 }",
+      "level": "beginner"
+    },
+    {
+      "term": "Permission",
+      "category": "Güvenlik",
+      "description": "Erişim yetkisi.",
+      "detailed_description": "Rol bazlı erişimde kullanılır.",
+      "example_usage": "Okuma izni verildi.",
+      "example_code": "// permission check",
+      "level": "beginner"
+    },
+    {
+      "term": "Process",
+      "category": "İşletim Sistemi",
+      "description": "Çalışan program örneği.",
+      "detailed_description": "Her process kendi bellek alanına sahiptir.",
+      "example_usage": "Node process çalışıyor.",
+      "example_code": "ps aux",
+      "level": "beginner"
+    },
+    {
+      "term": "Profiling",
+      "category": "Performans",
+      "description": "Performans analizi yapma.",
+      "detailed_description": "Darboğazları tespit etmek için kullanılır.",
+      "example_usage": "CPU profili alındı.",
+      "example_code": "// profiler",
+      "level": "intermediate"
+    },
+    {
+      "term": "Promise",
+      "category": "JavaScript",
+      "description": "Asenkron işlemi temsil eden yapı.",
+      "detailed_description": "Resolved veya rejected olabilir.",
+      "example_usage": "API çağrısı promise döndü.",
+      "example_code": "fetch().then()",
+      "level": "beginner"
+    },
+    {
+      "term": "Proxy",
+      "category": "Ağ",
+      "description": "İstekleri aracı olarak yönlendiren sistem.",
+      "detailed_description": "Güvenlik ve cache amaçlı kullanılır.",
+      "example_usage": "Reverse proxy kuruldu.",
+      "example_code": "// proxy",
+      "level": "beginner"
+    },
+    {
+      "term": "Query",
+      "category": "Veritabanı",
+      "description": "Veritabanına gönderilen sorgu.",
+      "detailed_description": "SQL veya NoSQL sorguları olabilir.",
+      "example_usage": "Select query yazıldı.",
+      "example_code": "SELECT * FROM users",
+      "level": "beginner"
+    },
+    {
+      "term": "Queue Worker",
+      "category": "Backend",
+      "description": "Kuyruktaki işleri işleyen servis.",
+      "detailed_description": "Arka plan görevlerini yürütür.",
+      "example_usage": "Email worker çalıştı.",
+      "example_code": "// worker",
+      "level": "beginner"
+    },
+    {
+      "term": "Rate Limiting",
+      "category": "Güvenlik",
+      "description": "İstek sayısını sınırlama.",
+      "detailed_description": "DDoS ve abuse önlemek için kullanılır.",
+      "example_usage": "API rate limit eklendi.",
+      "example_code": "// rate limit",
+      "level": "beginner"
+    },
+    {
+      "term": "Reactive Programming",
+      "category": "Programlama",
+      "description": "Veri akışına tepki veren yaklaşım.",
+      "detailed_description": "Event ve stream tabanlı çalışır.",
+      "example_usage": "UI reactive güncellendi.",
+      "example_code": "// observable",
+      "level": "advanced"
+    },
+    {
+      "term": "Recursion",
+      "category": "Algoritma",
+      "description": "Fonksiyonun kendini çağırması.",
+      "detailed_description": "Ağaç ve grafik işlemlerinde yaygındır.",
+      "example_usage": "Faktöriyel recursive hesaplandı.",
+      "example_code": "factorial(n-1)",
+      "level": "beginner"
+    },
+    {
+      "term": "Refactor",
+      "category": "Yazılım Kalitesi",
+      "description": "Kodun iç yapısını iyileştirme.",
+      "detailed_description": "Davranış değişmeden yapılır.",
+      "example_usage": "Kod sadeleştirildi.",
+      "example_code": "// refactor",
+      "level": "beginner"
+    },
+    {
+      "term": "Regression Test",
+      "category": "Test",
+      "description": "Yeni değişikliklerin eski özellikleri bozmadığını test eder.",
+      "detailed_description": "Otomasyon testlerinde kritik öneme sahiptir.",
+      "example_usage": "Regression test çalıştırıldı.",
+      "example_code": "// regression",
+      "level": "beginner"
+    },
+    {
+      "term": "Remote Repository",
+      "category": "Versiyon Kontrol",
+      "description": "Uzak sunucudaki kod deposu.",
+      "detailed_description": "GitHub, GitLab örnektir.",
+      "example_usage": "Remote repo güncellendi.",
+      "example_code": "git push",
+      "level": "beginner"
+    }
+  ,
+    {
+      "term": "Replica",
+      "category": "Veritabanı",
+      "description": "Ana veritabanının kopyası.",
+      "detailed_description": "Okuma yükünü azaltmak ve yedeklilik sağlamak için kullanılır.",
+      "example_usage": "Read işlemleri replica'dan yapıldı.",
+      "example_code": "// db replica",
+      "level": "intermediate"
+    },
+    {
+      "term": "Request",
+      "category": "API",
+      "description": "İstemciden sunucuya gönderilen istek.",
+      "detailed_description": "HTTP request header ve body içerir.",
+      "example_usage": "Request backend'e ulaştı.",
+      "example_code": "POST /login",
+      "level": "beginner"
+    },
+    {
+      "term": "Response",
+      "category": "API",
+      "description": "Sunucudan istemciye dönen cevap.",
+      "detailed_description": "Status code ve veri içerir.",
+      "example_usage": "Response 200 döndü.",
+      "example_code": "res.status(200)",
+      "level": "beginner"
+    },
+    {
+      "term": "Retry Mechanism",
+      "category": "Dayanıklılık",
+      "description": "Başarısız işlemleri tekrar deneme yapısı.",
+      "detailed_description": "Geçici hatalarda sistem stabilitesini artırır.",
+      "example_usage": "API çağrısı retry edildi.",
+      "example_code": "// retry",
+      "level": "intermediate"
+    },
+    {
+      "term": "Rollback Strategy",
+      "category": "DevOps",
+      "description": "Hatalı deploy sonrası geri dönüş planı.",
+      "detailed_description": "Zero-downtime için kritiktir.",
+      "example_usage": "Rollback stratejisi belirlendi.",
+      "example_code": "// rollback plan",
+      "level": "intermediate"
+    },
+    {
+      "term": "Routing",
+      "category": "Backend",
+      "description": "İsteklerin doğru endpoint'e yönlendirilmesi.",
+      "detailed_description": "URL ve HTTP methodlarına göre çalışır.",
+      "example_usage": "Route tanımı eklendi.",
+      "example_code": "app.get('/users')",
+      "level": "beginner"
+    },
+    {
+      "term": "Rule Engine",
+      "category": "İş Mantığı",
+      "description": "Kurallara dayalı karar mekanizması.",
+      "detailed_description": "Dinamik iş kuralları yönetimini sağlar.",
+      "example_usage": "Fiyatlama kuralları engine ile belirlendi.",
+      "example_code": "// rules",
+      "level": "advanced"
+    },
+    {
+      "term": "Runtime Environment",
+      "category": "Genel Yazılım",
+      "description": "Uygulamanın çalıştığı ortam.",
+      "detailed_description": "Node, JVM gibi ortamlar runtime sağlar.",
+      "example_usage": "Production runtime ayarlandı.",
+      "example_code": "// env",
+      "level": "beginner"
+    },
+    {
+      "term": "Scalability",
+      "category": "Mimari",
+      "description": "Sistemin büyümeye uyum sağlayabilmesi.",
+      "detailed_description": "Horizontal ve vertical scaling yöntemleri vardır.",
+      "example_usage": "Sistem yatay ölçeklendi.",
+      "example_code": "// scale",
+      "level": "beginner"
+    },
+    {
+      "term": "Scheduler",
+      "category": "Backend",
+      "description": "Zamanlanmış görevleri çalıştıran yapı.",
+      "detailed_description": "Cron tabanlı veya event tabanlı olabilir.",
+      "example_usage": "Gece batch job çalıştı.",
+      "example_code": "cron.schedule()",
+      "level": "beginner"
+    },
+    {
+      "term": "Schema",
+      "category": "Veritabanı",
+      "description": "Veri yapısının tanımı.",
+      "detailed_description": "Tablo, kolon ve ilişkileri içerir.",
+      "example_usage": "Schema güncellendi.",
+      "example_code": "// schema",
+      "level": "beginner"
+    },
+    {
+      "term": "SDK",
+      "category": "Araçlar",
+      "description": "Yazılım geliştirme kiti.",
+      "detailed_description": "API kullanımını kolaylaştıran araçlar sunar.",
+      "example_usage": "Payment SDK eklendi.",
+      "example_code": "// sdk init",
+      "level": "beginner"
+    },
+    {
+      "term": "Semaphore",
+      "category": "Eşzamanlılık",
+      "description": "Erişim kontrol mekanizması.",
+      "detailed_description": "Kaynak paylaşımını sınırlar.",
+      "example_usage": "Semaphore ile lock sağlandı.",
+      "example_code": "// semaphore",
+      "level": "advanced"
+    },
+    {
+      "term": "Serialization",
+      "category": "Veri",
+      "description": "Verinin taşınabilir formata dönüştürülmesi.",
+      "detailed_description": "JSON ve XML yaygın formatlardır.",
+      "example_usage": "Object serialize edildi.",
+      "example_code": "JSON.stringify(obj)",
+      "level": "beginner"
+    },
+    {
+      "term": "Session",
+      "category": "Güvenlik",
+      "description": "Kullanıcı oturumu bilgisi.",
+      "detailed_description": "Sunucu veya client tarafında tutulabilir.",
+      "example_usage": "Session süresi doldu.",
+      "example_code": "// session",
+      "level": "beginner"
+    },
+    {
+      "term": "Singleton",
+      "category": "Yazılım Tasarımı",
+      "description": "Tek instance oluşturan tasarım deseni.",
+      "detailed_description": "Global erişim gerektiren yapılar için kullanılır.",
+      "example_usage": "Config singleton yapıldı.",
+      "example_code": "// singleton",
+      "level": "intermediate"
+    },
+    {
+      "term": "Snapshot",
+      "category": "Veri",
+      "description": "Verinin belirli andaki kopyası.",
+      "detailed_description": "Backup ve geri dönüşlerde kullanılır.",
+      "example_usage": "DB snapshot alındı.",
+      "example_code": "// snapshot",
+      "level": "beginner"
+    },
+    {
+      "term": "Socket",
+      "category": "Ağ",
+      "description": "Gerçek zamanlı iletişim kanalı.",
+      "detailed_description": "WebSocket anlık veri iletir.",
+      "example_usage": "Canlı chat socket ile çalıştı.",
+      "example_code": "io.on('connection')",
+      "level": "beginner"
+    },
+    {
+      "term": "Source Code",
+      "category": "Genel Yazılım",
+      "description": "İnsan tarafından okunabilir kod.",
+      "detailed_description": "Derlenmeden önceki haldir.",
+      "example_usage": "Source code incelendi.",
+      "example_code": "// source",
+      "level": "beginner"
+    },
+    {
+      "term": "State Management",
+      "category": "Frontend",
+      "description": "Uygulama durumunun yönetimi.",
+      "detailed_description": "Redux, Zustand gibi araçlar kullanılır.",
+      "example_usage": "State global yönetildi.",
+      "example_code": "// state",
+      "level": "beginner"
+    },
+    {
+      "term": "Streaming",
+      "category": "Veri",
+      "description": "Verinin parça parça iletilmesi.",
+      "detailed_description": "Büyük veri ve medya aktarımında kullanılır.",
+      "example_usage": "Video stream edildi.",
+      "example_code": "// stream",
+      "level": "beginner"
+    },
+    {
+      "term": "Thread",
+      "category": "İşletim Sistemi",
+      "description": "Process içindeki çalışma birimi.",
+      "detailed_description": "Thread'ler aynı belleği paylaşır.",
+      "example_usage": "Worker thread açıldı.",
+      "example_code": "// thread",
+      "level": "beginner"
+    },
+    {
+      "term": "Throttling",
+      "category": "Performans",
+      "description": "İşlem sıklığını sınırlama.",
+      "detailed_description": "Sistem yükünü dengelemek için kullanılır.",
+      "example_usage": "İstekler throttle edildi.",
+      "example_code": "// throttle",
+      "level": "beginner"
+    },
+    {
+      "term": "Token",
+      "category": "Güvenlik",
+      "description": "Kimlik doğrulama anahtarı.",
+      "detailed_description": "JWT en yaygın token türüdür.",
+      "example_usage": "Token header'a eklendi.",
+      "example_code": "Authorization: Bearer",
+      "level": "beginner"
+    },
+    {
+      "term": "Transaction",
+      "category": "Veritabanı",
+      "description": "Atomik veritabanı işlemi.",
+      "detailed_description": "ACID kurallarına uyar.",
+      "example_usage": "Transaction rollback edildi.",
+      "example_code": "BEGIN TRANSACTION",
+      "level": "beginner"
+    },
+    {
+      "term": "Type Safety",
+      "category": "Programlama",
+      "description": "Tip hatalarını önleme yaklaşımı.",
+      "detailed_description": "TypeScript bu amaçla kullanılır.",
+      "example_usage": "Type safe kod yazıldı.",
+      "example_code": "string | number",
+      "level": "beginner"
+    },
+    {
+      "term": "Unit Test",
+      "category": "Test",
+      "description": "En küçük kod birimini test eder.",
+      "detailed_description": "Fonksiyon bazlı testlerdir.",
+      "example_usage": "Unit test yazıldı.",
+      "example_code": "expect(sum()).toBe()",
+      "level": "beginner"
+    },
+    {
+      "term": "Versioning",
+      "category": "API",
+      "description": "Sürüm yönetimi.",
+      "detailed_description": "API değişikliklerini kontrol eder.",
+      "example_usage": "v2 endpoint açıldı.",
+      "example_code": "/api/v2",
+      "level": "beginner"
+    }
+  ]
+  

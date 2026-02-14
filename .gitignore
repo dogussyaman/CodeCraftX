@@ -1,0 +1,68 @@
+# See https://help.github.com/articles/ignoring-files/ for more about ignoring files.
+
+# dependencies
+/node_modules
+/.pnp
+.pnp.js
+.pnpm-store
+
+# next.js
+/.next/
+/out/
+
+# production
+/build
+/dist
+
+# debug & logs
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+.pnpm-debug.log*
+*.log
+
+# env files (never commit secrets)
+.env
+.env.*
+.env.local
+.env.development.local
+.env.test.local
+.env.production.local
+!.env.example
+
+# vercel
+.vercel
+
+# typescript
+*.tsbuildinfo
+next-env.d.ts
+
+# cache & turbo
+.cache
+.turbo
+.eslintcache
+.prettiercache
+
+# OS
+.DS_Store
+Thumbs.db
+ehthumbs.db
+
+# IDE (optional; uncomment if you don't want to share)
+# .idea/
+# *.swp
+# *.swo
+
+# keys & secrets
+*.pem
+*.key
+
+# local / API collection (may contain project URLs or env var names)
+codecrafters.json
+
+
+json/
+
+# Root-level provinces.json ignored; public copy is tracked
+/provinces.json
+!public/provinces.json
