@@ -16,3 +16,9 @@ export const CONTACT = {
 
 /** Topluluk Discord sunucusu URL'i. Boşsa "Discord'a Katıl" butonu devre dışı gösterilir. */
 export const COMMUNITY_DISCORD_URL = process.env.NEXT_PUBLIC_DISCORD_URL ?? ""
+
+/** Topluluk GitHub organizasyonu/repo URL'i. */
+export const COMMUNITY_GITHUB_URL = process.env.NEXT_PUBLIC_GITHUB_URL ?? "https://github.com"
+
+/** Topluluk LinkedIn sayfası URL'i. */
+export const COMMUNITY_LINKEDIN_URL = process.env.NEXT_PUBLIC_LINKEDIN_URL ?? "https://linkedin.com"

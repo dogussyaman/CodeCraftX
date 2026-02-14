@@ -84,7 +84,7 @@ export function ModernFooter() {
                 { label: "Haberler", href: "/haberler" },
                 { label: "Terimler", href: "/terimler" },
                 { label: "Projeler", href: "/projeler" },
-                { label: "Topluluk", href: "/topluluk" },
+                { label: "Topluluk", href: "/community" },
                 { label: "Etkinlikler", href: "/etkinlikler" },
                 { label: "Destek", href: "/destek" },
               ].map((link) => (
