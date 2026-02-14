@@ -76,10 +76,15 @@ export default async function IKTakvimPage() {
       developer_selected_slot,
       meet_link,
       title,
+      notes,
+      invited_attendee_ids,
       applications:application_id (
         id,
-        job_postings:job_id ( title ),
-        profiles:developer_id ( full_name )
+        job_id,
+        developer_id,
+        match_score,
+        job_postings:job_id ( title, location ),
+        profiles:developer_id ( full_name, email, phone )
       )
     `
     )
@@ -110,6 +115,35 @@ export default async function IKTakvimPage() {
     return jobId && companyJobIds.has(jobId)
   })
 
+  const matchKey = (jobId: string, devId: string) => `${jobId}|${devId}`
+  const { data: matches } = await supabase
+    .from("matches")
+    .select("job_id, developer_id, matching_skills")
+    .in("job_id", jobIds.length > 0 ? jobIds : [""])
+  const skillsByKey = new Map<string, string[]>()
+  for (const m of matches ?? []) {
+    const r = m as { job_id: string; developer_id: string; matching_skills?: string[] | null }
+    if (r.job_id && r.developer_id && Array.isArray(r.matching_skills)) {
+      skillsByKey.set(matchKey(r.job_id, r.developer_id), r.matching_skills)
+    }
+  }
+
+  const allAttendeeIds = new Set<string>()
+  for (const i of filteredInterviews) {
+    const ids = (i as { invited_attendee_ids?: string[] | null }).invited_attendee_ids
+    if (Array.isArray(ids)) for (const id of ids) allAttendeeIds.add(id)
+  }
+  const attendeeIdsList = Array.from(allAttendeeIds)
+  const { data: attendeeProfiles } = await supabase
+    .from("profiles")
+    .select("id, full_name, email")
+    .in("id", attendeeIdsList.length > 0 ? attendeeIdsList : [""])
+  const attendeeMap = new Map<string, { id: string; full_name: string; email?: string | null }>()
+  for (const p of attendeeProfiles ?? []) {
+    const r = p as { id: string; full_name: string; email?: string | null }
+    attendeeMap.set(r.id, { id: r.id, full_name: r.full_name, email: r.email ?? null })
+  }
+
   const events: CalendarEvent[] = filteredInterviews.map((int) => {
     const row = int as {
       id: string
@@ -119,14 +153,34 @@ export default async function IKTakvimPage() {
       developer_selected_slot?: string | null
       scheduled_at?: string
       meet_link?: string | null
+      notes?: string | null
+      invited_attendee_ids?: string[] | null
       applications?: {
-        job_postings?: { title?: string }
-        profiles?: { full_name?: string }
-      } | { job_postings?: { title?: string }; profiles?: { full_name?: string } }[]
+        job_id?: string
+        developer_id?: string
+        match_score?: number | null
+        job_postings?: { title?: string; location?: string }
+        profiles?: { full_name?: string; email?: string; phone?: string }
+      } | { job_id?: string; developer_id?: string; match_score?: number | null; job_postings?: { title?: string; location?: string }; profiles?: { full_name?: string; email?: string; phone?: string } }[]
     }
     const app = Array.isArray(row.applications) ? row.applications[0] : row.applications
     const jobTitle = app?.job_postings?.title ?? "Görüşme"
+    const jobLocation = app?.job_postings?.location ?? null
+    const matchScore = app?.match_score ?? null
     const candidateName = app?.profiles?.full_name ?? "Aday"
+    const candidateEmail = app?.profiles?.email ?? null
+    const candidatePhone = app?.profiles?.phone ?? null
+    const jobId = app?.job_id
+    const developerId = app?.developer_id
+    const matchingSkills =
+      jobId && developerId ? skillsByKey.get(matchKey(jobId, developerId)) ?? null : null
+    const attendeeIds = row.invited_attendee_ids ?? []
+    const attendees = Array.isArray(attendeeIds)
+      ? attendeeIds
+          .map((id) => attendeeMap.get(id))
+          .filter(Boolean) as { id: string; full_name: string; email?: string | null }[]
+      : []
+
     const dateStr =
       row.proposed_date ?? (row.scheduled_at ? row.scheduled_at.slice(0, 10) : "")
     const timeStr =
@@ -151,6 +205,13 @@ export default async function IKTakvimPage() {
       applicationId: row.application_id,
       interviewId: row.id,
       candidateName,
+      candidateEmail,
+      candidatePhone,
+      jobLocation,
+      matchScore,
+      matchingSkills,
+      attendees,
+      notes: row.notes ?? null,
     }
   })
 
@@ -160,6 +221,7 @@ export default async function IKTakvimPage() {
       title="Takvim"
       subtitle="Planlanan görüşmeleriniz"
       emptyMessage="Bu tarihte görüşme yok"
+      canEditNotes
     />
   )
 }

@@ -41,8 +41,8 @@ export function DeveloperRecentMatches({ cvCount, recentMatches }: DeveloperRece
                     Son Eşleşmeler
                 </h2>
                 <Button variant="ghost" size="sm" asChild className="hover:bg-primary/5 hover:text-primary">
-                    <Link href="/dashboard/gelistirici/eslesmeler">
-                        Tümünü Gör <ChevronRight className="ml-1 size-4" />
+                    <Link href="/is-ilanlari">
+                        İlanlara Git <ChevronRight className="ml-1 size-4" />
                     </Link>
                 </Button>
             </div>
@@ -102,7 +102,7 @@ export function DeveloperRecentMatches({ cvCount, recentMatches }: DeveloperRece
                                         asChild
                                         className="shrink-0 w-full sm:w-auto opacity-100 sm:opacity-0 sm:group-hover:opacity-100 transition-opacity"
                                     >
-                                        <Link href={`/dashboard/gelistirici/eslesmeler/${match.id}`}>
+                                        <Link href={`/is-ilanlari/${match.job_id}`}>
                                             İncele
                                         </Link>
                                     </Button>

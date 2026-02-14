@@ -16,6 +16,7 @@ export default async function GelistiriciTakvimPage() {
       id,
       job_postings:job_id (
         title,
+        location,
         companies:company_id ( name )
       ),
       interviews (
@@ -24,18 +25,39 @@ export default async function GelistiriciTakvimPage() {
         proposed_date,
         proposed_time_slots,
         developer_selected_slot,
-        scheduled_at
+        scheduled_at,
+        invited_attendee_ids
       )
     `
     )
     .eq("developer_id", user.id)
 
+  const allAttendeeIds = new Set<string>()
+  for (const app of applications ?? []) {
+    const interviews = (app.interviews ?? []) as { invited_attendee_ids?: string[] | null }[]
+    for (const int of interviews) {
+      const ids = int.invited_attendee_ids
+      if (Array.isArray(ids)) for (const id of ids) allAttendeeIds.add(id)
+    }
+  }
+  const attendeeIdsList = Array.from(allAttendeeIds)
+  const { data: attendeeProfiles } = await supabase
+    .from("profiles")
+    .select("id, full_name, email")
+    .in("id", attendeeIdsList.length > 0 ? attendeeIdsList : [""])
+  const attendeeMap = new Map<string, { id: string; full_name: string; email?: string | null }>()
+  for (const p of attendeeProfiles ?? []) {
+    const r = p as { id: string; full_name: string; email?: string | null }
+    attendeeMap.set(r.id, { id: r.id, full_name: r.full_name, email: r.email ?? null })
+  }
+
   const events: CalendarEvent[] = []
 
   for (const app of applications ?? []) {
-    const job = app.job_postings as { title?: string; companies?: { name?: string } } | null
+    const job = app.job_postings as { title?: string; location?: string; companies?: { name?: string } } | null
     const companyName = job?.companies?.name ?? "Şirket"
     const title = job?.title ?? "Görüşme"
+    const jobLocation = job?.location ?? null
     const interviews = (app.interviews ?? []) as {
       id: string
       meet_link?: string | null
@@ -43,6 +65,7 @@ export default async function GelistiriciTakvimPage() {
       proposed_time_slots?: string[] | null
       developer_selected_slot?: string | null
       scheduled_at?: string
+      invited_attendee_ids?: string[] | null
     }[]
 
     for (const int of interviews) {
@@ -64,6 +87,13 @@ export default async function GelistiriciTakvimPage() {
             })
           : "—")
 
+      const attendeeIds = int.invited_attendee_ids ?? []
+      const attendees = Array.isArray(attendeeIds)
+        ? attendeeIds
+            .map((id) => attendeeMap.get(id))
+            .filter(Boolean) as { id: string; full_name: string; email?: string | null }[]
+        : []
+
       events.push({
         date: dateStr,
         time: typeof timeStr === "string" ? timeStr : "—",
@@ -72,6 +102,8 @@ export default async function GelistiriciTakvimPage() {
         meetLink: int.meet_link ?? null,
         applicationId: app.id,
         interviewId: int.id,
+        jobLocation,
+        attendees,
       })
     }
   }

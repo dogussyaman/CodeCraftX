@@ -1,10 +1,11 @@
 "use client"
 
 import { useState, useMemo } from "react"
+import Link from "next/link"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import { Badge } from "@/components/ui/badge"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
-import { Star, Mail, Phone, Briefcase, CheckCircle2 } from "lucide-react"
+import { Star, Mail, Phone, Briefcase, CheckCircle2, CalendarDays, Video, Clock } from "lucide-react"
 import { CircularProgress } from "@/components/ui/circular-progress"
 
 interface Match {
@@ -23,6 +24,12 @@ interface Match {
         email?: string
         phone?: string
     } | null
+    interview?: {
+        id: string
+        date: string
+        time: string
+        meetLink: string | null
+    }
 }
 
 interface Job {
@@ -199,6 +206,40 @@ export function MatchesWithFilters({ matches, jobs }: MatchesWithFiltersProps) {
                                         </div>
                                     )}
                                 </div>
+
+                                {/* Görüşme detayları (Mülakat aşamasında + planlanmış görüşme varsa) */}
+                                {match.status === "hired" && match.interview && (
+                                    <div className="pt-3 border-t border-border/40 space-y-2">
+                                        <div className="text-xs font-medium text-muted-foreground flex items-center gap-1.5">
+                                            <CalendarDays className="size-3.5" />
+                                            Görüşme detayları
+                                        </div>
+                                        <div className="flex flex-wrap items-center gap-3 text-sm text-foreground">
+                                            <span className="inline-flex items-center gap-1">
+                                                <Clock className="size-3.5" />
+                                                {match.interview.date} — {match.interview.time}
+                                            </span>
+                                            {match.interview.meetLink && (
+                                                <a
+                                                    href={match.interview.meetLink}
+                                                    target="_blank"
+                                                    rel="noopener noreferrer"
+                                                    className="inline-flex items-center gap-1 text-primary hover:underline"
+                                                >
+                                                    <Video className="size-3.5" />
+                                                    Toplantı linki
+                                                </a>
+                                            )}
+                                        </div>
+                                        <Link
+                                            href="/dashboard/ik/takvim"
+                                            className="inline-flex items-center gap-1.5 text-xs font-medium text-primary hover:underline"
+                                        >
+                                            <CalendarDays className="size-3.5" />
+                                            Takvimde gör
+                                        </Link>
+                                    </div>
+                                )}
 
                                 {/* Skills */}
                                 {match.matching_skills && Array.isArray(match.matching_skills) && match.matching_skills.length > 0 && (
