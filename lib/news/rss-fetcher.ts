@@ -16,11 +16,13 @@ export const RSS_SOURCES: { url: string; source: string; language: "tr" | "en" }
   { url: "https://webrazzi.com/feed/", source: "Webrazzi", language: "tr" },
   { url: "https://shiftdelete.net/feed", source: "ShiftDelete", language: "tr" },
   { url: "https://www.bthaber.com/feed", source: "BT Haber", language: "tr" },
+  { url: "https://www.donanimhaber.com/rss/tum/", source: "DonanımHaber", language: "tr" },
   // İngilizce (yazılım / tech)
   { url: "https://techcrunch.com/feed/", source: "TechCrunch", language: "en" },
   { url: "https://www.theverge.com/rss/index.xml", source: "The Verge", language: "en" },
   { url: "https://feeds.arstechnica.com/arstechnica/index", source: "Ars Technica", language: "en" },
   { url: "https://www.wired.com/feed/rss", source: "Wired", language: "en" },
+  { url: "https://thenextweb.com/feed", source: "The Next Web", language: "en" },
 ]
 
 function withTimeout<T>(promise: Promise<T>, ms: number): Promise<T> {

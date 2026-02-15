@@ -14,7 +14,7 @@ import { CommunityHero } from "./_components/CommunityHero"
 import { CommunitySidebar } from "./_components/CommunitySidebar"
 import { CommunityFeeds, type FeedPost } from "./_components/CommunityFeeds"
 import { CommunityRightSidebar } from "./_components/CommunityRightSidebar"
-import { getAggregatedNews } from "@/lib/news/aggregate"
+import { getAggregatedNews, type AggregatedNews } from "@/lib/news/aggregate"
 import { Card, CardContent } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
 import { FileText, BookOpen, Link2 } from "lucide-react"
@@ -28,60 +28,64 @@ export const metadata: Metadata = buildPageMetadata({
 
 const MAX_BLOG_POSTS = 24
 
+type AnnouncementRow = {
+  id: string
+  title: string
+  body: string
+  created_at: string
+  is_pinned?: boolean
+  profiles?: { full_name?: string; avatar_url?: string } | { full_name?: string; avatar_url?: string }[] | null
+}
+
 export default async function CommunityPage() {
   const supabase = await createServerClient()
-  const { data: blogRows } = await supabase
+
+  const blogPromise = supabase
     .from("blog_posts")
     .select(
-      "id, title, slug, body, cover_image_url, published_at, created_at, view_count, like_count, profiles(full_name, avatar_url)"
+      "id, title, slug, cover_image_url, published_at, created_at, view_count, like_count, profiles(full_name, avatar_url)"
     )
     .eq("status", "published")
     .order("published_at", { ascending: false })
     .limit(MAX_BLOG_POSTS)
 
+  const userPromise = supabase.auth.getUser()
+  const newsPromise: Promise<AggregatedNews | null> = getAggregatedNews().catch(() => null)
+
+  const [{ data: blogRows }, { data: { user } }] = await Promise.all([blogPromise, userPromise])
+
   const postIds = (blogRows ?? []).map((p) => p.id)
-  let commentCounts: Record<string, number> = {}
-  if (postIds.length > 0) {
-    const { data: comments } = await supabase
-      .from("blog_comments")
-      .select("post_id")
-      .in("post_id", postIds)
-    for (const id of postIds) commentCounts[id] = 0
-    for (const c of comments ?? []) {
-      commentCounts[c.post_id] = (commentCounts[c.post_id] ?? 0) + 1
-    }
-  }
+  const commentsPromise = postIds.length
+    ? supabase.from("blog_comments").select("post_id").in("post_id", postIds)
+    : Promise.resolve({ data: [] as { post_id: string }[] })
 
-  const feedPostsFromBlog: FeedPost[] = (blogRows ?? []).map((row: any) => {
-    const plain = row.body ? String(row.body).replace(/<[^>]*>/g, "").trim() : ""
-    const excerpt = plain ? plain.slice(0, 160) + (plain.length > 160 ? "…" : "") : undefined
-    return {
-      id: row.id,
-      title: row.title,
-      slug: row.slug,
-      excerpt,
-      cover_image_url: row.cover_image_url,
-      published_at: row.published_at,
-      created_at: row.created_at,
-      view_count: row.view_count,
-      like_count: row.like_count,
-      author: row.profiles,
-      isPinned: false,
-      type: "blog",
-    }
-  })
-
-  const { data: { user } } = await supabase.auth.getUser()
+  const feedPostsFromBlog: FeedPost[] = (blogRows ?? []).map((row: any) => ({
+    id: row.id,
+    title: row.title,
+    slug: row.slug,
+    excerpt: undefined,
+    cover_image_url: row.cover_image_url,
+    published_at: row.published_at,
+    created_at: row.created_at,
+    view_count: row.view_count,
+    like_count: row.like_count,
+    author: row.profiles,
+    isPinned: false,
+    type: "blog",
+  }))
 
   let events: { id: string; title: string; description?: string | null; location?: string | null; starts_at: string; ends_at?: string | null }[] = []
   let featuredBlogs: { id: string; title: string; slug: string; view_count?: number }[] = []
-  let announcements: { id: string; title: string; body: string; created_at: string; is_pinned?: boolean; profiles?: { full_name?: string; avatar_url?: string } | null }[] = []
+  let announcements: AnnouncementRow[] = []
   let topics: { slug: string; label: string }[] = []
   let isMember = false
   let canAddTopic = false
   let role: string | undefined
+  const commentCounts: Record<string, number> = {}
+
   try {
-    const [eventsRes, featuredRes, announcementsRes, topicsRes, memberRes, profileRes] = await Promise.all([
+    const [commentsRes, eventsRes, featuredRes, announcementsRes, topicsRes, memberRes, profileRes] = await Promise.all([
+      commentsPromise,
       supabase
         .from("community_events")
         .select("id, title, description, location, starts_at, ends_at")
@@ -100,23 +104,20 @@ export default async function CommunityPage() {
         .select("id, title, body, created_at, is_pinned, profiles(full_name, avatar_url)")
         .eq("status", "published")
         .order("created_at", { ascending: false })
-        .limit(20),
+        .limit(12),
       supabase.from("community_topics").select("slug, label").order("sort_order", { ascending: true }),
       user ? supabase.from("community_members").select("id").eq("user_id", user.id).maybeSingle() : Promise.resolve({ data: null }),
       user ? supabase.from("profiles").select("role").eq("id", user.id).maybeSingle() : Promise.resolve({ data: null }),
     ])
+
+    for (const id of postIds) commentCounts[id] = 0
+    for (const c of commentsRes.data ?? []) {
+      commentCounts[c.post_id] = (commentCounts[c.post_id] ?? 0) + 1
+    }
+
     if (eventsRes.data) events = eventsRes.data
     if (featuredRes.data) featuredBlogs = featuredRes.data
-    if (announcementsRes.data) {
-      announcements = (announcementsRes.data as { id: string; title: string; body: string; created_at: string; is_pinned?: boolean; profiles?: { full_name?: string; avatar_url?: string } | { full_name?: string; avatar_url?: string }[] | null }[]).map((a) => ({
-        id: a.id,
-        title: a.title,
-        body: a.body,
-        created_at: a.created_at,
-        is_pinned: a.is_pinned,
-        profiles: Array.isArray(a.profiles) ? a.profiles[0] ?? null : a.profiles ?? null,
-      }))
-    }
+    if (announcementsRes.data) announcements = announcementsRes.data as AnnouncementRow[]
     if (topicsRes.data) topics = topicsRes.data
     if (memberRes.data) isMember = true
     role = (profileRes.data as { role?: string } | null)?.role
@@ -135,9 +136,11 @@ export default async function CommunityPage() {
     ]
   }
 
-  const announcementPosts: FeedPost[] = announcements.map((a: any) => {
+  const announcementPosts: FeedPost[] = announcements.map((a) => {
     const plain = a.body ? String(a.body).replace(/<[^>]*>/g, "").trim() : ""
     const excerpt = plain ? plain.slice(0, 160) + (plain.length > 160 ? "…" : "") : undefined
+    const profile = Array.isArray(a.profiles) ? a.profiles[0] ?? null : a.profiles ?? null
+
     return {
       id: a.id,
       title: a.title,
@@ -148,7 +151,7 @@ export default async function CommunityPage() {
       created_at: a.created_at,
       view_count: 0,
       like_count: 0,
-      author: a.profiles ?? null,
+      author: profile,
       isPinned: a.is_pinned ?? false,
       type: "announcement",
     }
@@ -158,12 +161,7 @@ export default async function CommunityPage() {
     (a, b) => new Date(b.published_at ?? b.created_at).getTime() - new Date(a.published_at ?? a.created_at).getTime()
   )
 
-  let aggregatedNews = null
-  try {
-    aggregatedNews = await getAggregatedNews()
-  } catch {
-    // graceful: feed works without news
-  }
+  const aggregatedNews = await newsPromise
 
   return (
     <div className="min-h-screen bg-background">
@@ -196,7 +194,6 @@ export default async function CommunityPage() {
           <CommunityRightSidebar events={events} featuredBlogs={featuredBlogs} />
         </div>
 
-        {/* Blog & Kaynaklar bölümü */}
         <section className="mt-16 border-t border-border pt-12">
           <h2 className="text-2xl font-bold text-foreground">
             Blog &amp; Kaynaklar
@@ -244,7 +241,6 @@ export default async function CommunityPage() {
           </div>
         </section>
 
-        {/* Entegrasyonlar CTA */}
         <section className="mt-16 rounded-2xl border border-border bg-muted/20 p-8 md:p-12">
           <div className="flex flex-col items-center text-center">
             <div className="flex size-14 items-center justify-center rounded-2xl bg-primary/10 text-primary">
