@@ -7,16 +7,18 @@ import {
   BreadcrumbPage,
   BreadcrumbSeparator,
 } from "@/components/ui/breadcrumb"
-import { CommunityHeroSkeleton } from "./_components/CommunityHeroSkeleton"
+import { CommunityHero } from "./_components/CommunityHero"
 import { CommunitySidebarSkeleton } from "./_components/CommunitySidebarSkeleton"
 import { CommunityFeedsSkeleton } from "./_components/CommunityFeedsSkeleton"
 import { CommunityRightSidebarSkeleton } from "./_components/CommunityRightSidebarSkeleton"
-import { Skeleton } from "@/components/ui/skeleton"
+import { Card, CardContent } from "@/components/ui/card"
+import { Button } from "@/components/ui/button"
+import { FileText, BookOpen, Link2 } from "lucide-react"
 
 export default function CommunityLoading() {
   return (
     <div className="min-h-screen bg-background">
-      <CommunityHeroSkeleton />
+      <CommunityHero />
 
       <div className="container mx-auto px-4 py-6 md:py-8">
         <Breadcrumb className="mb-4">
@@ -40,22 +42,56 @@ export default function CommunityLoading() {
         </div>
 
         <section className="mt-16 border-t border-border pt-12">
-          <Skeleton className="h-8 w-48" />
-          <Skeleton className="mt-1 h-4 w-72" />
+          <h2 className="text-2xl font-bold text-foreground">Blog &amp; Kaynaklar</h2>
+          <p className="mt-1 text-muted-foreground">Güncel yazılar ve rehberlerle kendinizi geliştirin.</p>
           <div className="mt-6 grid gap-4 sm:grid-cols-2">
-            <Skeleton className="aspect-video w-full rounded-lg" />
-            <Skeleton className="aspect-video w-full rounded-lg" />
+            <Card className="overflow-hidden border-border bg-card">
+              <div className="aspect-video w-full bg-gradient-to-br from-primary/20 to-primary/5" />
+              <CardContent className="p-4">
+                <div className="flex items-center gap-2 text-primary">
+                  <FileText className="size-5" />
+                  <span className="font-medium">Blog</span>
+                </div>
+                <h3 className="mt-2 font-semibold text-foreground">Geliştirici yazıları ve deneyimler</h3>
+                <p className="mt-1 text-sm text-muted-foreground">Kariyer ipuçları, teknoloji yazıları ve topluluk deneyimleri.</p>
+                <Button variant="outline" size="sm" className="mt-3" asChild>
+                  <Link href="#feed">Yazıları oku</Link>
+                </Button>
+              </CardContent>
+            </Card>
+            <Card className="overflow-hidden border-border bg-card">
+              <div className="aspect-video w-full bg-gradient-to-br from-primary/10 to-primary/5" />
+              <CardContent className="p-4">
+                <div className="flex items-center gap-2 text-primary">
+                  <BookOpen className="size-5" />
+                  <span className="font-medium">API &amp; Dokümantasyon</span>
+                </div>
+                <h3 className="mt-2 font-semibold text-foreground">Başlarken rehberi</h3>
+                <p className="mt-1 text-sm text-muted-foreground">Entegrasyonlar ve API kullanımı için dokümantasyon.</p>
+                <Button variant="outline" size="sm" className="mt-3" asChild>
+                  <Link href="/destek">Daha fazla</Link>
+                </Button>
+              </CardContent>
+            </Card>
           </div>
         </section>
 
         <section className="mt-16 rounded-2xl border border-border bg-muted/20 p-8 md:p-12">
           <div className="flex flex-col items-center text-center">
-            <Skeleton className="size-14 rounded-2xl" />
-            <Skeleton className="mt-4 h-8 w-64" />
-            <Skeleton className="mt-2 h-5 w-96 max-w-full" />
+            <div className="flex size-14 items-center justify-center rounded-2xl bg-primary/10 text-primary">
+              <Link2 className="size-7" />
+            </div>
+            <h2 className="mt-4 text-2xl font-bold text-foreground">Favori araçlarınızla entegre edin</h2>
+            <p className="mt-2 max-w-xl text-muted-foreground">
+              Topluluğu Discord, GitHub ve LinkedIn ile bağlayın. Haberleri ve duyuruları tek yerden takip edin.
+            </p>
             <div className="mt-6 flex flex-wrap justify-center gap-4">
-              <Skeleton className="h-10 w-32 rounded-md" />
-              <Skeleton className="h-10 w-36 rounded-md" />
+              <Button asChild>
+                <Link href="#feed">Akışı incele</Link>
+              </Button>
+              <Button variant="outline" asChild>
+                <Link href="/auth/kayit">Ücretsiz katıl</Link>
+              </Button>
             </div>
           </div>
         </section>
