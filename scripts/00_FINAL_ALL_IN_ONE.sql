@@ -1,6 +1,6 @@
 -- ============================================
 -- CodeCraftX Platform - TEK FİNAL ŞEMA
--- Tüm migrasyonlar (050-089 + MT) bu dosyada birleştirildi.
+-- Tüm migrasyonlar (01-15 + 050-089 + MT) bu dosyada birleştirildi.
 -- Gereksiz tekrarlar kaldırıldı. Supabase SQL Editor'da tek seferde çalıştırın.
 -- ============================================
 
@@ -506,6 +506,101 @@ CREATE TABLE IF NOT EXISTS public.testimonials (
   created_at TIMESTAMP WITH TIME ZONE DEFAULT NOW()
 );
 
+-- Company payments (02)
+CREATE TABLE IF NOT EXISTS public.company_payments (
+  id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+  company_id UUID NOT NULL REFERENCES public.companies(id) ON DELETE CASCADE,
+  plan TEXT NOT NULL CHECK (plan IN ('free', 'orta', 'premium')),
+  billing_period TEXT NOT NULL CHECK (billing_period IN ('monthly', 'annually')),
+  amount NUMERIC(10,2) NOT NULL DEFAULT 0,
+  currency TEXT NOT NULL DEFAULT 'TRY',
+  status TEXT NOT NULL DEFAULT 'pending' CHECK (status IN ('pending', 'success', 'failed')),
+  provider TEXT NOT NULL DEFAULT 'mock',
+  created_at TIMESTAMP WITH TIME ZONE NOT NULL DEFAULT now(),
+  paid_at TIMESTAMP WITH TIME ZONE,
+  metadata JSONB NOT NULL DEFAULT '{}'::jsonb
+);
+
+-- Blog post likes (05)
+CREATE TABLE IF NOT EXISTS public.blog_post_likes (
+  id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+  post_id UUID NOT NULL REFERENCES public.blog_posts(id) ON DELETE CASCADE,
+  user_id UUID NOT NULL REFERENCES public.profiles(id) ON DELETE CASCADE,
+  created_at TIMESTAMP WITH TIME ZONE DEFAULT NOW(),
+  UNIQUE(post_id, user_id)
+);
+
+-- Saved jobs (07)
+CREATE TABLE IF NOT EXISTS public.saved_jobs (
+  id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+  developer_id UUID NOT NULL REFERENCES public.profiles(id) ON DELETE CASCADE,
+  job_id UUID NOT NULL REFERENCES public.job_postings(id) ON DELETE CASCADE,
+  created_at TIMESTAMP WITH TIME ZONE DEFAULT NOW(),
+  UNIQUE(developer_id, job_id)
+);
+
+-- CV downloads (10)
+CREATE TABLE IF NOT EXISTS public.cv_downloads (
+  id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+  application_id UUID NOT NULL REFERENCES public.applications(id) ON DELETE CASCADE,
+  downloaded_by UUID NOT NULL REFERENCES public.profiles(id) ON DELETE CASCADE,
+  downloaded_at TIMESTAMP WITH TIME ZONE DEFAULT NOW()
+);
+
+-- Feedback templates (10)
+CREATE TABLE IF NOT EXISTS public.feedback_templates (
+  id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+  company_id UUID REFERENCES public.companies(id) ON DELETE CASCADE,
+  title TEXT NOT NULL,
+  body TEXT NOT NULL,
+  type TEXT NOT NULL CHECK (type IN ('reject', 'interview', 'offer', 'general')),
+  is_system BOOLEAN DEFAULT FALSE,
+  created_at TIMESTAMP WITH TIME ZONE DEFAULT NOW(),
+  updated_at TIMESTAMP WITH TIME ZONE DEFAULT NOW()
+);
+
+-- Community announcements & events (14)
+CREATE TABLE IF NOT EXISTS public.community_announcements (
+  id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+  title TEXT NOT NULL,
+  body TEXT NOT NULL,
+  author_id UUID NOT NULL REFERENCES public.profiles(id) ON DELETE CASCADE,
+  is_pinned BOOLEAN NOT NULL DEFAULT FALSE,
+  status TEXT NOT NULL DEFAULT 'draft' CHECK (status IN ('draft', 'published')),
+  created_at TIMESTAMP WITH TIME ZONE DEFAULT NOW(),
+  updated_at TIMESTAMP WITH TIME ZONE DEFAULT NOW()
+);
+
+CREATE TABLE IF NOT EXISTS public.community_events (
+  id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+  title TEXT NOT NULL,
+  description TEXT,
+  location TEXT,
+  starts_at TIMESTAMP WITH TIME ZONE NOT NULL,
+  ends_at TIMESTAMP WITH TIME ZONE,
+  created_by UUID NOT NULL REFERENCES public.profiles(id) ON DELETE CASCADE,
+  created_at TIMESTAMP WITH TIME ZONE DEFAULT NOW(),
+  updated_at TIMESTAMP WITH TIME ZONE DEFAULT NOW(),
+  status TEXT NOT NULL DEFAULT 'draft' CHECK (status IN ('draft', 'published'))
+);
+
+-- Community members & topics (15)
+CREATE TABLE IF NOT EXISTS public.community_members (
+  id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+  user_id UUID NOT NULL REFERENCES public.profiles(id) ON DELETE CASCADE,
+  joined_at TIMESTAMP WITH TIME ZONE DEFAULT NOW(),
+  role TEXT NOT NULL DEFAULT 'member' CHECK (role IN ('member')),
+  UNIQUE(user_id)
+);
+
+CREATE TABLE IF NOT EXISTS public.community_topics (
+  id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+  slug TEXT NOT NULL UNIQUE,
+  label TEXT NOT NULL,
+  sort_order INTEGER NOT NULL DEFAULT 0,
+  created_at TIMESTAMP WITH TIME ZONE DEFAULT NOW()
+);
+
 -- ============================================
 -- ALTER TABLE (mevcut tablolara kolon ekleme)
 -- ============================================
@@ -516,6 +611,27 @@ DO $$ BEGIN
   IF NOT EXISTS (SELECT 1 FROM pg_constraint WHERE conrelid = 'public.companies'::regclass AND conname = 'companies_plan_check') THEN
     ALTER TABLE public.companies ADD CONSTRAINT companies_plan_check CHECK (plan IN ('free', 'orta', 'premium'));
   END IF; END $$;
+
+-- companies: subscription fields (02)
+ALTER TABLE public.companies
+  ADD COLUMN IF NOT EXISTS subscription_status TEXT NOT NULL DEFAULT 'pending_payment',
+  ADD COLUMN IF NOT EXISTS billing_period TEXT NOT NULL DEFAULT 'monthly',
+  ADD COLUMN IF NOT EXISTS current_plan_price NUMERIC(10,2) NOT NULL DEFAULT 0,
+  ADD COLUMN IF NOT EXISTS subscription_started_at TIMESTAMP WITH TIME ZONE,
+  ADD COLUMN IF NOT EXISTS subscription_ends_at TIMESTAMP WITH TIME ZONE,
+  ADD COLUMN IF NOT EXISTS last_payment_at TIMESTAMP WITH TIME ZONE;
+DO $$ BEGIN
+  IF NOT EXISTS (SELECT 1 FROM pg_constraint WHERE conrelid = 'public.companies'::regclass AND conname = 'companies_subscription_status_check') THEN
+    ALTER TABLE public.companies ADD CONSTRAINT companies_subscription_status_check
+      CHECK (subscription_status IN ('pending_payment', 'active', 'past_due', 'cancelled'));
+  END IF;
+END $$;
+DO $$ BEGIN
+  IF NOT EXISTS (SELECT 1 FROM pg_constraint WHERE conrelid = 'public.companies'::regclass AND conname = 'companies_billing_period_check') THEN
+    ALTER TABLE public.companies ADD CONSTRAINT companies_billing_period_check
+      CHECK (billing_period IN ('monthly', 'annually'));
+  END IF;
+END $$;
 
 ALTER TABLE public.company_requests
   ADD COLUMN IF NOT EXISTS contact_email TEXT,
@@ -529,11 +645,36 @@ DO $$ BEGIN
 
 ALTER TABLE public.cvs ADD COLUMN IF NOT EXISTS raw_text TEXT;
 
+-- blog_posts: view_count, like_count (04)
+ALTER TABLE public.blog_posts
+  ADD COLUMN IF NOT EXISTS view_count INTEGER NOT NULL DEFAULT 0,
+  ADD COLUMN IF NOT EXISTS like_count INTEGER NOT NULL DEFAULT 0;
+
 ALTER TABLE public.applications
   ADD COLUMN IF NOT EXISTS match_score INTEGER,
-  ADD COLUMN IF NOT EXISTS match_reason TEXT;
+  ADD COLUMN IF NOT EXISTS match_reason TEXT,
+  ADD COLUMN IF NOT EXISTS expected_salary INTEGER,
+  ADD COLUMN IF NOT EXISTS match_details JSONB;
 
 ALTER TABLE public.projects ADD COLUMN IF NOT EXISTS inspired_by TEXT;
+
+-- interviews: meet link, proposed slots, attendee ids (10, 13)
+ALTER TABLE public.interviews
+  ADD COLUMN IF NOT EXISTS meet_link TEXT,
+  ADD COLUMN IF NOT EXISTS proposed_date DATE,
+  ADD COLUMN IF NOT EXISTS proposed_time_slots JSONB DEFAULT '[]'::jsonb,
+  ADD COLUMN IF NOT EXISTS developer_selected_slot TEXT,
+  ADD COLUMN IF NOT EXISTS developer_confirmed_at TIMESTAMP WITH TIME ZONE,
+  ADD COLUMN IF NOT EXISTS invited_attendee_ids UUID[] DEFAULT '{}';
+
+-- company_requests: billing_period (11)
+ALTER TABLE public.company_requests ADD COLUMN IF NOT EXISTS billing_period TEXT DEFAULT 'monthly';
+DO $$ BEGIN
+  IF NOT EXISTS (SELECT 1 FROM pg_constraint WHERE conrelid = 'public.company_requests'::regclass AND conname = 'company_requests_billing_period_check') THEN
+    ALTER TABLE public.company_requests ADD CONSTRAINT company_requests_billing_period_check
+      CHECK (billing_period IN ('monthly', 'annually'));
+  END IF;
+END $$;
 
 ALTER TABLE public.job_postings
   ADD COLUMN IF NOT EXISTS country TEXT,
@@ -635,6 +776,26 @@ CREATE INDEX IF NOT EXISTS idx_testimonials_user ON public.testimonials(user_id)
 CREATE INDEX IF NOT EXISTS idx_testimonials_status ON public.testimonials(status);
 CREATE INDEX IF NOT EXISTS idx_testimonials_created ON public.testimonials(created_at DESC);
 
+CREATE INDEX IF NOT EXISTS idx_company_payments_company_id ON public.company_payments(company_id);
+CREATE INDEX IF NOT EXISTS idx_company_payments_status ON public.company_payments(status);
+CREATE INDEX IF NOT EXISTS idx_company_payments_status_created_at ON public.company_payments(status, created_at);
+CREATE INDEX IF NOT EXISTS idx_blog_post_likes_post ON public.blog_post_likes(post_id);
+CREATE INDEX IF NOT EXISTS idx_blog_post_likes_user ON public.blog_post_likes(user_id);
+CREATE INDEX IF NOT EXISTS idx_saved_jobs_developer ON public.saved_jobs(developer_id);
+CREATE INDEX IF NOT EXISTS idx_saved_jobs_job ON public.saved_jobs(job_id);
+CREATE INDEX IF NOT EXISTS idx_cv_downloads_application ON public.cv_downloads(application_id);
+CREATE INDEX IF NOT EXISTS idx_cv_downloads_downloaded_by ON public.cv_downloads(downloaded_by);
+CREATE INDEX IF NOT EXISTS idx_feedback_templates_company ON public.feedback_templates(company_id);
+CREATE INDEX IF NOT EXISTS idx_feedback_templates_type ON public.feedback_templates(type);
+CREATE INDEX IF NOT EXISTS idx_interviews_proposed_date ON public.interviews(proposed_date) WHERE proposed_date IS NOT NULL;
+CREATE INDEX IF NOT EXISTS idx_interviews_scheduled_at ON public.interviews(scheduled_at);
+CREATE INDEX IF NOT EXISTS idx_community_announcements_status ON public.community_announcements(status);
+CREATE INDEX IF NOT EXISTS idx_community_announcements_created_at ON public.community_announcements(created_at DESC);
+CREATE INDEX IF NOT EXISTS idx_community_events_status ON public.community_events(status);
+CREATE INDEX IF NOT EXISTS idx_community_events_starts_at ON public.community_events(starts_at) WHERE status = 'published';
+CREATE INDEX IF NOT EXISTS idx_community_members_user_id ON public.community_members(user_id);
+CREATE INDEX IF NOT EXISTS idx_community_topics_sort ON public.community_topics(sort_order);
+
 -- ============================================
 -- FONKSİYONLAR
 -- ============================================
@@ -678,6 +839,42 @@ BEGIN
   RETURN v_inserted_count;
 END; $$;
 
+-- Şirket yöneticisi kendi şirketine in-app bildirim (08)
+CREATE OR REPLACE FUNCTION public.broadcast_notification_to_company(
+  p_company_id UUID, p_title TEXT, p_body TEXT DEFAULT NULL, p_href TEXT DEFAULT NULL
+)
+RETURNS INTEGER LANGUAGE plpgsql SECURITY DEFINER SET search_path = public AS $$
+DECLARE v_inserted_count INTEGER := 0;
+BEGIN
+  IF NOT EXISTS (
+    SELECT 1 FROM public.profiles p
+    WHERE p.id = auth.uid()
+    AND (
+      (p.role IN ('admin', 'platform_admin', 'mt'))
+      OR (p.role = 'company_admin' AND EXISTS (SELECT 1 FROM public.companies c WHERE c.id = p_company_id AND c.owner_profile_id = p.id))
+      OR (p.company_id = p_company_id AND p.role IN ('company_admin', 'hr'))
+    )
+  ) THEN
+    RAISE EXCEPTION 'Bu şirkete bildirim gönderme yetkiniz yok';
+  END IF;
+  INSERT INTO public.notifications (recipient_id, actor_id, type, title, body, href, data)
+  SELECT p.id, auth.uid(), 'system', p_title, p_body, p_href, '{}'::jsonb
+  FROM public.profiles p WHERE p.company_id = p_company_id;
+  GET DIAGNOSTICS v_inserted_count = ROW_COUNT;
+  RETURN v_inserted_count;
+END; $$;
+
+-- Blog görüntülenme sayacı (06)
+CREATE OR REPLACE FUNCTION public.increment_blog_post_view(p_post_id UUID)
+RETURNS void LANGUAGE plpgsql SECURITY DEFINER SET search_path = public AS $$
+BEGIN
+  UPDATE public.blog_posts
+  SET view_count = COALESCE(view_count, 0) + 1
+  WHERE id = p_post_id AND status = 'published';
+END; $$;
+GRANT EXECUTE ON FUNCTION public.increment_blog_post_view(UUID) TO anon;
+GRANT EXECUTE ON FUNCTION public.increment_blog_post_view(UUID) TO authenticated;
+
 -- create_company_with_owner (plan param + MT yetkisi)
 CREATE OR REPLACE FUNCTION public.create_company_with_owner(
   company_name TEXT, company_email TEXT, owner_full_name TEXT, owner_user_id UUID, temp_password TEXT,
@@ -718,7 +915,7 @@ END; $$;
 
 CREATE OR REPLACE FUNCTION public.create_hr_user(
   hr_email TEXT, hr_full_name TEXT, hr_user_id UUID, temp_password TEXT, company_id_param UUID, created_by_user_id UUID,
-  hr_title TEXT DEFAULT NULL, hr_phone TEXT DEFAULT NULL
+  hr_title TEXT DEFAULT NULL, hr_phone TEXT DEFAULT NULL, hr_bio TEXT DEFAULT NULL, hr_website TEXT DEFAULT NULL, hr_avatar_url TEXT DEFAULT NULL
 )
 RETURNS JSONB LANGUAGE plpgsql SECURITY DEFINER SET search_path = public AS $$
 DECLARE company_owner_id UUID; result JSONB;
@@ -729,11 +926,11 @@ BEGIN
     RAISE EXCEPTION 'Sadece şirket sahibi veya admin İK kullanıcısı ekleyebilir';
   END IF;
   IF NOT EXISTS (SELECT 1 FROM public.profiles WHERE id = hr_user_id) THEN
-    INSERT INTO public.profiles (id, email, full_name, role, phone, title, must_change_password, company_id)
-    VALUES (hr_user_id, hr_email, hr_full_name, 'hr', hr_phone, hr_title, TRUE, company_id_param)
-    ON CONFLICT (id) DO UPDATE SET email = EXCLUDED.email, full_name = EXCLUDED.full_name, role = EXCLUDED.role, phone = EXCLUDED.phone, title = EXCLUDED.title, must_change_password = TRUE, company_id = EXCLUDED.company_id;
+    INSERT INTO public.profiles (id, email, full_name, role, phone, title, bio, website, avatar_url, must_change_password, company_id)
+    VALUES (hr_user_id, hr_email, hr_full_name, 'hr', hr_phone, hr_title, hr_bio, hr_website, hr_avatar_url, TRUE, company_id_param)
+    ON CONFLICT (id) DO UPDATE SET email = EXCLUDED.email, full_name = EXCLUDED.full_name, role = EXCLUDED.role, phone = EXCLUDED.phone, title = EXCLUDED.title, bio = EXCLUDED.bio, website = EXCLUDED.website, avatar_url = EXCLUDED.avatar_url, must_change_password = TRUE, company_id = EXCLUDED.company_id;
   ELSE
-    UPDATE public.profiles SET email = hr_email, full_name = hr_full_name, role = 'hr', phone = hr_phone, title = hr_title, must_change_password = TRUE, company_id = company_id_param WHERE id = hr_user_id;
+    UPDATE public.profiles SET email = hr_email, full_name = hr_full_name, role = 'hr', phone = hr_phone, title = hr_title, bio = hr_bio, website = hr_website, avatar_url = hr_avatar_url, must_change_password = TRUE, company_id = company_id_param WHERE id = hr_user_id;
   END IF;
   INSERT INTO public.email_queue (recipient_email, recipient_name, subject, html_content, text_content, email_type, metadata)
   VALUES (hr_email, hr_full_name, 'Codecrafters - İK Hesabınız Oluşturuldu',
@@ -807,6 +1004,15 @@ CREATE TRIGGER set_updated_at BEFORE UPDATE ON public.blog_posts FOR EACH ROW EX
 
 DROP TRIGGER IF EXISTS support_ticket_resolution_notify ON public.support_tickets;
 CREATE TRIGGER support_ticket_resolution_notify AFTER UPDATE ON public.support_tickets FOR EACH ROW EXECUTE FUNCTION public.on_support_ticket_resolved();
+
+DROP TRIGGER IF EXISTS set_updated_at_feedback_templates ON public.feedback_templates;
+CREATE TRIGGER set_updated_at_feedback_templates BEFORE UPDATE ON public.feedback_templates FOR EACH ROW EXECUTE FUNCTION public.handle_updated_at();
+
+DROP TRIGGER IF EXISTS set_updated_at ON public.community_announcements;
+CREATE TRIGGER set_updated_at BEFORE UPDATE ON public.community_announcements FOR EACH ROW EXECUTE FUNCTION public.handle_updated_at();
+
+DROP TRIGGER IF EXISTS set_updated_at ON public.community_events;
+CREATE TRIGGER set_updated_at BEFORE UPDATE ON public.community_events FOR EACH ROW EXECUTE FUNCTION public.handle_updated_at();
 
 -- ============================================
 -- RLS: Tüm policy'leri kaldır, sonra yeniden oluştur
@@ -978,6 +1184,71 @@ CREATE POLICY "MT ve Admin şirket taleplerini güncelleyebilir" ON public.compa
   EXISTS (SELECT 1 FROM public.profiles p WHERE p.id = auth.uid() AND p.role IN ('admin', 'platform_admin', 'mt'))
 );
 
+-- Company payments (03)
+ALTER TABLE public.company_payments ENABLE ROW LEVEL SECURITY;
+DROP POLICY IF EXISTS "company_payments_select_company" ON public.company_payments;
+CREATE POLICY "company_payments_select_company" ON public.company_payments FOR SELECT USING (
+  EXISTS (SELECT 1 FROM public.profiles p WHERE p.id = auth.uid() AND p.company_id = company_payments.company_id AND p.role IN ('company_admin', 'hr'))
+);
+DROP POLICY IF EXISTS "company_payments_select_admin" ON public.company_payments;
+CREATE POLICY "company_payments_select_admin" ON public.company_payments FOR SELECT USING (
+  EXISTS (SELECT 1 FROM public.profiles p WHERE p.id = auth.uid() AND p.role IN ('admin', 'platform_admin', 'mt'))
+);
+
+-- Blog post likes (05)
+ALTER TABLE public.blog_post_likes ENABLE ROW LEVEL SECURITY;
+CREATE POLICY "Anyone can read blog post likes" ON public.blog_post_likes FOR SELECT USING (true);
+CREATE POLICY "Authenticated can insert own like" ON public.blog_post_likes FOR INSERT WITH CHECK (auth.uid() = user_id);
+CREATE POLICY "User can delete own like" ON public.blog_post_likes FOR DELETE USING (auth.uid() = user_id);
+
+-- Saved jobs (07)
+ALTER TABLE public.saved_jobs ENABLE ROW LEVEL SECURITY;
+CREATE POLICY "Kullanıcı kendi kaydettiği ilanları görebilir" ON public.saved_jobs FOR SELECT USING (auth.uid() = developer_id);
+CREATE POLICY "Kullanıcı kendi kaydettiği ilanı ekleyebilir" ON public.saved_jobs FOR INSERT WITH CHECK (auth.uid() = developer_id);
+CREATE POLICY "Kullanıcı kendi kaydettiği ilanı silebilir" ON public.saved_jobs FOR DELETE USING (auth.uid() = developer_id);
+
+-- CV downloads (10)
+ALTER TABLE public.cv_downloads ENABLE ROW LEVEL SECURITY;
+CREATE POLICY "Şirket/İK cv_downloads görebilir" ON public.cv_downloads FOR SELECT USING (
+  EXISTS (SELECT 1 FROM public.applications a JOIN public.job_postings jp ON jp.id = a.job_id WHERE a.id = cv_downloads.application_id
+    AND (jp.company_id IN (SELECT c.id FROM public.companies c WHERE c.owner_profile_id = auth.uid() OR c.created_by = auth.uid())
+      OR EXISTS (SELECT 1 FROM public.profiles p WHERE p.id = auth.uid() AND p.company_id = jp.company_id)))
+  OR EXISTS (SELECT 1 FROM public.profiles p WHERE p.id = auth.uid() AND p.role IN ('admin', 'platform_admin'));
+CREATE POLICY "Şirket/İK cv indirme kaydı ekleyebilir" ON public.cv_downloads FOR INSERT WITH CHECK (
+  downloaded_by = auth.uid() AND EXISTS (SELECT 1 FROM public.applications a JOIN public.job_postings jp ON jp.id = a.job_id WHERE a.id = application_id
+    AND (jp.company_id IN (SELECT c.id FROM public.companies c WHERE c.owner_profile_id = auth.uid() OR c.created_by = auth.uid())
+      OR EXISTS (SELECT 1 FROM public.profiles p WHERE p.id = auth.uid() AND p.company_id = jp.company_id)))
+);
+
+-- Interviews: INSERT/UPDATE policies (10)
+DROP POLICY IF EXISTS "İlgili kullanıcılar mülakat ekleyebilir" ON public.interviews;
+DROP POLICY IF EXISTS "İlgili kullanıcılar mülakat güncelleyebilir" ON public.interviews;
+CREATE POLICY "İlgili kullanıcılar mülakat ekleyebilir" ON public.interviews FOR INSERT WITH CHECK (
+  scheduled_by = auth.uid() AND EXISTS (SELECT 1 FROM public.applications a JOIN public.job_postings jp ON jp.id = a.job_id WHERE a.id = application_id
+    AND (jp.company_id IN (SELECT c.id FROM public.companies c WHERE c.owner_profile_id = auth.uid() OR c.created_by = auth.uid())
+      OR EXISTS (SELECT 1 FROM public.profiles p WHERE p.id = auth.uid() AND p.company_id = jp.company_id))
+);
+CREATE POLICY "İlgili kullanıcılar mülakat güncelleyebilir" ON public.interviews FOR UPDATE USING (true);
+
+-- Feedback templates (10)
+ALTER TABLE public.feedback_templates ENABLE ROW LEVEL SECURITY;
+CREATE POLICY "Sistem kalıpları ve kendi şirket kalıpları görülebilir" ON public.feedback_templates FOR SELECT USING (
+  is_system = TRUE OR (company_id IS NOT NULL AND (company_id IN (SELECT c.id FROM public.companies c WHERE c.owner_profile_id = auth.uid() OR c.created_by = auth.uid()) OR EXISTS (SELECT 1 FROM public.profiles p WHERE p.id = auth.uid() AND p.company_id = feedback_templates.company_id)))
+  OR EXISTS (SELECT 1 FROM public.profiles p WHERE p.id = auth.uid() AND p.role IN ('admin', 'platform_admin')));
+CREATE POLICY "Şirket kendi kalıbını ekleyebilir" ON public.feedback_templates FOR INSERT WITH CHECK (
+  is_system = FALSE AND company_id IS NOT NULL AND (company_id IN (SELECT c.id FROM public.companies c WHERE c.owner_profile_id = auth.uid() OR c.created_by = auth.uid()) OR EXISTS (SELECT 1 FROM public.profiles p WHERE p.id = auth.uid() AND p.company_id = feedback_templates.company_id)));
+CREATE POLICY "Şirket kendi kalıbını güncelleyebilir" ON public.feedback_templates FOR UPDATE USING (
+  is_system = FALSE AND company_id IS NOT NULL AND (company_id IN (SELECT c.id FROM public.companies c WHERE c.owner_profile_id = auth.uid() OR c.created_by = auth.uid()) OR EXISTS (SELECT 1 FROM public.profiles p WHERE p.id = auth.uid() AND p.company_id = feedback_templates.company_id)));
+CREATE POLICY "Şirket kendi kalıbını silebilir" ON public.feedback_templates FOR DELETE USING (
+  is_system = FALSE AND company_id IS NOT NULL AND (company_id IN (SELECT c.id FROM public.companies c WHERE c.owner_profile_id = auth.uid() OR c.created_by = auth.uid()) OR EXISTS (SELECT 1 FROM public.profiles p WHERE p.id = auth.uid() AND p.company_id = feedback_templates.company_id)));
+
+-- application_assignments: HR/şirket INSERT (10)
+DROP POLICY IF EXISTS "HR ve şirket atama ekleyebilir" ON public.application_assignments;
+CREATE POLICY "HR ve şirket atama ekleyebilir" ON public.application_assignments FOR INSERT WITH CHECK (
+  assigned_by = auth.uid() AND assigned_to = auth.uid() AND EXISTS (SELECT 1 FROM public.applications a JOIN public.job_postings jp ON jp.id = a.job_id WHERE a.id = application_id
+    AND (jp.company_id IN (SELECT c.id FROM public.companies c WHERE c.owner_profile_id = auth.uid() OR c.created_by = auth.uid()) OR EXISTS (SELECT 1 FROM public.profiles p WHERE p.id = auth.uid() AND p.company_id = jp.company_id))
+);
+
 -- ATS, Platform Stats
 ALTER TABLE public.application_assignments ENABLE ROW LEVEL SECURITY;
 CREATE POLICY "İlgili kullanıcılar atamaları görebilir" ON public.application_assignments FOR SELECT USING (assigned_to = auth.uid() OR assigned_by = auth.uid() OR EXISTS (SELECT 1 FROM public.profiles WHERE id = auth.uid() AND role IN ('admin', 'hr')));
@@ -1048,6 +1319,31 @@ CREATE POLICY "Authenticated can insert own testimonial" ON public.testimonials 
 CREATE POLICY "User can update own testimonial" ON public.testimonials FOR UPDATE USING (auth.uid() = user_id);
 CREATE POLICY "User or admin can delete testimonial" ON public.testimonials FOR DELETE USING (auth.uid() = user_id OR EXISTS (SELECT 1 FROM public.profiles WHERE id = auth.uid() AND role IN ('admin', 'platform_admin', 'mt')));
 
+-- Community (14, 15)
+ALTER TABLE public.community_announcements ENABLE ROW LEVEL SECURITY;
+CREATE POLICY "Anyone can read published announcements" ON public.community_announcements FOR SELECT USING (status = 'published' OR EXISTS (SELECT 1 FROM public.profiles WHERE id = auth.uid() AND role IN ('admin', 'platform_admin', 'mt')));
+CREATE POLICY "Admin and MT can insert announcements" ON public.community_announcements FOR INSERT WITH CHECK (EXISTS (SELECT 1 FROM public.profiles WHERE id = auth.uid() AND role IN ('admin', 'platform_admin', 'mt')));
+CREATE POLICY "Admin and MT can update announcements" ON public.community_announcements FOR UPDATE USING (EXISTS (SELECT 1 FROM public.profiles WHERE id = auth.uid() AND role IN ('admin', 'platform_admin', 'mt')));
+CREATE POLICY "Admin and MT can delete announcements" ON public.community_announcements FOR DELETE USING (EXISTS (SELECT 1 FROM public.profiles WHERE id = auth.uid() AND role IN ('admin', 'platform_admin', 'mt')));
+
+ALTER TABLE public.community_events ENABLE ROW LEVEL SECURITY;
+CREATE POLICY "Anyone can read published events" ON public.community_events FOR SELECT USING (status = 'published' OR EXISTS (SELECT 1 FROM public.profiles WHERE id = auth.uid() AND role IN ('admin', 'platform_admin', 'mt')));
+CREATE POLICY "Admin and MT can insert events" ON public.community_events FOR INSERT WITH CHECK (EXISTS (SELECT 1 FROM public.profiles WHERE id = auth.uid() AND role IN ('admin', 'platform_admin', 'mt')));
+CREATE POLICY "Admin and MT can update events" ON public.community_events FOR UPDATE USING (EXISTS (SELECT 1 FROM public.profiles WHERE id = auth.uid() AND role IN ('admin', 'platform_admin', 'mt')));
+CREATE POLICY "Admin and MT can delete events" ON public.community_events FOR DELETE USING (EXISTS (SELECT 1 FROM public.profiles WHERE id = auth.uid() AND role IN ('admin', 'platform_admin', 'mt')));
+
+ALTER TABLE public.community_members ENABLE ROW LEVEL SECURITY;
+CREATE POLICY "Anyone can read community members" ON public.community_members FOR SELECT USING (true);
+CREATE POLICY "User can join (insert own row)" ON public.community_members FOR INSERT WITH CHECK (auth.uid() = user_id);
+CREATE POLICY "User can leave (delete own row)" ON public.community_members FOR DELETE USING (auth.uid() = user_id);
+CREATE POLICY "Admin and MT can delete any member" ON public.community_members FOR DELETE USING (EXISTS (SELECT 1 FROM public.profiles WHERE id = auth.uid() AND role IN ('admin', 'platform_admin', 'mt')));
+
+ALTER TABLE public.community_topics ENABLE ROW LEVEL SECURITY;
+CREATE POLICY "Anyone can read topics" ON public.community_topics FOR SELECT USING (true);
+CREATE POLICY "Admin and MT can insert topics" ON public.community_topics FOR INSERT WITH CHECK (EXISTS (SELECT 1 FROM public.profiles WHERE id = auth.uid() AND role IN ('admin', 'platform_admin', 'mt')));
+CREATE POLICY "Admin and MT can update topics" ON public.community_topics FOR UPDATE USING (EXISTS (SELECT 1 FROM public.profiles WHERE id = auth.uid() AND role IN ('admin', 'platform_admin', 'mt')));
+CREATE POLICY "Admin and MT can delete topics" ON public.community_topics FOR DELETE USING (EXISTS (SELECT 1 FROM public.profiles WHERE id = auth.uid() AND role IN ('admin', 'platform_admin', 'mt')));
+
 -- ============================================
 -- STORAGE (buckets + policies)
 -- ============================================
@@ -1108,6 +1404,55 @@ INSERT INTO public.projects (title, description, long_description, technologies,
 SELECT 'Test Projesi', 'Veritabanı ve arayüz testi için örnek proje.', 'Bu kayıt test amaçlıdır.', '["SQL", "Test"]'::jsonb, 'https://github.com', 'https://example.com', 'Web', 'published', first_owner.id
 FROM (SELECT id FROM public.profiles WHERE role IN ('developer', 'admin', 'platform_admin') LIMIT 1) first_owner
 WHERE NOT EXISTS (SELECT 1 FROM public.projects WHERE title = 'Test Projesi');
+
+-- Feedback templates seed (10)
+INSERT INTO public.feedback_templates (company_id, title, body, type, is_system)
+SELECT NULL, 'Pozisyona uygun değil', 'Başvurunuzu değerlendirdik. Bu pozisyon için uygun bulunmadığınızı üzülerek bildiririz. İlginiz için teşekkür ederiz.', 'reject', TRUE
+WHERE NOT EXISTS (SELECT 1 FROM public.feedback_templates WHERE is_system = TRUE AND type = 'reject' AND title = 'Pozisyona uygun değil' LIMIT 1);
+INSERT INTO public.feedback_templates (company_id, title, body, type, is_system)
+SELECT NULL, 'Deneyim uyumsuzluğu', 'Pozisyonumuz için gerekli deneyim seviyesi ile başvurunuz örtüşmemektedir. İleride uygun pozisyonlar için sizi değerlendireceğiz.', 'reject', TRUE
+WHERE NOT EXISTS (SELECT 1 FROM public.feedback_templates WHERE is_system = TRUE AND type = 'reject' AND title = 'Deneyim uyumsuzluğu' LIMIT 1);
+INSERT INTO public.feedback_templates (company_id, title, body, type, is_system)
+SELECT NULL, 'Görüşme daveti', 'Başvurunuzu olumlu değerlendirdik. Sizinle bir görüşme planlamak istiyoruz. Uygun tarih ve saatinizi bildirmenizi rica ederiz.', 'interview', TRUE
+WHERE NOT EXISTS (SELECT 1 FROM public.feedback_templates WHERE is_system = TRUE AND type = 'interview' LIMIT 1);
+INSERT INTO public.feedback_templates (company_id, title, body, type, is_system)
+SELECT NULL, 'Teklif hazırlanıyor', 'Görüşmelerimiz sonucunda sizinle çalışmak istiyoruz. En kısa sürede teklifimizi ileteceğiz.', 'offer', TRUE
+WHERE NOT EXISTS (SELECT 1 FROM public.feedback_templates WHERE is_system = TRUE AND type = 'offer' LIMIT 1);
+INSERT INTO public.feedback_templates (company_id, title, body, type, is_system)
+SELECT NULL, 'Genel bilgilendirme', 'Başvurunuz alınmıştır. Değerlendirme sürecinde sizinle iletişime geçeceğiz.', 'general', TRUE
+WHERE NOT EXISTS (SELECT 1 FROM public.feedback_templates WHERE is_system = TRUE AND type = 'general' LIMIT 1);
+
+-- Community topics seed (15)
+INSERT INTO public.community_topics (slug, label, sort_order)
+VALUES ('duyurular', 'Duyurular', 0), ('frontend', 'Frontend', 1), ('backend', 'Backend', 2), ('kariyer', 'Kariyer', 3), ('open-source', 'Open Source', 4)
+ON CONFLICT (slug) DO NOTHING;
+
+-- Newsletter campaigns seed (12) - örnek taslaklar
+INSERT INTO public.newsletter_campaigns (title, image_url, body_html, links, created_by)
+SELECT 'Yeni fiyatlandırma sayfamız yayında!', 'https://cdn.example.com/newsletters/pricing-launch.png',
+  '<h1>Yeni fiyatlandırma sayfamız yayında!</h1><p>Merhaba 👋</p><p>CodeCraftX olarak, hem bireysel geliştiriciler hem de şirketler için daha anlaşılır ve adil bir fiyatlandırma yapısı hazırladık.</p><p>Sevgiler,<br />CodeCraftX Ekibi</p>',
+  '[{"text":"Fiyatlandırma sayfasını incele","url":"https://codecraftx.com/ucretlendirme"}]'::jsonb, NULL
+WHERE NOT EXISTS (SELECT 1 FROM public.newsletter_campaigns WHERE title = 'Yeni fiyatlandırma sayfamız yayında!');
+INSERT INTO public.newsletter_campaigns (title, image_url, body_html, links, created_by)
+SELECT 'Yıllık ödemede %20 indirim fırsatı', 'https://cdn.example.com/newsletters/annual-discount.png',
+  '<h1>Yıllık ödemede %20 indirim!</h1><p>CodeCraftX''i düzenli kullanan ekipler için yıllık ödeme seçeneğinde indirim.</p><p>İyi çalışmalar,<br />CodeCraftX Ekibi</p>',
+  '[{"text":"Yıllık fiyatları gör","url":"https://codecraftx.com/ucretlendirme?billing=annually"}]'::jsonb, NULL
+WHERE NOT EXISTS (SELECT 1 FROM public.newsletter_campaigns WHERE title = 'Yıllık ödemede %20 indirim fırsatı');
+INSERT INTO public.newsletter_campaigns (title, image_url, body_html, links, created_by)
+SELECT 'Free plandan Orta plana geçiş rehberi', 'https://cdn.example.com/newsletters/upgrade-guide.png',
+  '<h1>Free plandan Orta plana geçiş rehberi</h1><p>Daha fazla ilan ve gelişmiş analitik için Orta plana geçiş rehberi.</p><p>Sevgiler,<br />CodeCraftX Ekibi</p>',
+  '[{"text":"Plan yükselt sayfası","url":"https://codecraftx.com/dashboard/company/plan"}]'::jsonb, NULL
+WHERE NOT EXISTS (SELECT 1 FROM public.newsletter_campaigns WHERE title = 'Free plandan Orta plana geçiş rehberi');
+INSERT INTO public.newsletter_campaigns (title, image_url, body_html, links, created_by)
+SELECT 'Premium plana geçen şirketlere özel avantajlar', 'https://cdn.example.com/newsletters/premium-benefits.png',
+  '<h1>Premium plan avantajları</h1><p>Sınırsız ilan, öncelikli destek, API erişimi.</p><p>Saygılarımızla,<br />CodeCraftX Ekibi</p>',
+  '[{"text":"Premium plan fiyatları","url":"https://codecraftx.com/ucretlendirme#premium"}]'::jsonb, NULL
+WHERE NOT EXISTS (SELECT 1 FROM public.newsletter_campaigns WHERE title = 'Premium plana geçen şirketlere özel avantajlar');
+INSERT INTO public.newsletter_campaigns (title, image_url, body_html, links, created_by)
+SELECT 'Fiyat güncellemesi hakkında önemli duyuru', 'https://cdn.example.com/newsletters/pricing-update.png',
+  '<h1>Fiyat güncellemesi duyurusu</h1><p>Yeni özellikler doğrultusunda fiyatlarımızı güncelliyoruz. Mevcut kullanıcılarımız için eski fiyatlar korunur.</p><p>Sevgiler,<br />CodeCraftX Ekibi</p>',
+  '[{"text":"Yeni fiyat tablosu","url":"https://codecraftx.com/ucretlendirme"}]'::jsonb, NULL
+WHERE NOT EXISTS (SELECT 1 FROM public.newsletter_campaigns WHERE title = 'Fiyat güncellemesi hakkında önemli duyuru');
 
 -- ============================================
 -- TAMAMLANDI

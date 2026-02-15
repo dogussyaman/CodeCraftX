@@ -222,6 +222,7 @@ export default async function IKTakvimPage() {
       subtitle="Planlanan görüşmeleriniz"
       emptyMessage="Bu tarihte görüşme yok"
       canEditNotes
+      disableNoteSaveAndInvite
     />
   )
 }

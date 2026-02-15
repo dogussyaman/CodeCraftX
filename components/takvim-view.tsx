@@ -35,6 +35,8 @@ interface TakvimViewProps {
   emptyMessage?: string
   /** İK görünümünde toplantı notları ve katılımcı daveti düzenlenebilir */
   canEditNotes?: boolean
+  /** İK için: Not kaydet ve Davet et butonları devre dışı */
+  disableNoteSaveAndInvite?: boolean
   /** true ise big-calendar tarzı ay grid görünümü kullanılır */
   useMonthGrid?: boolean
 }
@@ -51,6 +53,7 @@ export function TakvimView({
   subtitle = "Görüşme takviminiz",
   emptyMessage = "Bu tarihte görüşme yok",
   canEditNotes = false,
+  disableNoteSaveAndInvite = false,
   useMonthGrid = true,
 }: TakvimViewProps) {
   const today = startOfDay(new Date())
@@ -145,6 +148,7 @@ export function TakvimView({
                 <EventDetailCard
                   evt={selectedEvent}
                   canEditNotes={canEditNotes}
+                  disableNoteSaveAndInvite={disableNoteSaveAndInvite}
                   editingNotes={editingNotes}
                   setEditingNotes={setEditingNotes}
                   savingId={savingId}
@@ -230,6 +234,7 @@ export function TakvimView({
                     key={evt.interviewId ?? evt.applicationId ?? i}
                     evt={evt}
                     canEditNotes={canEditNotes}
+                    disableNoteSaveAndInvite={disableNoteSaveAndInvite}
                     editingNotes={editingNotes}
                     setEditingNotes={setEditingNotes}
                     savingId={savingId}
@@ -249,9 +254,22 @@ export function TakvimView({
   )
 }
 
+/** event.date = YYYY-MM-DD, event.time = "11:00" veya "11:00 - 12:00" */
+function isEventPast(evt: CalendarEvent): boolean {
+  try {
+    const timePart = (evt.time || "").replace(/\s*[-–].*$/, "").trim() || "00:00"
+    const dateStr = `${evt.date}T${timePart}`
+    const start = new Date(dateStr)
+    return start < new Date()
+  } catch {
+    return false
+  }
+}
+
 function EventDetailCard({
   evt,
   canEditNotes,
+  disableNoteSaveAndInvite,
   editingNotes,
   setEditingNotes,
   savingId,
@@ -263,6 +281,7 @@ function EventDetailCard({
 }: {
   evt: CalendarEvent
   canEditNotes: boolean
+  disableNoteSaveAndInvite: boolean
   editingNotes: Record<string, string>
   setEditingNotes: React.Dispatch<React.SetStateAction<Record<string, string>>>
   savingId: string | null
@@ -272,6 +291,7 @@ function EventDetailCard({
   localAttendees: Record<string, CalendarEvent["attendees"]>
   setLocalAttendees: React.Dispatch<React.SetStateAction<Record<string, CalendarEvent["attendees"]>>>
 }) {
+  const isPast = isEventPast(evt)
   const [inviteOpen, setInviteOpen] = React.useState(false)
   const [hrProfiles, setHrProfiles] = React.useState<HrProfile[]>([])
   const [selectedIds, setSelectedIds] = React.useState<Set<string>>(new Set((evt.attendees ?? []).map((a) => a.id)))
@@ -320,15 +340,22 @@ function EventDetailCard({
               {evt.time}
             </span>
             {evt.meetLink && (
-              <a
-                href={evt.meetLink}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="inline-flex items-center gap-1.5 text-primary hover:underline font-medium"
-              >
-                <Video className="size-4" />
-                Toplantı linki
-              </a>
+              isPast ? (
+                <span className="inline-flex items-center gap-1.5 font-medium text-red-600 line-through cursor-not-allowed" title="Geçmiş görüşme – link artık kullanılamaz">
+                  <Video className="size-4" />
+                  Toplantı linki
+                </span>
+              ) : (
+                <a
+                  href={evt.meetLink}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="inline-flex items-center gap-1.5 text-primary hover:underline font-medium"
+                >
+                  <Video className="size-4" />
+                  Toplantı linki
+                </a>
+              )
             )}
           </div>
         </div>
@@ -400,7 +427,7 @@ function EventDetailCard({
             {canEditNotes && evt.interviewId && (
               <Popover open={inviteOpen} onOpenChange={onInviteOpen}>
                 <PopoverTrigger asChild>
-                  <Button variant="outline" size="sm" className="gap-1.5 h-8 text-xs">
+                  <Button variant="outline" size="sm" className="gap-1.5 h-8 text-xs" disabled={disableNoteSaveAndInvite}>
                     <UserPlus className="size-3.5" />
                     Davet et
                   </Button>
@@ -479,11 +506,12 @@ function EventDetailCard({
                         [evt.interviewId!]: e.target.value,
                       }))
                     }
+                    disabled={disableNoteSaveAndInvite}
                   />
                   <Button
                     size="sm"
                     className="mt-2 rounded-lg"
-                    disabled={savingId === evt.interviewId}
+                    disabled={savingId === evt.interviewId || disableNoteSaveAndInvite}
                     onClick={() =>
                       handleSaveNotes(
                         evt.interviewId!,
@@ -491,7 +519,7 @@ function EventDetailCard({
                       )
                     }
                   >
-                    {savingId === evt.interviewId ? "Kaydediliyor..." : "Kaydet"}
+                    {savingId === evt.interviewId ? "Kaydediliyor..." : "Not kaydet"}
                   </Button>
                 </div>
                 {/* Kaydedilen notlar listesi - input dışında alt tarafta */}

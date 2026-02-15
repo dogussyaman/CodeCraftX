@@ -167,7 +167,7 @@ export default async function CommunityPage() {
     <div className="min-h-screen bg-background">
       <CommunityHero />
 
-      <div className="container mx-auto px-4 py-6 md:py-8">
+      <div className="container mx-auto px-4 py-6 pt-8 md:py-8 md:pt-10">
         <Breadcrumb className="mb-4">
           <BreadcrumbList>
             <BreadcrumbItem>
