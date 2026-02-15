@@ -17,6 +17,8 @@ import {
   Image as ImageIcon,
   Send,
 } from "lucide-react"
+import type { AggregatedNews } from "@/lib/news/types"
+import { NewsCard } from "./news/NewsCard"
 
 export type FeedPost = {
   id: string
@@ -36,6 +38,7 @@ export type FeedPost = {
 interface CommunityFeedsProps {
   posts: FeedPost[]
   commentCounts?: Record<string, number>
+  aggregatedNews?: AggregatedNews | null
 }
 
 const FILTER_TABS = [
@@ -43,6 +46,9 @@ const FILTER_TABS = [
   { id: "trending", label: "Öne çıkan" },
   { id: "duyurular", label: "#Duyurular" },
   { id: "blog", label: "#Blog" },
+  { id: "turkish", label: "Türkiye Haberleri" },
+  { id: "global", label: "Global Teknoloji" },
+  { id: "news-all", label: "Tüm Haberler" },
 ]
 
 function formatTimeAgo(dateStr: string): string {
@@ -58,9 +64,26 @@ function formatTimeAgo(dateStr: string): string {
   return date.toLocaleDateString("tr-TR", { day: "numeric", month: "short", year: "numeric" })
 }
 
-export function CommunityFeeds({ posts, commentCounts = {} }: CommunityFeedsProps) {
+const NEWS_FILTERS = ["turkish", "global", "news-all"] as const
+
+export function CommunityFeeds({ posts, commentCounts = {}, aggregatedNews }: CommunityFeedsProps) {
   const [search, setSearch] = useState("")
   const [activeFilter, setActiveFilter] = useState("all")
+
+  const isNewsFilter = NEWS_FILTERS.includes(activeFilter as (typeof NEWS_FILTERS)[number])
+  const newsItems = useMemo(() => {
+    if (!aggregatedNews) return []
+    switch (activeFilter) {
+      case "turkish":
+        return aggregatedNews.turkish
+      case "global":
+        return aggregatedNews.global
+      case "news-all":
+        return aggregatedNews.all
+      default:
+        return []
+    }
+  }, [activeFilter, aggregatedNews])
 
   const filteredPosts = useMemo(() => {
     let list = posts
@@ -122,7 +145,7 @@ export function CommunityFeeds({ posts, commentCounts = {} }: CommunityFeedsProp
         </CardContent>
       </Card>
 
-      {/* Filtre sekmeleri */}
+      {/* Filtre sekmeleri - Tümü, Öne çıkan, #Duyurular, #Blog, haber sekmeleri */}
       <div className="flex flex-wrap gap-2">
         {FILTER_TABS.map((tab) => (
           <Button
@@ -136,8 +159,8 @@ export function CommunityFeeds({ posts, commentCounts = {} }: CommunityFeedsProp
         ))}
       </div>
 
-      {/* Sabitlenmiş gönderiler */}
-      {pinnedPosts.length > 0 && (
+      {/* Sabitlenmiş gönderiler - sadece feed modunda */}
+      {!isNewsFilter && pinnedPosts.length > 0 && (
         <div className="space-y-2">
           <h3 className="flex items-center gap-2 text-sm font-semibold text-foreground">
             <Pin className="size-4 text-primary" />
@@ -155,10 +178,27 @@ export function CommunityFeeds({ posts, commentCounts = {} }: CommunityFeedsProp
         </div>
       )}
 
-      {/* Akış */}
+      {/* Akış veya haber kartları */}
       <div className="space-y-2">
         <h3 className="text-sm font-semibold text-foreground">Haberler &amp; Yazılar</h3>
-        {feedPosts.length === 0 ? (
+        {isNewsFilter ? (
+          newsItems.length === 0 ? (
+            <Card className="border-dashed border-border bg-muted/20">
+              <CardContent className="flex flex-col items-center justify-center py-12">
+                <FileText className="size-12 text-muted-foreground/50" />
+                <p className="mt-2 text-sm text-muted-foreground">
+                  Bu kategoride haber yok veya yükleniyor.
+                </p>
+              </CardContent>
+            </Card>
+          ) : (
+            <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
+              {newsItems.map((item) => (
+                <NewsCard key={item.id} item={item} />
+              ))}
+            </div>
+          )
+        ) : feedPosts.length === 0 ? (
           <Card className="border-dashed border-border bg-muted/20">
             <CardContent className="flex flex-col items-center justify-center py-12">
               <FileText className="size-12 text-muted-foreground/50" />

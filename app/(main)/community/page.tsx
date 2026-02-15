@@ -14,6 +14,7 @@ import { CommunityHero } from "./_components/CommunityHero"
 import { CommunitySidebar } from "./_components/CommunitySidebar"
 import { CommunityFeeds, type FeedPost } from "./_components/CommunityFeeds"
 import { CommunityRightSidebar } from "./_components/CommunityRightSidebar"
+import { getAggregatedNews } from "@/lib/news/aggregate"
 import { Card, CardContent } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
 import { FileText, BookOpen, Link2 } from "lucide-react"
@@ -70,6 +71,13 @@ export default async function CommunityPage() {
   }
   })
 
+  let aggregatedNews = null
+  try {
+    aggregatedNews = await getAggregatedNews()
+  } catch {
+    // graceful: feed works without news
+  }
+
   return (
     <div className="min-h-screen bg-background">
       <CommunityHero />
@@ -91,7 +99,11 @@ export default async function CommunityPage() {
 
         <div className="flex flex-col gap-8 lg:flex-row lg:items-start lg:gap-8">
           <CommunitySidebar />
-          <CommunityFeeds posts={feedPosts} commentCounts={commentCounts} />
+          <CommunityFeeds
+            posts={feedPosts}
+            commentCounts={commentCounts}
+            aggregatedNews={aggregatedNews}
+          />
           <CommunityRightSidebar />
         </div>
 
