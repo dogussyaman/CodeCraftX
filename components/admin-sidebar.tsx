@@ -17,6 +17,8 @@ import {
   Code2,
   TestTube2,
   Banknote,
+  UsersRound,
+  List,
 } from "lucide-react"
 import {
   Sidebar,
@@ -40,6 +42,8 @@ const baseMenuItems = [
   { title: "Gelir / Gider", href: "/dashboard/admin/gelir-gider", icon: Banknote },
   { title: "Bildirimler", href: "/dashboard/admin/bildirimler", icon: Bell },
   { title: "Blog", href: "/dashboard/admin/blog", icon: FileText },
+  { title: "Topluluk Üyeleri", href: "/dashboard/admin/topluluk-uyeleri", icon: UsersRound },
+  { title: "Topluluk Konuları", href: "/dashboard/admin/topluluk-konulari", icon: List },
   { title: "Bülten", href: "/dashboard/admin/bulten", icon: Mail },
   { title: "Yetenekler", href: "/dashboard/admin/yetenekler", icon: Settings },
   { title: "Email Test", href: "/dashboard/admin/email-test", icon: TestTube2 },

@@ -8,24 +8,35 @@ import {
   COMMUNITY_GITHUB_URL,
   COMMUNITY_LINKEDIN_URL,
 } from "@/lib/constants"
-import { Calendar, MoreHorizontal, Link2 } from "lucide-react"
+import { Calendar, MoreHorizontal, Link2, Sparkles, ChevronRight } from "lucide-react"
 
-const MOCK_EVENTS = [
-  {
-    id: "1",
-    title: "Canlı Kod Oturumu",
-    date: "20 Şub",
-    time: "19:00 - 21:00",
-    type: "Online",
-  },
-  {
-    id: "2",
-    title: "Tech Talk: React Server Components",
-    date: "25 Şub",
-    time: "18:00 - 19:30",
-    type: "Online",
-  },
-]
+export type CommunityEventItem = {
+  id: string
+  title: string
+  description?: string | null
+  location?: string | null
+  starts_at: string
+  ends_at?: string | null
+}
+
+export type FeaturedBlogItem = {
+  id: string
+  title: string
+  slug: string
+  view_count?: number
+}
+
+function formatEventDate(startsAt: string, endsAt?: string | null): string {
+  const start = new Date(startsAt)
+  const dateStr = start.toLocaleDateString("tr-TR", { day: "numeric", month: "short" })
+  const timeStr = start.toLocaleTimeString("tr-TR", { hour: "2-digit", minute: "2-digit" })
+  if (endsAt) {
+    const end = new Date(endsAt)
+    const endTime = end.toLocaleTimeString("tr-TR", { hour: "2-digit", minute: "2-digit" })
+    return `${dateStr} · ${timeStr} - ${endTime}`
+  }
+  return `${dateStr} · ${timeStr}`
+}
 
 function DiscordIcon({ className }: { className?: string }) {
   return (
@@ -35,7 +46,12 @@ function DiscordIcon({ className }: { className?: string }) {
   )
 }
 
-export function CommunityRightSidebar() {
+interface CommunityRightSidebarProps {
+  events?: CommunityEventItem[]
+  featuredBlogs?: FeaturedBlogItem[]
+}
+
+export function CommunityRightSidebar({ events = [], featuredBlogs = [] }: CommunityRightSidebarProps) {
   return (
     <aside className="flex w-full flex-col gap-6 lg:w-[280px] lg:shrink-0">
       {/* Yaklaşan etkinlikler */}
@@ -52,29 +68,65 @@ export function CommunityRightSidebar() {
             </Button>
           </div>
           <ul className="mt-3 space-y-3">
-            {MOCK_EVENTS.map((ev) => (
-              <li
-                key={ev.id}
-                className="flex gap-3 rounded-lg border border-border bg-muted/20 p-3"
-              >
-                <div className="flex size-10 shrink-0 items-center justify-center rounded-lg bg-primary/10 text-primary">
-                  <Calendar className="size-5" />
-                </div>
-                <div className="min-w-0 flex-1">
-                  <p className="text-sm font-medium text-foreground">{ev.title}</p>
-                  <p className="text-xs text-muted-foreground">
-                    {ev.date} · {ev.time}
-                  </p>
-                  <p className="mt-0.5 text-xs text-muted-foreground">{ev.type}</p>
-                </div>
+            {events.length === 0 ? (
+              <li className="rounded-lg border border-dashed border-border bg-muted/10 px-3 py-4 text-center text-xs text-muted-foreground">
+                Şu an listelenecek etkinlik yok.
               </li>
-            ))}
+            ) : (
+              events.map((ev) => (
+                <li
+                  key={ev.id}
+                  className="flex gap-3 rounded-lg border border-border bg-muted/20 p-3 transition-colors hover:bg-muted/30"
+                >
+                  <div className="flex size-10 shrink-0 items-center justify-center rounded-lg bg-primary/10 text-primary">
+                    <Calendar className="size-5" />
+                  </div>
+                  <div className="min-w-0 flex-1">
+                    <p className="text-sm font-medium text-foreground">{ev.title}</p>
+                    <p className="text-xs text-muted-foreground">
+                      {formatEventDate(ev.starts_at, ev.ends_at)}
+                    </p>
+                    <p className="mt-0.5 text-xs text-muted-foreground">{ev.location ?? "Online"}</p>
+                  </div>
+                </li>
+              ))
+            )}
           </ul>
           <Button variant="outline" size="sm" className="mt-3 w-full" asChild>
             <Link href="/etkinlikler">Tüm etkinlikler</Link>
           </Button>
         </CardContent>
       </Card>
+
+      {/* Öne çıkan blog yazıları */}
+      {featuredBlogs.length > 0 && (
+        <Card className="border-border bg-card">
+          <CardContent className="p-4">
+            <h3 className="flex items-center gap-2 text-sm font-semibold text-foreground">
+              <Sparkles className="size-4 text-primary" />
+              Öne çıkan blog yazıları
+            </h3>
+            <ul className="mt-3 space-y-2">
+              {featuredBlogs.slice(0, 3).map((blog) => (
+                <li key={blog.id}>
+                  <Link
+                    href={`/blog/${blog.slug}`}
+                    className="flex items-center justify-between gap-2 rounded-md px-2 py-1.5 text-sm text-foreground transition-colors hover:bg-muted/30 hover:text-primary"
+                  >
+                    <span className="line-clamp-2 min-w-0 flex-1">{blog.title}</span>
+                    <ChevronRight className="size-4 shrink-0 text-muted-foreground" />
+                  </Link>
+                  {(blog.view_count ?? 0) > 0 && (
+                    <p className="ml-2 mt-0.5 text-xs text-muted-foreground">
+                      {blog.view_count} görüntülenme
+                    </p>
+                  )}
+                </li>
+              ))}
+            </ul>
+          </CardContent>
+        </Card>
+      )}
 
       {/* Entegrasyonlar */}
       <Card className="border-border bg-card">

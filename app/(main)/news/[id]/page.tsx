@@ -9,8 +9,6 @@ import { buildPageMetadata, getSiteTitle } from "@/lib/seo"
 import { SOURCE_BADGE_COLORS } from "@/lib/news/types"
 import { cn } from "@/lib/utils"
 
-const REVALIDATE = 900
-
 interface PageProps {
   params: Promise<{ id: string }>
 }
@@ -36,7 +34,7 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
   })
 }
 
-export const revalidate = REVALIDATE
+export const revalidate = 900
 
 function DetailRow({
   label,

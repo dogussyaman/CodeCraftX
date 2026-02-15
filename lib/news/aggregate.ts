@@ -27,8 +27,10 @@ async function aggregateNewsUncached(): Promise<AggregatedNews> {
     apiKey ? fetchNewsApiBoth(apiKey) : Promise.resolve({ tr: [] as NormalizedNewsItem[], en: [] as NormalizedNewsItem[] }),
   ])
 
-  const turkishRaw = [...rssItems, ...newsApiResult.tr]
-  const globalRaw = newsApiResult.en
+  const rssTurkish = rssItems.filter((i) => i.category === "turkish")
+  const rssGlobal = rssItems.filter((i) => i.category === "global")
+  const turkishRaw = [...rssTurkish, ...newsApiResult.tr]
+  const globalRaw = [...rssGlobal, ...newsApiResult.en]
 
   const turkishSorted = sortByPublishedDesc(turkishRaw)
   const turkishDeduped = removeDuplicateNews(turkishSorted)

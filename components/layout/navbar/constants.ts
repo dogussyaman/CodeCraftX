@@ -3,7 +3,7 @@ export const NAV_ITEMS = [
   { href: "/hakkimizda", label: "Hakkımızda" },
   { href: "/is-ilanlari", label: "İş İlanları" },
   { href: "/isveren", label: "İşveren" },
-  { href: "/blog", label: "Blog" },
+  { href: "/community", label: "Topluluk" },
   { href: "/iletisim", label: "İletişim" },
 ] as const;
 

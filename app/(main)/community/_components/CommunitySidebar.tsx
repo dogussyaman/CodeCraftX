@@ -1,23 +1,39 @@
 "use client"
 
+import { useState } from "react"
 import Link from "next/link"
+import { useRouter } from "next/navigation"
+import Image from "next/image"
 import { Button } from "@/components/ui/button"
-import { Card, CardContent } from "@/components/ui/card"
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Badge } from "@/components/ui/badge"
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+} from "@/components/ui/alert-dialog"
 import {
   COMMUNITY_DISCORD_URL,
   COMMUNITY_GITHUB_URL,
   COMMUNITY_LINKEDIN_URL,
 } from "@/lib/constants"
-import { Users, Code2, Settings2, Plus } from "lucide-react"
+import { Users, Code2, Settings2, Plus, Check } from "lucide-react"
 
-const TOPICS = [
-  { slug: "duyurular", label: "Duyurular", count: 0 },
-  { slug: "frontend", label: "Frontend", count: 0 },
-  { slug: "backend", label: "Backend", count: 0 },
-  { slug: "kariyer", label: "Kariyer", count: 0 },
-  { slug: "open-source", label: "Open Source", count: 0 },
-]
+export type CommunityTopic = { slug: string; label: string }
+
+const ROLES_CAN_JOIN = ["developer", "admin", "platform_admin", "mt"]
+
+interface CommunitySidebarProps {
+  topics?: CommunityTopic[]
+  isMember?: boolean
+  canAddTopic?: boolean
+  userId?: string | null
+  userRole?: string | null
+}
 
 function DiscordIcon({ className }: { className?: string }) {
   return (
@@ -32,18 +48,52 @@ function DiscordIcon({ className }: { className?: string }) {
   )
 }
 
-export function CommunitySidebar() {
+export function CommunitySidebar({ topics = [], isMember = false, canAddTopic = false, userId = null, userRole = null }: CommunitySidebarProps) {
+  const router = useRouter()
+  const [joining, setJoining] = useState(false)
+  const [showDeveloperOnlyModal, setShowDeveloperOnlyModal] = useState(false)
+
+  const canJoinCommunity = userRole != null && ROLES_CAN_JOIN.includes(userRole)
+
+  const handleJoinClick = () => {
+    if (!userId || isMember) return
+    if (!canJoinCommunity) {
+      setShowDeveloperOnlyModal(true)
+      return
+    }
+    handleJoin()
+  }
+
+  const handleJoin = async () => {
+    if (!userId || isMember) return
+    setJoining(true)
+    try {
+      const res = await fetch("/api/community/join", { method: "POST" })
+      if (res.ok) router.refresh()
+    } finally {
+      setJoining(false)
+    }
+  }
+
+  const topicList = topics.length > 0 ? topics : [
+    { slug: "duyurular", label: "Duyurular" },
+    { slug: "frontend", label: "Frontend" },
+    { slug: "backend", label: "Backend" },
+    { slug: "kariyer", label: "Kariyer" },
+    { slug: "open-source", label: "Open Source" },
+  ]
+
   return (
     <aside className="flex w-full flex-col gap-6 lg:w-[280px] lg:shrink-0">
       {/* Topluluk kartı */}
       <Card className="overflow-hidden border-border bg-card">
-        <div className="h-24 bg-gradient-to-br from-primary/20 to-primary/5" />
+      
+        <CardHeader>
+          <CardTitle>
+            <Image src="logo.png" alt="CodeCraftX Topluluğu" className="w-full h-20 object-contain" width={280} height={24} />
+          </CardTitle>
+        </CardHeader>
         <CardContent className="relative px-4 pb-4 pt-2">
-          <div className="-mt-12 flex justify-center">
-            <div className="flex size-16 items-center justify-center rounded-xl border-4 border-card bg-primary/20 text-primary">
-              <Code2 className="size-8" />
-            </div>
-          </div>
           <h2 className="mt-3 text-center font-semibold text-foreground">
             CodeCraftX Topluluğu
           </h2>
@@ -59,11 +109,37 @@ export function CommunitySidebar() {
               Topluluk
             </Badge>
           </div>
-          <Button className="mt-4 w-full" size="sm" asChild>
-            <Link href="/auth/kayit">Katıl</Link>
-          </Button>
+          {!userId ? (
+            <Button className="mt-4 w-full" size="sm" asChild>
+              <Link href="/auth/giris">Katıl</Link>
+            </Button>
+          ) : isMember ? (
+            <div className="mt-4 flex w-full items-center justify-center gap-2 rounded-lg border border-border bg-muted/20 py-2 text-sm text-muted-foreground">
+              <Check className="size-4 text-primary" />
+              Topluluk üyesisin
+            </div>
+          ) : (
+            <Button className="mt-4 w-full" size="sm" onClick={handleJoinClick} disabled={joining}>
+              {joining ? "Katılıyor..." : "Katıl"}
+            </Button>
+          )}
         </CardContent>
       </Card>
+
+      <AlertDialog open={showDeveloperOnlyModal} onOpenChange={setShowDeveloperOnlyModal}>
+        <AlertDialogContent>
+          <AlertDialogHeader>
+            <AlertDialogTitle>Bu topluluk geliştiriciler içindir</AlertDialogTitle>
+            <AlertDialogDescription>
+              CodeCraftX Topluluğu, yazılım geliştiricilerin bir arada öğrenmesi ve paylaşması için oluşturulmuştur.
+              Topluluğa katılmak için geliştirici hesabı gereklidir. İşveren veya diğer hesap türleriyle katılım yapılamaz.
+            </AlertDialogDescription>
+          </AlertDialogHeader>
+          <AlertDialogFooter>
+            <AlertDialogAction>Anladım</AlertDialogAction>
+          </AlertDialogFooter>
+        </AlertDialogContent>
+      </AlertDialog>
 
       {/* Discord, GitHub, LinkedIn */}
       <Card className="border-border bg-card">
@@ -114,24 +190,25 @@ export function CommunitySidebar() {
             <Settings2 className="size-4 text-muted-foreground" aria-hidden />
           </div>
           <ul className="mt-3 space-y-1">
-            {TOPICS.map((t) => (
+            {topicList.map((t) => (
               <li key={t.slug}>
                 <Link
                   href={`#topic-${t.slug}`}
                   className="flex items-center justify-between rounded-md px-2 py-1.5 text-sm text-muted-foreground transition-colors hover:bg-muted hover:text-foreground"
                 >
                   <span>{t.label}</span>
-                  {t.count > 0 && (
-                    <span className="text-xs text-muted-foreground">({t.count})</span>
-                  )}
                 </Link>
               </li>
             ))}
           </ul>
-          <Button variant="ghost" size="sm" className="mt-2 w-full gap-1 text-muted-foreground" disabled>
-            <Plus className="size-4" />
-            Konu ekle
-          </Button>
+          {canAddTopic && (
+            <Button variant="ghost" size="sm" className="mt-2 w-full gap-1 text-muted-foreground" asChild>
+              <Link href="/dashboard/admin/topluluk-konulari">
+                <Plus className="size-4" />
+                Konu ekle
+              </Link>
+            </Button>
+          )}
         </CardContent>
       </Card>
     </aside>

@@ -59,6 +59,7 @@ export async function createBlogPost(prev: BlogFormState, formData: FormData): P
   revalidatePath("/dashboard/admin/blog")
   revalidatePath("/dashboard/gelistirici/yazilarim")
   revalidatePath("/blog")
+  revalidatePath("/community")
   return { ok: true }
 }
 
@@ -125,6 +126,7 @@ export async function updateBlogPost(
   revalidatePath("/dashboard/gelistirici/yazilarim")
   revalidatePath("/blog")
   revalidatePath(`/blog/${parsed.data.slug}`)
+  revalidatePath("/community")
   return { ok: true }
 }
 
@@ -150,5 +152,6 @@ export async function deleteBlogPost(postId: string): Promise<BlogFormState> {
   revalidatePath("/dashboard/admin/blog")
   revalidatePath("/dashboard/gelistirici/yazilarim")
   revalidatePath("/blog")
+  revalidatePath("/community")
   return { ok: true }
 }

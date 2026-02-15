@@ -38,7 +38,7 @@ export function NewsCard({ item }: NewsCardProps) {
   const isExternal = !item.content
 
   return (
-    <Card className="group overflow-hidden border-border bg-card shadow-sm transition-all duration-200 hover:shadow hover:border-border/80 dark:hover:border-muted">
+    <Card className="group overflow-hidden border-border bg-card pt-0 shadow-sm transition-all duration-200 hover:shadow hover:border-border/80 dark:hover:border-muted">
       <CardContent className="p-0 flex flex-col">
         <Link
           href={href}
@@ -53,6 +53,7 @@ export function NewsCard({ item }: NewsCardProps) {
                 className="h-full w-full object-cover transition-transform duration-300 group-hover:scale-105"
                 loading="lazy"
                 sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 25vw"
+                referrerPolicy="no-referrer"
               />
             ) : (
               <div className="flex h-full w-full items-center justify-center bg-muted/60 text-muted-foreground text-xs" />

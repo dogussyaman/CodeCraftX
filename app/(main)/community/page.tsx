@@ -52,24 +52,111 @@ export default async function CommunityPage() {
     }
   }
 
-  const feedPosts: FeedPost[] = (blogRows ?? []).map((row: any) => {
+  const feedPostsFromBlog: FeedPost[] = (blogRows ?? []).map((row: any) => {
     const plain = row.body ? String(row.body).replace(/<[^>]*>/g, "").trim() : ""
     const excerpt = plain ? plain.slice(0, 160) + (plain.length > 160 ? "…" : "") : undefined
     return {
-    id: row.id,
-    title: row.title,
-    slug: row.slug,
-    excerpt,
-    cover_image_url: row.cover_image_url,
-    published_at: row.published_at,
-    created_at: row.created_at,
-    view_count: row.view_count,
-    like_count: row.like_count,
-    author: row.profiles,
-    isPinned: false,
-    type: "blog",
-  }
+      id: row.id,
+      title: row.title,
+      slug: row.slug,
+      excerpt,
+      cover_image_url: row.cover_image_url,
+      published_at: row.published_at,
+      created_at: row.created_at,
+      view_count: row.view_count,
+      like_count: row.like_count,
+      author: row.profiles,
+      isPinned: false,
+      type: "blog",
+    }
   })
+
+  const { data: { user } } = await supabase.auth.getUser()
+
+  let events: { id: string; title: string; description?: string | null; location?: string | null; starts_at: string; ends_at?: string | null }[] = []
+  let featuredBlogs: { id: string; title: string; slug: string; view_count?: number }[] = []
+  let announcements: { id: string; title: string; body: string; created_at: string; is_pinned?: boolean; profiles?: { full_name?: string; avatar_url?: string } | null }[] = []
+  let topics: { slug: string; label: string }[] = []
+  let isMember = false
+  let canAddTopic = false
+  let role: string | undefined
+  try {
+    const [eventsRes, featuredRes, announcementsRes, topicsRes, memberRes, profileRes] = await Promise.all([
+      supabase
+        .from("community_events")
+        .select("id, title, description, location, starts_at, ends_at")
+        .eq("status", "published")
+        .gte("starts_at", new Date().toISOString())
+        .order("starts_at", { ascending: true })
+        .limit(5),
+      supabase
+        .from("blog_posts")
+        .select("id, title, slug, view_count")
+        .eq("status", "published")
+        .order("view_count", { ascending: false })
+        .limit(3),
+      supabase
+        .from("community_announcements")
+        .select("id, title, body, created_at, is_pinned, profiles(full_name, avatar_url)")
+        .eq("status", "published")
+        .order("created_at", { ascending: false })
+        .limit(20),
+      supabase.from("community_topics").select("slug, label").order("sort_order", { ascending: true }),
+      user ? supabase.from("community_members").select("id").eq("user_id", user.id).maybeSingle() : Promise.resolve({ data: null }),
+      user ? supabase.from("profiles").select("role").eq("id", user.id).maybeSingle() : Promise.resolve({ data: null }),
+    ])
+    if (eventsRes.data) events = eventsRes.data
+    if (featuredRes.data) featuredBlogs = featuredRes.data
+    if (announcementsRes.data) {
+      announcements = (announcementsRes.data as { id: string; title: string; body: string; created_at: string; is_pinned?: boolean; profiles?: { full_name?: string; avatar_url?: string } | { full_name?: string; avatar_url?: string }[] | null }[]).map((a) => ({
+        id: a.id,
+        title: a.title,
+        body: a.body,
+        created_at: a.created_at,
+        is_pinned: a.is_pinned,
+        profiles: Array.isArray(a.profiles) ? a.profiles[0] ?? null : a.profiles ?? null,
+      }))
+    }
+    if (topicsRes.data) topics = topicsRes.data
+    if (memberRes.data) isMember = true
+    role = (profileRes.data as { role?: string } | null)?.role
+    if (role && ["admin", "platform_admin", "mt"].includes(role)) canAddTopic = true
+  } catch {
+    // tables may not exist yet
+  }
+
+  if (topics.length === 0) {
+    topics = [
+      { slug: "duyurular", label: "Duyurular" },
+      { slug: "frontend", label: "Frontend" },
+      { slug: "backend", label: "Backend" },
+      { slug: "kariyer", label: "Kariyer" },
+      { slug: "open-source", label: "Open Source" },
+    ]
+  }
+
+  const announcementPosts: FeedPost[] = announcements.map((a: any) => {
+    const plain = a.body ? String(a.body).replace(/<[^>]*>/g, "").trim() : ""
+    const excerpt = plain ? plain.slice(0, 160) + (plain.length > 160 ? "…" : "") : undefined
+    return {
+      id: a.id,
+      title: a.title,
+      slug: undefined,
+      excerpt,
+      cover_image_url: null,
+      published_at: a.created_at,
+      created_at: a.created_at,
+      view_count: 0,
+      like_count: 0,
+      author: a.profiles ?? null,
+      isPinned: a.is_pinned ?? false,
+      type: "announcement",
+    }
+  })
+
+  const feedPosts: FeedPost[] = [...announcementPosts, ...feedPostsFromBlog].sort(
+    (a, b) => new Date(b.published_at ?? b.created_at).getTime() - new Date(a.published_at ?? a.created_at).getTime()
+  )
 
   let aggregatedNews = null
   try {
@@ -98,13 +185,15 @@ export default async function CommunityPage() {
         </Breadcrumb>
 
         <div className="flex flex-col gap-8 lg:flex-row lg:items-start lg:gap-8">
-          <CommunitySidebar />
+          <CommunitySidebar topics={topics} isMember={isMember} canAddTopic={canAddTopic} userId={user?.id ?? null} userRole={role ?? null} />
           <CommunityFeeds
             posts={feedPosts}
             commentCounts={commentCounts}
             aggregatedNews={aggregatedNews}
+            isLoggedIn={!!user}
+            userRole={role ?? null}
           />
-          <CommunityRightSidebar />
+          <CommunityRightSidebar events={events} featuredBlogs={featuredBlogs} />
         </div>
 
         {/* Blog & Kaynaklar bölümü */}
@@ -130,7 +219,7 @@ export default async function CommunityPage() {
                   Kariyer ipuçları, teknoloji yazıları ve topluluk deneyimleri.
                 </p>
                 <Button variant="outline" size="sm" className="mt-3" asChild>
-                  <Link href="/blog">Yazıları oku</Link>
+                  <Link href="#feed">Yazıları oku</Link>
                 </Button>
               </CardContent>
             </Card>

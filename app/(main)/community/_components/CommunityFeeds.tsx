@@ -2,6 +2,7 @@
 
 import { useMemo, useState } from "react"
 import Link from "next/link"
+import { motion, AnimatePresence } from "framer-motion"
 import { Card, CardContent, CardHeader } from "@/components/ui/card"
 import { Input } from "@/components/ui/input"
 import { Button } from "@/components/ui/button"
@@ -16,6 +17,8 @@ import {
   FileText,
   Image as ImageIcon,
   Send,
+  PenLine,
+  ChevronDown,
 } from "lucide-react"
 import type { AggregatedNews } from "@/lib/news/types"
 import { NewsCard } from "./news/NewsCard"
@@ -35,10 +38,15 @@ export type FeedPost = {
   type: "blog" | "announcement"
 }
 
+const ROLES_CAN_WRITE_BLOG = ["admin", "developer", "platform_admin"]
+
 interface CommunityFeedsProps {
   posts: FeedPost[]
   commentCounts?: Record<string, number>
   aggregatedNews?: AggregatedNews | null
+  isLoggedIn?: boolean
+  /** Sadece admin ve developer blog yazısı yazabilsin */
+  userRole?: string | null
 }
 
 const FILTER_TABS = [
@@ -66,9 +74,11 @@ function formatTimeAgo(dateStr: string): string {
 
 const NEWS_FILTERS = ["turkish", "global", "news-all"] as const
 
-export function CommunityFeeds({ posts, commentCounts = {}, aggregatedNews }: CommunityFeedsProps) {
+export function CommunityFeeds({ posts, commentCounts = {}, aggregatedNews, isLoggedIn = false, userRole = null }: CommunityFeedsProps) {
   const [search, setSearch] = useState("")
   const [activeFilter, setActiveFilter] = useState("all")
+  const [composerOpen, setComposerOpen] = useState(false)
+  const canWriteBlog = Boolean(userRole && ROLES_CAN_WRITE_BLOG.includes(userRole))
 
   const isNewsFilter = NEWS_FILTERS.includes(activeFilter as (typeof NEWS_FILTERS)[number])
   const newsItems = useMemo(() => {
@@ -125,37 +135,89 @@ export function CommunityFeeds({ posts, commentCounts = {}, aggregatedNews }: Co
         </div>
       </div>
 
-      {/* Gönderi placeholder (görsel olarak) */}
-      <Card className="border-border bg-card">
-        <CardContent className="flex items-center gap-3 p-4">
-          <Avatar className="size-10 shrink-0">
-            <AvatarFallback className="bg-primary/20 text-primary">?</AvatarFallback>
-          </Avatar>
-          <div className="min-w-0 flex-1 rounded-lg border border-dashed border-border bg-muted/30 px-4 py-3 text-sm text-muted-foreground">
-            Aklınızdan ne geçiyor? (Giriş yaparak paylaşın)
-          </div>
-          <div className="flex shrink-0 gap-1">
-            <Button variant="ghost" size="icon" disabled aria-label="Görsel">
-              <ImageIcon className="size-4" />
-            </Button>
-            <Button variant="ghost" size="icon" disabled aria-label="Gönder">
-              <Send className="size-4" />
-            </Button>
-          </div>
+      {/* Gönderi placeholder / blog yazma alanı */}
+      <Card className="overflow-hidden border-border bg-card transition-shadow hover:shadow-sm">
+        <CardContent className="p-0">
+          {!isLoggedIn ? (
+            <Link
+              href="/auth/giris"
+              className="flex items-center gap-3 p-4 transition-colors hover:bg-muted/30"
+            >
+              <Avatar className="size-10 shrink-0">
+                <AvatarFallback className="bg-primary/20 text-primary">?</AvatarFallback>
+              </Avatar>
+              <div className="min-w-0 flex-1 rounded-lg border border-dashed border-border bg-muted/30 px-4 py-3 text-sm text-muted-foreground">
+                Aklınızdan ne geçiyor? (Giriş yaparak paylaşın)
+              </div>
+              <ChevronDown className="size-4 shrink-0 text-muted-foreground" aria-hidden />
+            </Link>
+          ) : (
+            <>
+              <button
+                type="button"
+                onClick={() => canWriteBlog && setComposerOpen((o) => !o)}
+                className="flex w-full items-center gap-3 p-4 text-left transition-colors hover:bg-muted/30"
+                aria-expanded={composerOpen}
+              >
+                <Avatar className="size-10 shrink-0">
+                  <AvatarFallback className="bg-primary/20 text-primary">?</AvatarFallback>
+                </Avatar>
+                <div className="min-w-0 flex-1 rounded-lg border border-dashed border-border bg-muted/30 px-4 py-3 text-sm text-muted-foreground">
+                  {canWriteBlog
+                    ? "Aklınızdan ne geçiyor? (Blog yazısı paylaşmak için tıklayın)"
+                    : "Akışı inceleyin. Blog yazısı yazma yetkisi admin ve geliştirici hesaplarına özeldir."}
+                </div>
+                {canWriteBlog && (
+                  <motion.span
+                    animate={{ rotate: composerOpen ? 180 : 0 }}
+                    transition={{ duration: 0.2 }}
+                    className="shrink-0"
+                  >
+                    <ChevronDown className="size-4 text-muted-foreground" aria-hidden />
+                  </motion.span>
+                )}
+              </button>
+              <AnimatePresence initial={false}>
+                {canWriteBlog && composerOpen && (
+                  <motion.div
+                    initial={{ height: 0, opacity: 0 }}
+                    animate={{ height: "auto", opacity: 1 }}
+                    exit={{ height: 0, opacity: 0 }}
+                    transition={{ duration: 0.25, ease: "easeInOut" }}
+                    className="overflow-hidden border-t border-border"
+                  >
+                    <div className="flex flex-col gap-3 p-4">
+                      <p className="text-sm text-muted-foreground">
+                        Toplulukta bir blog yazısı paylaşmak için aşağıdaki butona tıklayın.
+                      </p>
+                      <Button size="sm" className="w-full gap-2 sm:w-auto" asChild>
+                        <Link href="/dashboard/gelistirici/yazilarim/yeni">
+                          <PenLine className="size-4" />
+                          Blog yazısı yaz
+                        </Link>
+                      </Button>
+                    </div>
+                  </motion.div>
+                )}
+              </AnimatePresence>
+            </>
+          )}
         </CardContent>
       </Card>
 
       {/* Filtre sekmeleri - Tümü, Öne çıkan, #Duyurular, #Blog, haber sekmeleri */}
       <div className="flex flex-wrap gap-2">
         {FILTER_TABS.map((tab) => (
-          <Button
-            key={tab.id}
-            variant={activeFilter === tab.id ? "secondary" : "ghost"}
-            size="sm"
-            onClick={() => setActiveFilter(tab.id)}
-          >
-            {tab.label}
-          </Button>
+          <motion.div key={tab.id} whileHover={{ scale: 1.02 }} whileTap={{ scale: 0.98 }}>
+            <Button
+              variant={activeFilter === tab.id ? "secondary" : "ghost"}
+              size="sm"
+              onClick={() => setActiveFilter(tab.id)}
+              className="transition-colors duration-200"
+            >
+              {tab.label}
+            </Button>
+          </motion.div>
         ))}
       </div>
 
@@ -210,7 +272,7 @@ export function CommunityFeeds({ posts, commentCounts = {}, aggregatedNews }: Co
             </CardContent>
           </Card>
         ) : (
-          <div className="space-y-4">
+          <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
             {feedPosts.map((post) => (
               <FeedCard
                 key={post.id}
@@ -236,12 +298,21 @@ function FeedCard({
   const authorName = post.author?.full_name ?? "CodeCraftX"
 
   return (
-    <Card className="overflow-hidden border-border bg-card transition-colors hover:bg-muted/20">
-      <CardHeader className="pb-2">
+    <Card className="group/card overflow-hidden border-border bg-card pt-0 transition-all duration-300 hover:border-primary/25 hover:shadow-md">
+      {post.cover_image_url && (
+        <div className="overflow-hidden rounded-t-lg border-0 border-b border-border">
+          <img
+            src={post.cover_image_url}
+            alt=""
+            className="aspect-video w-full object-cover transition-transform duration-300 group-hover/card:scale-[1.02]"
+          />
+        </div>
+      )}
+      <CardHeader className="pb-2 pt-3">
         <div className="flex items-start gap-3">
-          <Avatar className="size-10 shrink-0">
+          <Avatar className="size-9 shrink-0">
             <AvatarImage src={post.author?.avatar_url} />
-            <AvatarFallback className="bg-primary/20 text-primary text-sm">
+            <AvatarFallback className="bg-primary/20 text-primary text-xs">
               {authorName
                 .split(" ")
                 .map((n) => n[0])
@@ -252,13 +323,13 @@ function FeedCard({
           </Avatar>
           <div className="min-w-0 flex-1">
             <div className="flex flex-wrap items-center gap-2">
-              <span className="font-medium text-foreground">{authorName}</span>
+              <span className="font-medium text-foreground text-sm">{authorName}</span>
               {post.isPinned && (
                 <Badge variant="secondary" className="gap-1 text-xs">
                   <Pin className="size-3" />
                   Sabit
                 </Badge>
-            )}
+              )}
               {post.type === "blog" && (
                 <Badge variant="outline" className="text-xs">Blog</Badge>
               )}
@@ -269,18 +340,9 @@ function FeedCard({
           </div>
         </div>
       </CardHeader>
-      <CardContent className="pt-0">
-        {post.cover_image_url && (
-          <div className="mb-3 overflow-hidden rounded-lg border border-border">
-            <img
-              src={post.cover_image_url}
-              alt=""
-              className="aspect-video w-full object-cover"
-            />
-          </div>
-        )}
+      <CardContent className="pt-0 pb-4">
         <Link href={href} className="block group">
-          <h4 className="font-semibold text-foreground group-hover:text-primary group-hover:underline">
+          <h4 className="font-semibold text-foreground group-hover:text-primary group-hover:underline line-clamp-2">
             {post.title}
           </h4>
           {post.excerpt && (
@@ -289,7 +351,7 @@ function FeedCard({
             </p>
           )}
         </Link>
-        <div className="mt-3 flex items-center gap-4 text-sm text-muted-foreground">
+        <div className="mt-3 flex flex-wrap items-center gap-4 text-sm text-muted-foreground">
           <span className="flex items-center gap-1">
             <Heart className="size-4" />
             {post.like_count ?? 0}
@@ -304,10 +366,7 @@ function FeedCard({
               {post.view_count}
             </span>
           )}
-          <Link
-            href={href}
-            className="ml-auto text-primary hover:underline"
-          >
+          <Link href={href} className="ml-auto text-primary hover:underline">
             Devamını oku
           </Link>
         </div>
