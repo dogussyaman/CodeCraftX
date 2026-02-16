@@ -34,6 +34,18 @@ function getEventColor(index: number): string {
   return EVENT_COLORS[index % EVENT_COLORS.length]
 }
 
+/** event.date = YYYY-MM-DD, event.time = "11:00" veya "11:00 - 12:00" */
+function isEventPast(evt: CalendarEvent): boolean {
+  try {
+    const timePart = (evt.time || "").replace(/\s*[-–].*$/, "").trim() || "00:00"
+    const dateStr = `${evt.date}T${timePart}`
+    const start = new Date(dateStr)
+    return start < new Date()
+  } catch {
+    return false
+  }
+}
+
 interface CalendarMonthViewProps {
   events: CalendarEvent[]
   title?: string
@@ -50,12 +62,9 @@ interface CalendarMonthViewProps {
 
 export function CalendarMonthView({
   events,
-  title = "Takvim",
   selectedDate,
   onSelectDate,
   onEventClick,
-  viewTitle = "Takvim",
-  viewSubtitle = "Görüşmeler",
 }: CalendarMonthViewProps) {
   const [currentMonth, setCurrentMonth] = React.useState<Date>(() => {
     const d = selectedDate ?? new Date()
@@ -87,19 +96,29 @@ export function CalendarMonthView({
   }).length
 
   return (
-    <div className="flex flex-col gap-4 min-h-screen bg-gradient-to-b from-muted/20 to-background">
+    <div className="flex flex-col gap-4 min-h-screen from-muted/20 to-background">
       <div className="container mx-auto px-4 pt-6 max-w-7xl">
-        {/* Header - big-calendar style */}
-        <header className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between mb-6">
-          <div>
-            <h1 className="text-2xl font-bold tracking-tight text-foreground sm:text-3xl">
-              {viewTitle}
-            </h1>
-            <p className="mt-1 text-sm text-muted-foreground dark:text-foreground/75">
-              {viewSubtitle}
-            </p>
+        {/* Küçük özet kartları – takvimin üstünde */}
+        <div className="flex flex-wrap items-center gap-3 mb-4">
+          <div className="inline-flex items-center gap-2 rounded-lg border border-border/80 bg-card px-3 py-2 shadow-sm">
+            <div className="flex size-8 items-center justify-center rounded-md bg-primary/10">
+              <CalendarCheck className="size-4 text-primary" />
+            </div>
+            <div>
+              <span className="text-lg font-semibold tabular-nums text-foreground">{eventCount}</span>
+              <span className="ml-1.5 text-xs text-muted-foreground">Bu ay toplam görüşme</span>
+            </div>
           </div>
-        </header>
+          <div className="inline-flex items-center gap-2 rounded-lg border border-border/80 bg-card px-3 py-2 shadow-sm">
+            <div className="flex size-8 items-center justify-center rounded-md bg-emerald-500/10">
+              <Video className="size-4 text-emerald-600 dark:text-emerald-400" />
+            </div>
+            <div>
+              <span className="text-lg font-semibold tabular-nums text-foreground">{upcomingCount}</span>
+              <span className="ml-1.5 text-xs text-muted-foreground">Yaklaşan görüşme</span>
+            </div>
+          </div>
+        </div>
 
         {/* Calendar toolbar */}
         <div className="flex flex-wrap items-center justify-between gap-4 mb-4">
@@ -188,24 +207,38 @@ export function CalendarMonthView({
                         {format(day, "d")}
                       </button>
                       <div className="mt-1 flex flex-1 flex-col gap-1 overflow-hidden">
-                        {dayEvents.slice(0, 3).map((evt, idx) => (
-                          <button
-                            key={evt.interviewId ?? evt.applicationId ?? idx}
-                            type="button"
-                            onClick={(e) => {
-                              e.stopPropagation()
-                              onEventClick?.(evt)
-                            }}
-                            className={cn(
-                              "text-left rounded-md px-1.5 py-1 text-xs font-medium truncate border border-transparent hover:opacity-90 transition-opacity",
-                              getEventColor(idx)
-                            )}
-                            title={`${evt.title} – ${evt.time}`}
-                          >
-                            <span className="block truncate">{evt.title}</span>
-                            <span className="block truncate opacity-90">{evt.time}</span>
-                          </button>
-                        ))}
+                        {dayEvents.slice(0, 3).map((evt, idx) => {
+                          const past = isEventPast(evt)
+                          return (
+                            <div key={evt.interviewId ?? evt.applicationId ?? idx} className="flex flex-col gap-0.5">
+                              <button
+                                type="button"
+                                onClick={(e) => {
+                                  e.stopPropagation()
+                                  onEventClick?.(evt)
+                                }}
+                                className={cn(
+                                  "text-left rounded-md px-1.5 py-1 text-xs font-medium truncate border border-transparent hover:opacity-90 transition-opacity",
+                                  getEventColor(idx)
+                                )}
+                                title={`${evt.title} – ${evt.time}`}
+                              >
+                                <span className="block truncate">{evt.title}</span>
+                                <span className="block truncate opacity-90">{evt.time}</span>
+                              </button>
+                              <span
+                                className={cn(
+                                  "truncate px-1.5 py-0.5 text-[10px] font-medium rounded",
+                                  past
+                                    ? "bg-red-500/90 text-white border border-red-600"
+                                    : "text-muted-foreground dark:text-foreground/70"
+                                )}
+                              >
+                                {past ? "Süresi doldu" : "Yaklaşan görüşme"}
+                              </span>
+                            </div>
+                          )
+                        })}
                         {dayEvents.length > 3 && (
                           <span className="text-xs text-muted-foreground dark:text-foreground/70 px-1.5 py-0.5">
                             +{dayEvents.length - 3} daha...
@@ -220,35 +253,9 @@ export function CalendarMonthView({
           </div>
         </div>
 
-        {/* Takvim altı: özet ve bilgi alanı */}
-        <div className="mt-8 grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
+        {/* Takvim altı: sadece ipucu */}
+        <div className="mt-8">
           <div className="rounded-xl border border-border/80 bg-card p-4 shadow-sm">
-            <div className="flex items-center gap-3">
-              <div className="flex size-10 items-center justify-center rounded-lg bg-primary/10">
-                <CalendarCheck className="size-5 text-primary" />
-              </div>
-              <div>
-                <p className="text-2xl font-semibold tabular-nums text-foreground">{eventCount}</p>
-                <p className="text-xs font-medium text-muted-foreground dark:text-foreground/70">
-                  Bu ay toplam görüşme
-                </p>
-              </div>
-            </div>
-          </div>
-          <div className="rounded-xl border border-border/80 bg-card p-4 shadow-sm">
-            <div className="flex items-center gap-3">
-              <div className="flex size-10 items-center justify-center rounded-lg bg-emerald-500/10">
-                <Video className="size-5 text-emerald-600 dark:text-emerald-400" />
-              </div>
-              <div>
-                <p className="text-2xl font-semibold tabular-nums text-foreground">{upcomingCount}</p>
-                <p className="text-xs font-medium text-muted-foreground dark:text-foreground/70">
-                  Yaklaşan görüşme
-                </p>
-              </div>
-            </div>
-          </div>
-          <div className="rounded-xl border border-border/80 bg-card p-4 shadow-sm sm:col-span-2 lg:col-span-1">
             <div className="flex items-start gap-3">
               <div className="flex size-10 shrink-0 items-center justify-center rounded-lg bg-muted">
                 <Info className="size-5 text-muted-foreground" />

@@ -30,6 +30,22 @@ export default async function JobsPage() {
     .eq("company_id", profile?.company_id ?? "")
     .order("created_at", { ascending: false })
 
+  const isPublished = (j: { status: string }) => j.status === "active" || j.status === "published"
+  const jobStatusLabel = (status: string) => {
+    switch (status) {
+      case "draft": return "Taslak"
+      case "active":
+      case "published": return "Yayında"
+      case "in_review": return "İncelemede"
+      case "archived": return "Arşiv"
+      case "rejected": return "Reddedildi"
+      case "closed": return "Kapalı"
+      case "approved": return "Onaylandı"
+      case "scheduled": return "Zamanlandı"
+      default: return status
+    }
+  }
+
   return (
     <div className="container mx-auto px-4 py-8 space-y-8 min-h-screen max-w-7xl">
       <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
@@ -76,10 +92,10 @@ export default async function JobsPage() {
                     <div className="flex items-center gap-3 mb-2">
                       <CardTitle className="text-xl">{job.title}</CardTitle>
                       <Badge
-                        variant={job.status === "active" ? "default" : "secondary"}
-                        className={job.status === "active" ? "bg-success/10 text-success" : ""}
+                        variant={isPublished(job) ? "default" : "secondary"}
+                        className={isPublished(job) ? "bg-success/10 text-success" : job.status === "in_review" ? "bg-amber-500/15 text-amber-700 dark:text-amber-400" : ""}
                       >
-                        {job.status === "active" ? "Aktif" : job.status === "draft" ? "Taslak" : "Kapalı"}
+                        {jobStatusLabel(job.status)}
                       </Badge>
                     </div>
                     <CardDescription>{job.companies?.name}</CardDescription>

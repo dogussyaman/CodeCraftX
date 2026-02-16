@@ -12,7 +12,6 @@ import {
   Ticket,
   MessageCircle,
   User,
-  Calendar,
   CalendarDays,
 } from "lucide-react"
 import {
@@ -33,7 +32,6 @@ const menuItems = [
   { title: "İş İlanları", href: "/dashboard/ik/ilanlar", icon: Briefcase },
   { title: "Eşleşmeler", href: "/dashboard/ik/eslesmeler", icon: Star },
   { title: "Başvurular", href: "/dashboard/ik/basvurular", icon: Users },
-  { title: "Görüşmeler", href: "/dashboard/ik/gorusmeler", icon: Calendar },
   { title: "Takvim", href: "/dashboard/ik/takvim", icon: CalendarDays },
   { title: "Bildirimler", href: "/dashboard/ik/bildirimler", icon: Bell },
   { title: "Destek Taleplerim", href: "/dashboard/ik/destek", icon: Ticket },

@@ -94,6 +94,8 @@ export default async function IsIlanlariPage({ searchParams }: PageProps) {
       )
     `,
     )
+    .in("status", ["active", "published"])
+    .or("visibility.eq.public,visibility.is.null")
     .limit(100)
 
   if (experienceLevel) query = query.eq("experience_level", experienceLevel)

@@ -4,7 +4,9 @@ import { Button } from "@/components/ui/button"
 import { Badge } from "@/components/ui/badge"
 import { FileText, Upload, CheckCircle, XCircle, Clock } from "lucide-react"
 import Link from "next/link"
+
 import { CVDeleteButton } from "./cv-delete-button"
+import { CvViewButton } from "./cv-view-button"
 
 export default async function CVPage() {
   const supabase = await createClient()
@@ -164,11 +166,7 @@ export default async function CVPage() {
                   )}
 
                   <div className="flex items-center justify-end gap-2 pt-1">
-                    <Button variant="outline" size="sm" asChild>
-                      <Link href={cv.file_url} target="_blank">
-                        Görüntüle
-                      </Link>
-                    </Button>
+                    <CvViewButton cvId={cv.id} />
                     <CVDeleteButton cvId={cv.id} fileUrl={cv.file_url} status={cv.status} />
                   </div>
                 </div>

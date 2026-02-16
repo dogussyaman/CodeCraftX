@@ -60,6 +60,13 @@ export default function CompanyCreateJobPage() {
     job_type: "",
     experience_level: "",
     status: "draft",
+    visibility: "public" as "public" | "private" | "link_only",
+    requires_approval: false,
+    schedule_publish_at: "" as string,
+    salary_visible: true,
+    application_limit: null as number | null,
+    featured: false,
+    priority_level: null as number | null,
   })
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState<string | null>(null)
@@ -99,7 +106,7 @@ export default function CompanyCreateJobPage() {
         .from("job_postings")
         .select("id", { count: "exact", head: true })
         .eq("company_id", profile.company_id)
-        .eq("status", "active")
+        .in("status", ["active", "published"])
 
       setActiveJobCount(count ?? 0)
     }
@@ -195,6 +202,13 @@ export default function CompanyCreateJobPage() {
         job_type: common.job_type || null,
         experience_level: common.experience_level || null,
         status: common.status,
+        visibility: common.visibility,
+        requires_approval: common.requires_approval,
+        schedule_publish_at: common.schedule_publish_at.trim() ? new Date(common.schedule_publish_at).toISOString() : null,
+        salary_visible: common.salary_visible,
+        application_limit: common.application_limit ?? null,
+        featured: common.featured,
+        priority_level: common.priority_level ?? null,
         created_by: user.id,
       })
 
@@ -572,6 +586,86 @@ export default function CompanyCreateJobPage() {
                     <SelectItem value="active">Aktif</SelectItem>
                   </SelectContent>
                 </Select>
+              </div>
+            </div>
+
+            <div className="rounded-2xl border border-border/60 bg-muted/20 p-6 space-y-4">
+              <h3 className="text-base font-semibold text-foreground">Görünürlük ve yayın</h3>
+              <div>
+                <Label className="text-sm font-medium">Görünürlük</Label>
+                <Select
+                  value={common.visibility}
+                  onValueChange={(v: "public" | "private" | "link_only") => setCommon((p) => ({ ...p, visibility: v }))}
+                >
+                  <SelectTrigger className="mt-2 rounded-lg max-w-xs">
+                    <SelectValue />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="public">Herkese açık</SelectItem>
+                    <SelectItem value="private">Gizli</SelectItem>
+                    <SelectItem value="link_only">Sadece link ile</SelectItem>
+                  </SelectContent>
+                </Select>
+              </div>
+              <div className="flex items-center gap-2">
+                <Checkbox
+                  id="requires_approval_company"
+                  checked={common.requires_approval}
+                  onCheckedChange={(c) => setCommon((p) => ({ ...p, requires_approval: !!c }))}
+                />
+                <Label htmlFor="requires_approval_company" className="text-sm font-normal cursor-pointer">
+                  Yayınlamak için şirket yöneticisi onayı gerekir
+                </Label>
+              </div>
+              <div>
+                <Label className="text-sm font-medium">Planlı yayın (opsiyonel)</Label>
+                <Input
+                  type="datetime-local"
+                  value={common.schedule_publish_at}
+                  onChange={(e) => setCommon((p) => ({ ...p, schedule_publish_at: e.target.value }))}
+                  className="mt-2 rounded-lg max-w-xs"
+                />
+              </div>
+              <div className="flex items-center gap-2">
+                <Checkbox
+                  id="salary_visible_company"
+                  checked={common.salary_visible}
+                  onCheckedChange={(c) => setCommon((p) => ({ ...p, salary_visible: !!c }))}
+                />
+                <Label htmlFor="salary_visible_company" className="text-sm font-normal cursor-pointer">
+                  Maaş aralığı ilanda görünsün
+                </Label>
+              </div>
+              <div>
+                <Label className="text-sm font-medium">Başvuru limiti (opsiyonel)</Label>
+                <Input
+                  type="number"
+                  min={0}
+                  value={common.application_limit ?? ""}
+                  onChange={(e) => setCommon((p) => ({ ...p, application_limit: e.target.value ? parseInt(e.target.value, 10) : null }))}
+                  placeholder="Boş bırakılırsa sınırsız"
+                  className="mt-2 rounded-lg max-w-xs"
+                />
+              </div>
+              <div className="flex items-center gap-2">
+                <Checkbox
+                  id="featured_company"
+                  checked={common.featured}
+                  onCheckedChange={(c) => setCommon((p) => ({ ...p, featured: !!c }))}
+                />
+                <Label htmlFor="featured_company" className="text-sm font-normal cursor-pointer">
+                  Öne çıkan ilan
+                </Label>
+              </div>
+              <div>
+                <Label className="text-sm font-medium">Öncelik seviyesi (opsiyonel)</Label>
+                <Input
+                  type="number"
+                  value={common.priority_level ?? ""}
+                  onChange={(e) => setCommon((p) => ({ ...p, priority_level: e.target.value ? parseInt(e.target.value, 10) : null }))}
+                  placeholder="Sayı"
+                  className="mt-2 rounded-lg max-w-xs"
+                />
               </div>
             </div>
 

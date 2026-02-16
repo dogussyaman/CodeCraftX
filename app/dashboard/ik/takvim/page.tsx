@@ -1,8 +1,10 @@
 import { createClient } from "@/lib/supabase/server"
 import { TakvimView } from "@/components/takvim-view"
 import type { CalendarEvent } from "@/lib/calendar-types"
-import { Card, CardContent } from "@/components/ui/card"
-import { Calendar } from "lucide-react"
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
+import { Badge } from "@/components/ui/badge"
+import { Calendar, Video, Clock, User } from "lucide-react"
+import Link from "next/link"
 
 export default async function IKTakvimPage() {
   const supabase = await createClient()
@@ -74,6 +76,7 @@ export default async function IKTakvimPage() {
       proposed_date,
       proposed_time_slots,
       developer_selected_slot,
+      developer_confirmed_at,
       meet_link,
       title,
       notes,
@@ -215,14 +218,129 @@ export default async function IKTakvimPage() {
     }
   })
 
+  const todayStr = new Date().toISOString().slice(0, 10) // YYYY-MM-DD
+  const todayInterviews = filteredInterviews.filter((int: Record<string, unknown>) => {
+    const proposed = int.proposed_date as string | null
+    const scheduled = int.scheduled_at as string | null
+    const dateStr = proposed ?? (scheduled ? scheduled.slice(0, 10) : null)
+    return dateStr === todayStr
+  })
+
+  const formatDate = (d: string | null) =>
+    d
+      ? new Date(d + "T12:00:00").toLocaleDateString("tr-TR", {
+          day: "numeric",
+          month: "long",
+          year: "numeric",
+        })
+      : "—"
+  const formatDateTime = (d: string) =>
+    new Date(d).toLocaleString("tr-TR", {
+      day: "numeric",
+      month: "short",
+      year: "numeric",
+      hour: "2-digit",
+      minute: "2-digit",
+    })
+
   return (
-    <TakvimView
-      events={events}
-      title="Takvim"
-      subtitle="Planlanan görüşmeleriniz"
-      emptyMessage="Bu tarihte görüşme yok"
-      canEditNotes
-      disableNoteSaveAndInvite
-    />
+    <div className="container mx-auto px-4 py-8 space-y-6 min-h-screen max-w-8xl">
+      <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+        {/* Sol: Görüşmeler listesi */}
+        <aside className="lg:col-span-1 space-y-4 order-2 lg:order-1">
+          <h2 className="text-lg font-semibold text-foreground flex items-center gap-2">
+            <Calendar className="size-5 text-primary" />
+            Bugünkü görüşmeler
+          </h2>
+          <div className="space-y-3 max-h-[min(65vh,28rem)] overflow-y-auto pr-1">
+            {todayInterviews.length === 0 ? (
+              <Card className="rounded-2xl border-dashed border-border bg-muted/30">
+                <CardContent className="flex flex-col items-center justify-center py-8">
+                  <p className="text-sm text-muted-foreground text-center">
+                    Bugün planlanmış görüşme yok.
+                  </p>
+                </CardContent>
+              </Card>
+            ) : (
+              todayInterviews.map((int: Record<string, unknown>) => {
+                const app = int.applications as
+                  | { job_postings?: { title?: string }; profiles?: { full_name?: string } }
+                  | { job_postings?: { title?: string }; profiles?: { full_name?: string } }[]
+                  | null
+                const appSingle = Array.isArray(app) ? app[0] : app
+                const jobTitle = appSingle?.job_postings?.title || "İlan"
+                const devName = appSingle?.profiles?.full_name || "Aday"
+                const confirmed = !!(int as { developer_confirmed_at?: string | null }).developer_confirmed_at
+                const selectedSlot = int.developer_selected_slot as string | null
+                const proposedDate = int.proposed_date as string | null
+                const scheduledAt = int.scheduled_at as string | null
+                const meetLink = int.meet_link as string | null
+
+                return (
+                  <Card
+                    key={int.id as string}
+                    className="rounded-2xl border border-border bg-card shadow-sm"
+                  >
+                    <CardHeader className="pb-2">
+                      <div className="flex flex-wrap items-start justify-between gap-2">
+                        <div>
+                          <CardTitle className="text-lg flex items-center gap-2">
+                            <User className="size-4 text-muted-foreground" />
+                            {devName}
+                          </CardTitle>
+                          <CardDescription>{jobTitle}</CardDescription>
+                        </div>
+                        <Badge variant={confirmed ? "default" : "secondary"}>
+                          {confirmed ? "Onaylandı" : "Onay bekliyor"}
+                        </Badge>
+                      </div>
+                    </CardHeader>
+                    <CardContent className="space-y-2 text-sm">
+                      <div className="flex items-center gap-2 text-muted-foreground">
+                        <Clock className="size-4" />
+                        {proposedDate && formatDate(proposedDate)}
+                        {selectedSlot && ` — ${selectedSlot}`}
+                        {!proposedDate && scheduledAt && formatDateTime(scheduledAt)}
+                      </div>
+                      {meetLink && (
+                        <a
+                          href={meetLink}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          className="inline-flex items-center gap-1 text-primary hover:underline"
+                        >
+                          <Video className="size-4" />
+                          Toplantı linki
+                        </a>
+                      )}
+                      <div className="pt-2">
+                        <Link
+                          href="/dashboard/ik/basvurular"
+                          className="text-primary hover:underline text-xs font-medium"
+                        >
+                          Başvuruya git →
+                        </Link>
+                      </div>
+                    </CardContent>
+                  </Card>
+                )
+              })
+            )}
+          </div>
+        </aside>
+
+        {/* Sağ: Takvim */}
+        <div className="lg:col-span-2 order-1 lg:order-2">
+          <TakvimView
+            events={events}
+            title="Takvim"
+            subtitle="Planlanan görüşmeleriniz"
+            emptyMessage="Bu tarihte görüşme yok"
+            canEditNotes
+            disableNoteSaveAndInvite
+          />
+        </div>
+      </div>
+    </div>
   )
 }

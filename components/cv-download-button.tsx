@@ -25,8 +25,8 @@ export function CvDownloadButton({
   const [loading, setLoading] = useState(false)
 
   const handleClick = async () => {
-    if (!fileUrl) {
-      toast.error("CV dosyası bulunamadı")
+    if (!applicationId) {
+      toast.error("Başvuru bulunamadı")
       return
     }
     setLoading(true)
@@ -42,7 +42,14 @@ export function CvDownloadButton({
         setLoading(false)
         return
       }
-      window.open(fileUrl, "_blank", "noopener,noreferrer")
+      const urlRes = await fetch(`/api/cv/signed-url?applicationId=${encodeURIComponent(applicationId)}`)
+      const urlData = await urlRes.json().catch(() => ({}))
+      if (!urlRes.ok || !urlData.url) {
+        toast.error(urlData.error || "CV açılamadı")
+        setLoading(false)
+        return
+      }
+      window.open(urlData.url, "_blank", "noopener,noreferrer")
       toast.success("CV indirildi, aday bilgilendirilecek")
     } catch (e) {
       console.error(e)

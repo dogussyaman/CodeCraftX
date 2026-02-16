@@ -51,24 +51,14 @@ serve(async (req) => {
     }
 
     // CV dosyasını Storage'dan indir
-    // file_url formatı: https://xxx.supabase.co/storage/v1/object/public/cvs/path/to/file.pdf
-    // Path'i çıkar: cvs/path/to/file.pdf -> path/to/file.pdf
+    // file_url: storage path (userId/file.pdf) veya eski tam URL
     let filePath: string | null = null
-    
-    try {
-      // Public URL'den path'i çıkar
+    if (cv.file_url.startsWith("http") && cv.file_url.includes("/cvs/")) {
       const urlParts = cv.file_url.split("/cvs/")
-      if (urlParts.length > 1) {
-        filePath = urlParts[1]
-        // Query string varsa temizle
-        if (filePath.includes("?")) {
-          filePath = filePath.split("?")[0]
-        }
-      }
-    } catch (parseError) {
-      console.error("Failed to parse file_url:", parseError)
+      filePath = urlParts[1]?.split("?")[0] ?? null
+    } else if (cv.file_url) {
+      filePath = cv.file_url
     }
-
     if (!filePath) {
       throw new Error("Failed to extract file path from file_url")
     }

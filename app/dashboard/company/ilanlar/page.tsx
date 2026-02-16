@@ -39,10 +39,27 @@ export default async function CompanyJobsPage() {
     .eq("company_id", profile?.company_id ?? "")
     .order("created_at", { ascending: false })
 
+  const isPublished = (j: { status: string }) => j.status === "active" || j.status === "published"
   const stats = {
     total: jobs?.length ?? 0,
-    active: jobs?.filter((j: { status: string }) => j.status === "active").length ?? 0,
+    published: jobs?.filter((j: { status: string }) => isPublished(j)).length ?? 0,
     draft: jobs?.filter((j: { status: string }) => j.status === "draft").length ?? 0,
+    inReview: jobs?.filter((j: { status: string }) => j.status === "in_review").length ?? 0,
+    archived: jobs?.filter((j: { status: string }) => j.status === "archived").length ?? 0,
+  }
+  const jobStatusLabel = (status: string) => {
+    switch (status) {
+      case "draft": return "Taslak"
+      case "active":
+      case "published": return "Yayında"
+      case "in_review": return "İncelemede"
+      case "archived": return "Arşiv"
+      case "rejected": return "Reddedildi"
+      case "closed": return "Kapalı"
+      case "approved": return "Onaylandı"
+      case "scheduled": return "Zamanlandı"
+      default: return status
+    }
   }
 
   return (
@@ -87,18 +104,26 @@ export default async function CompanyJobsPage() {
 
         {/* Stats */}
         {jobs && jobs.length > 0 && (
-          <div className="grid grid-cols-2 gap-3 sm:grid-cols-3">
+          <div className="grid grid-cols-2 gap-3 sm:grid-cols-3 lg:grid-cols-5">
             <div className="rounded-xl border border-border/60 bg-card/80 px-4 py-3 shadow-sm backdrop-blur-sm">
               <p className="text-2xl font-semibold tabular-nums text-foreground">{stats.total}</p>
               <p className="text-xs font-medium text-muted-foreground dark:text-foreground/75">Toplam ilan</p>
             </div>
             <div className="rounded-xl border border-border/60 bg-card/80 px-4 py-3 shadow-sm backdrop-blur-sm">
-              <p className="text-2xl font-semibold tabular-nums text-green-600 dark:text-green-500">{stats.active}</p>
-              <p className="text-xs font-medium text-muted-foreground dark:text-foreground/75">Aktif</p>
+              <p className="text-2xl font-semibold tabular-nums text-green-600 dark:text-green-500">{stats.published}</p>
+              <p className="text-xs font-medium text-muted-foreground dark:text-foreground/75">Yayında</p>
             </div>
-            <div className="rounded-xl border border-border/60 bg-card/80 px-4 py-3 shadow-sm backdrop-blur-sm col-span-2 sm:col-span-1">
+            <div className="rounded-xl border border-border/60 bg-card/80 px-4 py-3 shadow-sm backdrop-blur-sm">
               <p className="text-2xl font-semibold tabular-nums text-muted-foreground dark:text-foreground/80">{stats.draft}</p>
               <p className="text-xs font-medium text-muted-foreground dark:text-foreground/75">Taslak</p>
+            </div>
+            <div className="rounded-xl border border-border/60 bg-card/80 px-4 py-3 shadow-sm backdrop-blur-sm">
+              <p className="text-2xl font-semibold tabular-nums text-amber-600 dark:text-amber-500">{stats.inReview}</p>
+              <p className="text-xs font-medium text-muted-foreground dark:text-foreground/75">İncelemede</p>
+            </div>
+            <div className="rounded-xl border border-border/60 bg-card/80 px-4 py-3 shadow-sm backdrop-blur-sm">
+              <p className="text-2xl font-semibold tabular-nums text-muted-foreground dark:text-foreground/80">{stats.archived}</p>
+              <p className="text-xs font-medium text-muted-foreground dark:text-foreground/75">Arşiv</p>
             </div>
           </div>
         )}
@@ -143,14 +168,16 @@ export default async function CompanyJobsPage() {
                           {job.title}
                         </CardTitle>
                         <Badge
-                          variant={job.status === "active" ? "default" : "secondary"}
+                          variant={isPublished(job) ? "default" : "secondary"}
                           className={
-                            job.status === "active"
+                            isPublished(job)
                               ? "bg-emerald-500/15 text-emerald-700 dark:text-emerald-400 font-medium"
-                              : "font-medium dark:border-muted-foreground/50 dark:bg-muted/70 dark:text-foreground"
+                              : job.status === "in_review"
+                                ? "bg-amber-500/15 text-amber-700 dark:text-amber-400 font-medium"
+                                : "font-medium dark:border-muted-foreground/50 dark:bg-muted/70 dark:text-foreground"
                           }
                         >
-                          {job.status === "active" ? "Aktif" : job.status === "draft" ? "Taslak" : "Kapalı"}
+                          {jobStatusLabel(job.status)}
                         </Badge>
                       </div>
                       {job.companies?.name && (

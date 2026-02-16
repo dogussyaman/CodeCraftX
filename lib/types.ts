@@ -8,7 +8,18 @@ export type SkillCategory = "programming" | "framework" | "tool" | "soft-skill" 
 
 export type ProficiencyLevel = "basic" | "intermediate" | "advanced" | "expert"
 
-export type JobStatus = "active" | "closed" | "draft"
+export type JobStatus =
+  | "active"
+  | "closed"
+  | "draft"
+  | "in_review"
+  | "approved"
+  | "scheduled"
+  | "published"
+  | "archived"
+  | "rejected"
+
+export type JobVisibility = "public" | "private" | "link_only"
 
 export type CVStatus = "pending" | "processed" | "failed"
 
@@ -74,6 +85,14 @@ export interface JobPosting {
   salary_min?: number
   salary_max?: number
   status: JobStatus
+  visibility?: JobVisibility
+  requires_approval?: boolean
+  schedule_publish_at?: string
+  application_limit?: number
+  salary_visible?: boolean
+  featured?: boolean
+  priority_level?: number
+  auto_expire_at?: string
   created_by: string
   created_at: string
   updated_at: string

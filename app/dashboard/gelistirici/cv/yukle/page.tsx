@@ -89,15 +89,12 @@ export default function UploadCVPage() {
         throw uploadError
       }
 
-      const {
-        data: { publicUrl },
-      } = supabase.storage.from("cvs").getPublicUrl(filePath)
-
+      // Store storage path (private bucket: use signed URL via /api/cv/signed-url for viewing)
       const { data: cvData, error: dbError } = await supabase
         .from("cvs")
         .insert({
           developer_id: user.id,
-          file_url: publicUrl,
+          file_url: filePath,
           file_name: file.name,
           status: "pending",
         })

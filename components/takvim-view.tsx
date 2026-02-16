@@ -63,12 +63,16 @@ export function TakvimView({
   const [savingId, setSavingId] = React.useState<string | null>(null)
   const [attendeesSavingId, setAttendeesSavingId] = React.useState<string | null>(null)
   const [localAttendees, setLocalAttendees] = React.useState<Record<string, CalendarEvent["attendees"]>>({})
+  const [expiredMeetings, setExpiredMeetings] = React.useState<CalendarEvent[]>([])
 
   const eventsByDate = React.useMemo(() => {
     const map = new Map<string, CalendarEvent[]>()
     for (const e of events) {
+      if (isEventPast(e)) {
+        setExpiredMeetings((prev) => [...prev, e])
+      }
       const list = map.get(e.date) ?? []
-      list.push(e)
+      list.push(e) 
       map.set(e.date, list)
     }
     return map
@@ -129,8 +133,6 @@ export function TakvimView({
       <>
         <CalendarMonthView
           events={events}
-          viewTitle={title}
-          viewSubtitle={subtitle}
           selectedDate={selectedDate ?? today}
           onSelectDate={setSelectedDate}
           onEventClick={handleEventClick}

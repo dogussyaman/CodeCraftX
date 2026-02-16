@@ -34,14 +34,14 @@ export function CVDeleteButton({ cvId, fileUrl, status }: CVDeleteButtonProps) {
     try {
       setLoading(true)
 
-      // Storage'dan dosyayı sil
-      // fileUrl'den path'i çıkar (örn: https://xxx.supabase.co/storage/v1/object/public/cvs/user-id/file.pdf)
-      const urlParts = fileUrl.split("/cvs/")
-      if (urlParts.length > 1) {
-        const filePath = urlParts[1]
+      // Storage'dan dosyayı sil — file_url path (uuid/file.pdf) veya eski tam URL olabilir
+      const filePath = fileUrl.startsWith("http") && fileUrl.includes("/cvs/")
+        ? fileUrl.split("/cvs/")[1]
+        : fileUrl
+      if (filePath) {
         const { error: storageError } = await supabase.storage
           .from("cvs")
-          .remove([filePath])
+          .remove([filePath.trim()])
 
         if (storageError) {
           console.warn("Storage delete error (continuing anyway):", storageError)
