@@ -1,60 +1,54 @@
 "use client"
 
 import Link from "next/link"
+import { motion } from "motion/react"
+import { ArrowRight, Building2, Target, TrendingUp, Zap } from "lucide-react"
+
 import { Button } from "@/components/ui/button"
 import { Card, CardContent } from "@/components/ui/card"
 import { TypewriterEffect } from "@/components/ui/typewriter-effect"
-import { ButtonHero } from "@/components/moving-border"
-import {
-  ArrowRight,
-  Zap,
-  Building2,
-  Target,
-  TrendingUp,
-} from "lucide-react"
-import { motion } from "motion/react"
 
 const TYPEWRITER_WORDS = [
-  "Doğru yetenekleri bulun.",
-  "İşe alım süresini kısaltın.",
-  "Yapay zeka ile eşleştirin.",
-  "Kaliteli adaylara ulaşın.",
+  "Doğru adayı dakikalar içinde bulun.",
+  "İşe alım sürenizi %90'a kadar kısaltın.",
+  "CV analizi ile kaliteyi artırın.",
+  "Tek panelden tüm süreci yönetin.",
 ]
 
 export function IsverenHero() {
   return (
-    <section className="container mx-auto px-4 pt-24 pb-16 md:pt-32 md:pb-24">
-      <div className="max-w-5xl mx-auto text-center">
+    <section className="container mx-auto px-4 pb-16 pt-24 md:pb-24 md:pt-32">
+      <div className="mx-auto max-w-5xl text-center">
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.5 }}
-          className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-primary/10 border border-primary/20 text-primary text-sm font-medium mb-6 backdrop-blur-sm"
+          className="mb-6 inline-flex items-center gap-2 rounded-full border border-accent-500/30 bg-accent-100/70 px-4 py-2 text-sm font-medium text-accent-800 dark:bg-accent-500/10 dark:text-accent-200"
         >
           <Building2 className="size-4" />
-          <span>İşverenler İçin Akıllı İşe Alım Platformu</span>
+          <span>İşverenler için akıllı işe alım</span>
         </motion.div>
 
         <motion.h1
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.5, delay: 0.1 }}
-          className="text-5xl md:text-7xl font-bold mb-6 text-balance leading-tight"
+          className="mb-6 text-balance text-5xl font-bold leading-tight md:text-7xl"
         >
-          <span className="gradient-text">En İyi Geliştiricileri</span>
+          <span className="gradient-text">En iyi geliştiricileri</span>
           <br />
-          Ekibinize Katın
+          ekibinize katın
         </motion.h1>
 
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.5, delay: 0.2 }}
-          className="text-xl md:text-2xl text-muted-foreground mb-6 max-w-3xl mx-auto leading-relaxed min-h-12 flex items-center justify-center"
+          className="mx-auto mb-6 flex min-h-12 max-w-3xl items-center justify-center text-xl text-muted-foreground md:text-2xl"
         >
           <TypewriterEffect
             words={TYPEWRITER_WORDS}
-            className="text-primary font-medium"
+            className="font-medium text-primary"
             typingSpeed={70}
             deletingSpeed={40}
             delayBetweenWords={2500}
@@ -65,60 +59,45 @@ export function IsverenHero() {
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.5, delay: 0.25 }}
-          className="text-lg text-muted-foreground mb-8 text-pretty max-w-2xl mx-auto"
+          className="mx-auto mb-8 max-w-2xl text-pretty text-lg text-muted-foreground"
         >
-          CV analizi ve beceri eşleştirme ile ihtiyacınız olan yazılımcıya hızlıca ulaşın
+          CV analizi ve beceri eşleştirme ile ihtiyacınız olan yazılımcıya hızlıca ulaşın.
         </motion.p>
 
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.5, delay: 0.3 }}
-          className="flex flex-col sm:flex-row gap-4 justify-center items-center"
+          className="flex flex-col items-center justify-center gap-4 sm:flex-row"
         >
-          <ButtonHero
-            as={Link}
-            href="/isveren#sirket-talebi"
-            containerClassName="h-12 w-auto min-w-[12rem] sm:min-w-[14rem] text-base"
-            borderClassName="!h-28 !w-28 bg-[radial-gradient(circle,black_0%,transparent_70%)] dark:bg-[radial-gradient(circle,white_0%,transparent_70%)] opacity-100"
-            className="border-primary/40 bg-primary text-primary-foreground font-medium dark:text-white dark:bg-slate-900"
-            duration={4000}
-          >
-            <span className="flex items-center gap-2">
+          <Button asChild size="lg" className="h-12 min-w-[14rem] rounded-full bg-gradient-to-r from-accent-500 to-accent-400 text-white hover:from-accent-600 hover:to-accent-500">
+            <Link href="/isveren#sirket-talebi" className="flex items-center gap-2">
               Şirket Talebi Oluştur
               <ArrowRight className="size-5" />
-            </span>
-          </ButtonHero>
-          <Button
-            size="lg"
-            variant="outline"
-            asChild
-            className="text-base rounded-[1.75rem] border-border hover:border-primary/50 bg-background/50 backdrop-blur-sm h-12 min-w-48 sm:min-w-56 px-6"
-          >
+            </Link>
+          </Button>
+          <Button size="lg" variant="outline" asChild className="h-12 min-w-56 rounded-full border-accent-500/30 bg-background/70">
             <Link href="#ozellikler">Nasıl Çalışır?</Link>
           </Button>
         </motion.div>
 
         <motion.div
-          initial={{ opacity: 0, scale: 0.8 }}
+          initial={{ opacity: 0, scale: 0.9 }}
           animate={{ opacity: 1, scale: 1 }}
-          transition={{ duration: 0.8, delay: 0.5 }}
-          className="mt-8 md:mt-12 grid grid-cols-1 md:grid-cols-3 gap-4 md:gap-6 max-w-4xl mx-auto"
+          transition={{ duration: 0.8, delay: 0.45 }}
+          className="mt-10 grid max-w-4xl grid-cols-1 gap-4 md:grid-cols-3 md:gap-6"
         >
           {[
             { value: "%90", label: "Daha Hızlı İşe Alım", icon: Zap },
             { value: "%98", label: "Eşleşme Doğruluğu", icon: Target },
             { value: "1000+", label: "Aktif Aday", icon: TrendingUp },
           ].map((stat, idx) => (
-            <Card
-              key={idx}
-              className="bg-card backdrop-blur-sm border-border/50 hover:border-primary/50 transition-all hover:shadow-lg hover:shadow-primary/10"
-            >
-<CardContent className="p-4 md:p-6 text-center">
-                                <stat.icon className="size-8 text-primary mx-auto mb-2 md:mb-3" />
-                                <div className="text-3xl md:text-4xl font-bold gradient-text mb-1 md:mb-2">{stat.value}</div>
-                                <div className="text-xs md:text-sm text-muted-foreground">{stat.label}</div>
-                              </CardContent>
+            <Card key={idx} className="border border-accent-500/20 bg-white/75 backdrop-blur-xl dark:bg-zinc-900/60">
+              <CardContent className="p-5 text-center">
+                <stat.icon className="mx-auto mb-2 size-8 text-primary" />
+                <div className="gradient-text mb-1 text-3xl font-bold md:text-4xl">{stat.value}</div>
+                <div className="text-sm text-muted-foreground">{stat.label}</div>
+              </CardContent>
             </Card>
           ))}
         </motion.div>

@@ -1,108 +1,101 @@
 "use client"
 
-import { Card, CardContent } from "@/components/ui/card"
 import { AnimatedCard } from "@/components/animated-card"
-import {
-    Users,
-    Zap,
-    BarChart3,
-    Shield,
-    Sparkles,
-    Brain,
-    Target,
-} from "lucide-react"
+import { Card, CardContent } from "@/components/ui/card"
 import { motion } from "motion/react"
+import { BarChart3, Brain, Shield, Sparkles, Target, Users, Zap } from "lucide-react"
 
 const features = [
-    {
-        icon: Brain,
-        title: "Akıllı CV Analizi",
-        description: "Yapay zeka ile CV'leri analiz eder, yetenekleri ve deneyim seviyelerini otomatik çıkarır",
-        gradient: "from-primary/20 to-primary/5",
-    },
-    {
-        icon: Target,
-        title: "Beceri Eşleştirme",
-        description: "İş ilanları ile geliştirici profillerini otomatik eşleştirir, uyumluluk skorları hesaplar",
-        gradient: "from-secondary/20 to-secondary/5",
-    },
-    {
-        icon: Users,
-        title: "İK Süreç Yönetimi",
-        description: "Aday havuzu yönetimi, mülakat planlama ve HR iş akışları için profesyonel araçlar",
-        gradient: "from-accent/20 to-accent/5",
-    },
-    {
-        icon: BarChart3,
-        title: "Performans Analitiği",
-        description: "İşe alım performansını takip edin, headhunter verimliliğini raporlayın",
-        gradient: "from-primary/20 to-primary/5",
-    },
-    {
-        icon: Shield,
-        title: "Kurumsal Güvenlik",
-        description: "SLA garantisi, RLS politikaları ve KVKK uyumlu veri saklama altyapısı",
-        gradient: "from-secondary/20 to-secondary/5",
-    },
-    {
-        icon: Zap,
-        title: "Otomatik Filtreleme",
-        description: "Binlerce aday arasından en uygun 10 adayı saniyeler içinde belirleyin",
-        gradient: "from-accent/20 to-accent/5",
-    },
+  {
+    icon: Brain,
+    title: "Akıllı CV Analizi",
+    description: "Yapay zeka CV içeriğini analiz eder, yetenekleri ve deneyim seviyesini otomatik çıkarır.",
+    gradient: "from-accent-500/25 via-accent-400/15 to-transparent",
+  },
+  {
+    icon: Target,
+    title: "Beceri Eşleştirme",
+    description: "İlanlar ile geliştirici profilleri arasında uyum skoru oluşturur ve adayı sıralar.",
+    gradient: "from-accent-400/25 via-accent-500/15 to-transparent",
+  },
+  {
+    icon: Users,
+    title: "İK Süreç Yönetimi",
+    description: "Aday havuzu, mülakat adımları ve ekip içi koordinasyonu tek panelde toplar.",
+    gradient: "from-accent-500/25 via-accent-500/15 to-transparent",
+  },
+  {
+    icon: BarChart3,
+    title: "Performans Analitiği",
+    description: "İşe alım performansını takip edin, süreç darboğazlarını net şekilde görün.",
+    gradient: "from-accent-500/25 via-accent-500/10 to-transparent",
+  },
+  {
+    icon: Shield,
+    title: "Kurumsal Güvenlik",
+    description: "KVKK uyumlu altyapı, güvenli erişim katmanı ve rol bazlı yetkilendirme.",
+    gradient: "from-accent-500/20 via-zinc-500/10 to-transparent",
+  },
+  {
+    icon: Zap,
+    title: "Otomatik Filtreleme",
+    description: "Yüzlerce aday arasından en uygun profilleri saniyeler içinde öne çıkarır.",
+    gradient: "from-accent-500/25 via-accent-400/15 to-transparent",
+  },
 ]
 
 export function FeaturesSection() {
-    return (
-        <section id="ozellikler" className="container mx-auto px-4 py-20 md:py-32">
-            <div className="text-center mb-16">
-                <motion.div
-                    initial={{ opacity: 0 }}
-                    whileInView={{ opacity: 1 }}
-                    viewport={{ once: true }}
-                    className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-primary/10 border border-primary/20 text-primary text-sm font-medium mb-6"
-                >
-                    <Sparkles className="size-4" />
-                    <span>Güçlü Özellikler</span>
-                </motion.div>
-                <motion.h2
-                    initial={{ opacity: 0, y: 20 }}
-                    whileInView={{ opacity: 1, y: 0 }}
-                    viewport={{ once: true }}
-                    className="text-4xl md:text-5xl font-bold mb-6 text-balance"
-                >
-                    Platform <span className="gradient-text">Özellikleri</span>
-                </motion.h2>
-                <motion.p
-                    initial={{ opacity: 0, y: 20 }}
-                    whileInView={{ opacity: 1, y: 0 }}
-                    viewport={{ once: true }}
-                    transition={{ delay: 0.1 }}
-                    className="text-lg text-muted-foreground max-w-2xl mx-auto text-pretty"
-                >
-                    Hem geliştiriciler hem de şirketler için tasarlanmış güçlü araçlar
-                </motion.p>
-            </div>
+  return (
+    <section id="ozellikler" className="container mx-auto px-4 py-20 md:py-32">
+      <div className="mx-auto mb-16 max-w-3xl text-center">
+        <motion.div
+          initial={{ opacity: 0 }}
+          whileInView={{ opacity: 1 }}
+          viewport={{ once: true }}
+          className="inline-flex items-center gap-2 rounded-full border border-accent-500/30 bg-accent-100/70 px-4 py-2 text-sm font-medium text-accent-900 dark:bg-accent-500/10 dark:text-accent-200"
+        >
+          <Sparkles className="size-4" />
+          <span>Güçlü Özellikler</span>
+        </motion.div>
+        <motion.h2
+          initial={{ opacity: 0, y: 20 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true }}
+          className="mt-6 text-4xl font-bold text-foreground md:text-5xl"
+        >
+          Platformu modern yapan
+          <span className="block bg-gradient-to-r from-accent-500 to-accent-400 bg-clip-text text-transparent">
+            çekirdek yetenekler
+          </span>
+        </motion.h2>
+        <motion.p
+          initial={{ opacity: 0, y: 20 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true }}
+          transition={{ delay: 0.1 }}
+          className="mt-4 text-lg text-muted-foreground"
+        >
+          Tüm ana sayfa deneyimi aynı renk dili ve modern kart sistemi ile çalışır.
+        </motion.p>
+      </div>
 
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 max-w-6xl mx-auto">
-                {features.map((feature, idx) => (
-                    <AnimatedCard key={idx} delay={idx * 0.1}>
-                        <Card className="bg-card/50 backdrop-blur-sm border-border/50 hover:border-primary/50 transition-all h-full group">
-                            <CardContent className="p-6">
-                                <div
-                                    className={`size-14 rounded-xl bg-gradient-to-br ${feature.gradient} flex items-center justify-center mb-4 group-hover:scale-110 transition-transform`}
-                                >
-                                    <feature.icon className="size-7 text-primary" />
-                                </div>
-                                <h3 className="text-xl font-semibold mb-3 group-hover:text-primary transition-colors">
-                                    {feature.title}
-                                </h3>
-                                <p className="text-muted-foreground leading-relaxed">{feature.description}</p>
-                            </CardContent>
-                        </Card>
-                    </AnimatedCard>
-                ))}
-            </div>
-        </section>
-    )
+      <div className="mx-auto grid max-w-6xl grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-3">
+        {features.map((feature, idx) => (
+          <AnimatedCard key={feature.title} delay={idx * 0.08}>
+            <Card className="group h-full overflow-hidden border border-accent-500/15 bg-white/70 backdrop-blur-xl transition-all duration-300 hover:-translate-y-1 hover:border-accent-500/40 hover:shadow-xl hover:shadow-accent-500/10 dark:bg-zinc-900/60">
+              <CardContent className="p-6">
+                <div className={`mb-4 flex size-14 items-center justify-center rounded-xl bg-gradient-to-br ${feature.gradient}`}>
+                  <feature.icon className="size-7 text-accent-600 dark:text-accent-300" />
+                </div>
+                <h3 className="mb-3 text-xl font-semibold text-foreground transition-colors group-hover:text-accent-600 dark:group-hover:text-accent-300">
+                  {feature.title}
+                </h3>
+                <p className="leading-relaxed text-muted-foreground">{feature.description}</p>
+              </CardContent>
+            </Card>
+          </AnimatedCard>
+        ))}
+      </div>
+    </section>
+  )
 }

@@ -5,22 +5,20 @@ export function IsverenBenefits() {
   return (
     <section className="py-20">
       <div className="container mx-auto px-4">
-        <div className="max-w-6xl mx-auto">
-          <div className="text-center mb-12">
-            <h2 className="text-4xl font-bold mb-4">Neden CodeCraftX?</h2>
-            <p className="text-xl text-muted-foreground">
-              İşe alım süreçlerinizi %90 daha hızlı ve verimli hale getirin
-            </p>
+        <div className="mx-auto max-w-6xl">
+          <div className="mb-12 text-center">
+            <h2 className="mb-4 text-4xl font-bold">Neden CodeCraftX?</h2>
+            <p className="text-xl text-muted-foreground">İşe alım süreçlerinizi %90 daha hızlı ve verimli hale getirin.</p>
           </div>
-          <div className="grid md:grid-cols-3 gap-8">
-            <Card className="border-2 hover:border-primary/50 transition-colors">
+          <div className="grid gap-8 md:grid-cols-3">
+            <Card className="border-accent-500/20 bg-white/75 transition-colors hover:border-primary/50 dark:bg-zinc-900/60">
               <CardHeader>
-                <div className="p-3 rounded-lg bg-primary/10 w-fit mb-4">
+                <div className="mb-4 w-fit rounded-lg bg-primary/10 p-3">
                   <Search className="size-6 text-primary" />
                 </div>
                 <CardTitle>Akıllı Aday Arama</CardTitle>
                 <CardDescription>
-                  Yapay zeka algoritmalarımız CV&apos;leri analiz ederek size en uygun adayları otomatik olarak bulur
+                  Yapay zekâ algoritmaları CV'leri analiz eder ve ihtiyacınıza en uygun adayları otomatik listeler.
                 </CardDescription>
               </CardHeader>
               <CardContent>
@@ -31,14 +29,15 @@ export function IsverenBenefits() {
                 </ul>
               </CardContent>
             </Card>
-            <Card className="border-2 hover:border-primary/50 transition-colors">
+
+            <Card className="border-accent-500/20 bg-white/75 transition-colors hover:border-primary/50 dark:bg-zinc-900/60">
               <CardHeader>
-                <div className="p-3 rounded-lg bg-primary/10 w-fit mb-4">
+                <div className="mb-4 w-fit rounded-lg bg-primary/10 p-3">
                   <Clock className="size-6 text-primary" />
                 </div>
                 <CardTitle>Hızlı İşe Alım</CardTitle>
                 <CardDescription>
-                  Geleneksel işe alım süreçlerinden 10 kat daha hızlı. İlk aday önerilerini dakikalar içinde alın
+                  Geleneksel süreçlere göre çok daha hızlı ilerleyin. İlk aday önerilerini dakikalar içinde alın.
                 </CardDescription>
               </CardHeader>
               <CardContent>
@@ -49,20 +48,21 @@ export function IsverenBenefits() {
                 </ul>
               </CardContent>
             </Card>
-            <Card className="border-2 hover:border-primary/50 transition-colors">
+
+            <Card className="border-accent-500/20 bg-white/75 transition-colors hover:border-primary/50 dark:bg-zinc-900/60">
               <CardHeader>
-                <div className="p-3 rounded-lg bg-primary/10 w-fit mb-4">
+                <div className="mb-4 w-fit rounded-lg bg-primary/10 p-3">
                   <BarChart3 className="size-6 text-primary" />
                 </div>
                 <CardTitle>Detaylı Raporlama</CardTitle>
                 <CardDescription>
-                  İşe alım süreçlerinizi analiz edin, performans metriklerinizi takip edin ve optimize edin
+                  İşe alım performansınızı anlık takip edin, metriklerle karar verin ve süreçleri optimize edin.
                 </CardDescription>
               </CardHeader>
               <CardContent>
                 <ul className="space-y-2 text-sm text-muted-foreground">
                   <li className="flex items-center gap-2"><CheckCircle2 className="size-4 text-primary" /><span>Başvuru istatistikleri</span></li>
-                  <li className="flex items-center gap-2"><CheckCircle2 className="size-4 text-primary" /><span>Eşleştirme oranları</span></li>
+                  <li className="flex items-center gap-2"><CheckCircle2 className="size-4 text-primary" /><span>Eşleşme oranları</span></li>
                   <li className="flex items-center gap-2"><CheckCircle2 className="size-4 text-primary" /><span>Zaman tasarrufu analizi</span></li>
                 </ul>
               </CardContent>

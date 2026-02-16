@@ -42,9 +42,24 @@
   --sidebar-accent-foreground: oklch(0.13 0.02 265);
   --sidebar-border: oklch(0.90 0.01 265);
   --sidebar-ring: oklch(0.488 0.243 264);
+  /* Ana sayfa vurgu rengi (theme-orange/blue/purple/green/red ile değişir) */
+  --theme-accent-50: #fff7ed;
+  --theme-accent-100: #ffedd5;
+  --theme-accent-200: #fed7aa;
+  --theme-accent-300: #fdba74;
+  --theme-accent-400: #fb923c;
+  --theme-accent-500: #f97316;
+  --theme-accent-600: #ea580c;
+  --theme-accent-700: #c2410c;
+  --theme-accent-800: #9a3412;
+  --theme-accent-900: #7c2d12;
+  /* Sabit marka rengi – hero ve vurgu metinleri (her zaman görünür) */
+  --brand-ember: #fb923c;
+  --brand-ember-dark: lab(80.7451% 19.3313 45.9131);
 }
 
 .dark {
+  --brand-ember: lab(80.7451% 19.3313 45.9131);
   --background: oklch(0.13 0.015 265);
   --foreground: oklch(0.965 0.005 247);
   --card: oklch(0.23 0.02 265);
@@ -161,6 +176,16 @@
   --color-sidebar-accent-foreground: var(--sidebar-accent-foreground);
   --color-sidebar-border: var(--sidebar-border);
   --color-sidebar-ring: var(--sidebar-ring);
+  --color-accent-50: var(--theme-accent-50);
+  --color-accent-100: var(--theme-accent-100);
+  --color-accent-200: var(--theme-accent-200);
+  --color-accent-300: var(--theme-accent-300);
+  --color-accent-400: var(--theme-accent-400);
+  --color-accent-500: var(--theme-accent-500);
+  --color-accent-600: var(--theme-accent-600);
+  --color-accent-700: var(--theme-accent-700);
+  --color-accent-800: var(--theme-accent-800);
+  --color-accent-900: var(--theme-accent-900);
   --animate-marquee: marquee var(--duration) infinite linear;
   --animate-marquee-vertical: marquee-vertical var(--duration) linear infinite;
   --animate-aurora: aurora 60s linear infinite;
@@ -249,7 +274,127 @@
   }
 }
 
-/* Adding modern gradient and glow effects */
+/* 5 tema rengi – @layer dışında olmalı, yoksa :root üzerine yazamaz */
+.theme-orange {
+  --primary: oklch(0.68 0.2 55);
+  --ring: oklch(0.68 0.2 55);
+  --secondary: oklch(0.95 0.03 62);
+  --accent: oklch(0.94 0.04 48);
+  --theme-accent-50: #fff7ed;
+  --theme-accent-100: #ffedd5;
+  --theme-accent-200: #fed7aa;
+  --theme-accent-300: #fdba74;
+  --theme-accent-400: #fb923c;
+  --theme-accent-500: #f97316;
+  --theme-accent-600: #ea580c;
+  --theme-accent-700: #c2410c;
+  --theme-accent-800: #9a3412;
+  --theme-accent-900: #7c2d12;
+}
+
+.dark .theme-orange {
+  --primary: oklch(0.74 0.18 58);
+  --ring: oklch(0.74 0.18 58);
+  --secondary: oklch(0.27 0.03 55);
+  --accent: oklch(0.31 0.05 48);
+}
+
+.theme-blue {
+  --primary: oklch(0.55 0.22 264);
+  --ring: oklch(0.55 0.22 264);
+  --secondary: oklch(0.93 0.03 264);
+  --accent: oklch(0.92 0.04 264);
+  --theme-accent-50: #eff6ff;
+  --theme-accent-100: #dbeafe;
+  --theme-accent-200: #bfdbfe;
+  --theme-accent-300: #93c5fd;
+  --theme-accent-400: #60a5fa;
+  --theme-accent-500: #3b82f6;
+  --theme-accent-600: #2563eb;
+  --theme-accent-700: #1d4ed8;
+  --theme-accent-800: #1e40af;
+  --theme-accent-900: #1e3a8a;
+}
+
+.dark .theme-blue {
+  --primary: oklch(0.65 0.2 264);
+  --ring: oklch(0.65 0.2 264);
+  --secondary: oklch(0.28 0.03 264);
+  --accent: oklch(0.35 0.06 264);
+}
+
+.theme-purple {
+  --primary: oklch(0.55 0.25 295);
+  --ring: oklch(0.55 0.25 295);
+  --secondary: oklch(0.93 0.04 295);
+  --accent: oklch(0.92 0.05 295);
+  --theme-accent-50: #faf5ff;
+  --theme-accent-100: #f3e8ff;
+  --theme-accent-200: #e9d5ff;
+  --theme-accent-300: #d8b4fe;
+  --theme-accent-400: #c084fc;
+  --theme-accent-500: #a855f7;
+  --theme-accent-600: #9333ea;
+  --theme-accent-700: #7e22ce;
+  --theme-accent-800: #6b21a8;
+  --theme-accent-900: #581c87;
+}
+
+.dark .theme-purple {
+  --primary: oklch(0.65 0.22 295);
+  --ring: oklch(0.65 0.22 295);
+  --secondary: oklch(0.28 0.04 295);
+  --accent: oklch(0.35 0.07 295);
+}
+
+.theme-green {
+  --primary: oklch(0.55 0.22 145);
+  --ring: oklch(0.55 0.22 145);
+  --secondary: oklch(0.93 0.04 145);
+  --accent: oklch(0.92 0.05 145);
+  --theme-accent-50: #f0fdf4;
+  --theme-accent-100: #dcfce7;
+  --theme-accent-200: #bbf7d0;
+  --theme-accent-300: #86efac;
+  --theme-accent-400: #4ade80;
+  --theme-accent-500: #22c55e;
+  --theme-accent-600: #16a34a;
+  --theme-accent-700: #15803d;
+  --theme-accent-800: #166534;
+  --theme-accent-900: #14532d;
+}
+
+.dark .theme-green {
+  --primary: oklch(0.65 0.2 145);
+  --ring: oklch(0.65 0.2 145);
+  --secondary: oklch(0.28 0.04 145);
+  --accent: oklch(0.35 0.07 145);
+}
+
+.theme-red {
+  --primary: oklch(0.55 0.22 25);
+  --ring: oklch(0.55 0.22 25);
+  --secondary: oklch(0.93 0.04 25);
+  --accent: oklch(0.92 0.05 25);
+  --theme-accent-50: #fef2f2;
+  --theme-accent-100: #fee2e2;
+  --theme-accent-200: #fecaca;
+  --theme-accent-300: #fca5a5;
+  --theme-accent-400: #f87171;
+  --theme-accent-500: #ef4444;
+  --theme-accent-600: #dc2626;
+  --theme-accent-700: #b91c1c;
+  --theme-accent-800: #991b1b;
+  --theme-accent-900: #7f1d1d;
+}
+
+.dark .theme-red {
+  --primary: oklch(0.6 0.24 25);
+  --ring: oklch(0.6 0.24 25);
+  --secondary: oklch(0.28 0.04 25);
+  --accent: oklch(0.35 0.07 25);
+}
+
 @layer utilities {
   .gradient-text {
     @apply bg-clip-text text-transparent bg-gradient-to-r from-primary via-primary/85 to-primary/70;

@@ -1,32 +1,32 @@
 import Link from "next/link"
-import { Button } from "@/components/ui/button"
 import { ArrowRight } from "lucide-react"
+
+import { Button } from "@/components/ui/button"
 
 export function IsverenPricingCta() {
   return (
-    <section className="py-20 bg-muted/30">
+    <section className="bg-muted/20 py-20">
       <div className="container mx-auto px-4">
-        <div className="max-w-4xl mx-auto text-center">
-          <h2 className="text-4xl font-bold mb-6">Hemen Başlayın</h2>
-          <p className="text-xl text-muted-foreground mb-8">
-            İşe alım süreçlerinizi optimize etmek için bugün kaydolun
-          </p>
-          <div className="flex flex-col sm:flex-row gap-4 justify-center">
-            <Button size="lg" asChild className="group">
+        <div className="mx-auto max-w-4xl text-center">
+          <h2 className="mb-6 text-4xl font-bold">Hemen Başlayın</h2>
+          <p className="mb-8 text-xl text-muted-foreground">İşe alım süreçlerinizi optimize etmek için bugün kaydolun.</p>
+          <div className="flex flex-col justify-center gap-4 sm:flex-row">
+            <Button size="lg" asChild className="group bg-gradient-to-r from-accent-500 to-accent-400 text-white hover:from-accent-600 hover:to-accent-500">
               <Link href="/auth/kayit">
                 Ücretsiz Kaydol
                 <ArrowRight className="ml-2 size-4 transition-transform group-hover:translate-x-1" />
               </Link>
             </Button>
-            <Button size="lg" variant="outline" asChild>
+            <Button size="lg" variant="outline" asChild className="border-accent-500/30">
               <Link href="/iletisim">Demo Talep Edin</Link>
             </Button>
           </div>
-          <p className="text-sm text-muted-foreground mt-4">
-            Kurumsal paketler için{" "}
-            <Link href="/iletisim" className="text-primary hover:underline">
+          <p className="mt-4 text-sm text-muted-foreground">
+            Kurumsal paketler için
+            <Link href="/iletisim" className="ml-1 text-primary hover:underline">
               bizimle iletişime geçin
             </Link>
+            .
           </p>
         </div>
       </div>

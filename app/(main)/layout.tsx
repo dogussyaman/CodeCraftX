@@ -1,6 +1,8 @@
 import type React from "react"
 import { ModernNavbar } from "@/components/modern-navbar"
 import { ModernFooter } from "@/components/modern-footer"
+import { ThemeAccentProvider } from "@/components/theme-accent-provider"
+import { AdminThemeColorBar } from "@/components/admin-theme-color-bar"
 
 export default function MainLayout({
   children,
@@ -8,16 +10,19 @@ export default function MainLayout({
   children: React.ReactNode
 }) {
   return (
-    <div className="relative min-h-screen">
-      {/* Global Background Effects */}
-      <div className="fixed top-0 left-1/4 w-96 h-96 bg-primary/10 rounded-full blur-[120px] pointer-events-none" />
-      <div className="fixed bottom-0 right-1/4 w-96 h-96 bg-secondary/10 rounded-full blur-[120px] pointer-events-none" />
+    <ThemeAccentProvider>
+      <div className="relative min-h-screen">
+        {/* Global Background Effects – accent renkleri kullanır */}
+        <div className="pointer-events-none fixed left-1/4 top-0 h-96 w-96 rounded-full bg-accent-400/15 blur-[120px] dark:bg-accent-500/20" />
+        <div className="pointer-events-none fixed bottom-0 right-1/4 h-96 w-96 rounded-full bg-accent-300/20 blur-[120px] dark:bg-accent-400/15" />
 
-      <ModernNavbar />
-      <div className="flex flex-col min-h-screen pt-16 relative z-10">
-        <main className="flex-1">{children}</main>
-        <ModernFooter />
+        <ModernNavbar />
+        <div className="flex flex-col min-h-screen pt-16 relative z-10">
+          <main className="flex-1">{children}</main>
+          <ModernFooter />
+        </div>
+        <AdminThemeColorBar />
       </div>
-    </div>
+    </ThemeAccentProvider>
   )
 }

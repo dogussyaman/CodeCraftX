@@ -1,7 +1,9 @@
 "use client"
 
-import { useEffect, Suspense } from "react"
+import { Suspense, useEffect } from "react"
 import { useRouter, useSearchParams } from "next/navigation"
+import { motion } from "motion/react"
+import Glow from "@/components/ui/glow"
 import {
   HeroSection,
   FeaturesSection,
@@ -20,17 +22,25 @@ function HomeContent() {
     const error = searchParams.get("error")
 
     if (code || error) {
-      // Eğer ana sayfaya code veya error ile gelinmişse, bu bir OAuth dönüşüdür
-      // ve yanlışlıkla ana sayfaya yönlendirilmiştir.
-      // Callback sayfasına yönlendir.
       const params = new URLSearchParams(searchParams.toString())
       router.replace(`/auth/callback?${params.toString()}`)
     }
   }, [searchParams, router])
 
   return (
-    <div className="min-h-screen">
-      {/* Background Effects are now handled globally in layout.tsx */}
+    <div className="relative min-h-screen overflow-x-clip bg-background">
+      <div className="pointer-events-none absolute inset-x-0 top-0 -z-10 h-[58rem] bg-accent-500/20 dark:bg-accent-500/30" />
+      <motion.div
+        className="pointer-events-none absolute left-1/2 top-16 -z-10 h-[36rem] w-[36rem] -translate-x-1/2 rounded-full bg-accent-500/30 blur-3xl dark:bg-accent-500/40"
+        animate={{ opacity: [0.45, 0.82, 0.45], scale: [1, 1.15, 1], y: [0, -24, 0] }}
+        transition={{ duration: 12, repeat: Infinity, ease: "easeInOut" }}
+      />
+      <motion.div
+        className="pointer-events-none absolute right-[10%] top-[30rem] -z-10 h-80 w-80 rounded-full bg-accent-500/20 blur-3xl dark:bg-accent-500/30"
+        animate={{ opacity: [0.24, 0.52, 0.24], x: [0, -20, 0], y: [0, 30, 0] }}
+        transition={{ duration: 14, repeat: Infinity, ease: "easeInOut" }}
+      />
+      <Glow variant="above" className="pointer-events-none -z-10 opacity-55 dark:opacity-70" />
 
       <main className="relative z-10">
         <HeroSection />

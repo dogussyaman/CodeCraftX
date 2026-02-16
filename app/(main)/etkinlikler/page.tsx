@@ -1,9 +1,10 @@
 import type { Metadata } from "next"
 import Link from "next/link"
-import { Button } from "@/components/ui/button"
-import { buildPageMetadata, getSiteTitle } from "@/lib/seo"
-import { Card, CardContent } from "@/components/ui/card"
 import { Calendar } from "lucide-react"
+
+import { buildPageMetadata, getSiteTitle } from "@/lib/seo"
+import { Button } from "@/components/ui/button"
+import { Card, CardContent } from "@/components/ui/card"
 
 export const metadata: Metadata = buildPageMetadata({
   title: getSiteTitle("Etkinlikler"),
@@ -14,33 +15,29 @@ export const metadata: Metadata = buildPageMetadata({
 export default function EtkinliklerPage() {
   return (
     <div className="min-h-screen bg-background">
-      {/* Hero Section */}
-      <section className="relative pt-32 pb-20 overflow-hidden">
-        <div className="absolute bottom-10 left-10 size-96 bg-primary/10 rounded-full blur-[120px]" />
-        <div className="container mx-auto px-4 relative z-10">
-          <div className="max-w-4xl mx-auto text-center">
-            <h1 className="text-5xl md:text-6xl font-bold mb-6 text-balance">
+      <section className="relative overflow-hidden pb-20 pt-32">
+        <div className="absolute bottom-10 left-10 size-96 rounded-full bg-accent-400/15 blur-[120px]" />
+        <div className="container relative z-10 mx-auto px-4">
+          <div className="mx-auto max-w-4xl text-center">
+            <h1 className="mb-6 text-balance text-5xl font-bold md:text-6xl">
               Yaklaşan <span className="gradient-text">Etkinlikler</span>
             </h1>
-            <p className="text-xl text-muted-foreground mb-8 text-pretty">
-              Sektörün önde gelen etkinliklerine katılın, networking yapın ve kendinizi geliştirin
+            <p className="mb-8 text-pretty text-xl text-muted-foreground">
+              Sektörün önde gelen etkinliklerine katılın, networking yapın ve kendinizi geliştirin.
             </p>
           </div>
         </div>
       </section>
 
-      {/* Empty state - Yakında */}
       <section className="pb-20">
         <div className="container mx-auto px-4">
-          <div className="max-w-xl mx-auto">
-            <Card className="border-dashed">
+          <div className="mx-auto max-w-xl">
+            <Card className="border-dashed border-accent-500/30 bg-white/70 dark:bg-zinc-900/60">
               <CardContent className="flex flex-col items-center justify-center py-16 text-center">
-                <Calendar className="size-16 text-muted-foreground/50 mb-4" />
-                <h2 className="text-xl font-semibold mb-2">Şu an listelenecek etkinlik yok</h2>
-                <p className="text-muted-foreground mb-6">
-                  Yakında burada konferans, workshop ve meetup duyurularını görebileceksiniz.
-                </p>
-                <Button asChild variant="outline">
+                <Calendar className="mb-4 size-16 text-muted-foreground/60" />
+                <h2 className="mb-2 text-xl font-semibold">Şu an listelenecek etkinlik yok</h2>
+                <p className="mb-6 text-muted-foreground">Yakında konferans, workshop ve meetup duyurularını burada görebileceksiniz.</p>
+                <Button asChild variant="outline" className="border-accent-500/30">
                   <Link href="/iletisim">Etkinlik Öner</Link>
                 </Button>
               </CardContent>
@@ -49,15 +46,12 @@ export default function EtkinliklerPage() {
         </div>
       </section>
 
-      {/* Host CTA */}
-      <section className="py-20 bg-muted/30">
+      <section className="bg-muted/20 py-20">
         <div className="container mx-auto px-4">
-          <div className="max-w-4xl mx-auto text-center">
-            <h2 className="text-4xl font-bold mb-6">Etkinlik Düzenlemek İster misiniz?</h2>
-            <p className="text-xl text-muted-foreground mb-8">
-              Kendi etkinliğinizi organize edin ve topluluğumuzu davet edin
-            </p>
-            <Button size="lg" asChild>
+          <div className="mx-auto max-w-4xl text-center">
+            <h2 className="mb-6 text-4xl font-bold">Etkinlik Düzenlemek İster misiniz?</h2>
+            <p className="mb-8 text-xl text-muted-foreground">Kendi etkinliğinizi organize edin ve topluluğumuzu davet edin.</p>
+            <Button size="lg" asChild className="bg-gradient-to-r from-accent-500 to-accent-400 text-white hover:from-accent-600 hover:to-accent-500">
               <Link href="/iletisim">Etkinlik Öner</Link>
             </Button>
           </div>

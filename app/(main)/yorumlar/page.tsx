@@ -1,12 +1,13 @@
 import type { Metadata } from "next"
 import Link from "next/link"
+import { LogIn, MessageSquare } from "lucide-react"
+
 import { buildPageMetadata, getSiteTitle } from "@/lib/seo"
 import { createServerClient } from "@/lib/supabase/server"
-import { Card, CardContent, CardHeader } from "@/components/ui/card"
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
-import { MessageSquare, LogIn } from "lucide-react"
-import { TestimonialForm } from "./_components/TestimonialForm"
 import { Button } from "@/components/ui/button"
+import { Card, CardContent, CardHeader } from "@/components/ui/card"
+import { TestimonialForm } from "./_components/TestimonialForm"
 
 export const metadata: Metadata = buildPageMetadata({
   title: getSiteTitle("Yorumlar"),
@@ -29,15 +30,13 @@ export default async function YorumlarPage() {
 
   return (
     <div className="min-h-screen bg-background py-24">
-      <div className="container mx-auto px-4 max-w-3xl">
+      <div className="container mx-auto max-w-3xl px-4">
         <header className="mb-12 text-center">
-          <h1 className="text-4xl md:text-5xl font-bold tracking-tight mb-4 flex items-center justify-center gap-2">
+          <h1 className="mb-4 flex items-center justify-center gap-2 text-4xl font-bold tracking-tight md:text-5xl">
             <MessageSquare className="size-10" />
             Yorumlar
           </h1>
-          <p className="text-lg text-muted-foreground">
-            CodeCraftX kullanıcılarının deneyimleri ve görüşleri.
-          </p>
+          <p className="text-lg text-muted-foreground">CodeCraftX kullanıcılarının deneyimleri ve görüşleri.</p>
         </header>
 
         {user ? (
@@ -45,10 +44,10 @@ export default async function YorumlarPage() {
             <TestimonialForm />
           </div>
         ) : (
-          <Card className="mb-12 border-dashed">
+          <Card className="mb-12 border-dashed border-accent-500/30 bg-white/70 dark:bg-zinc-900/60">
             <CardContent className="flex flex-col items-center justify-center py-10">
-              <p className="text-muted-foreground mb-4">Yorum bırakmak için giriş yapın.</p>
-              <Button asChild className="gap-2">
+              <p className="mb-4 text-muted-foreground">Yorum bırakmak için giriş yapın.</p>
+              <Button asChild className="gap-2 bg-gradient-to-r from-accent-500 to-accent-400 text-white hover:from-accent-600 hover:to-accent-500">
                 <Link href="/auth/giris">
                   <LogIn className="size-4" />
                   Giriş Yap
@@ -59,12 +58,10 @@ export default async function YorumlarPage() {
         )}
 
         <section>
-          <h2 className="text-xl font-semibold mb-6">Paylaşılan Yorumlar</h2>
+          <h2 className="mb-6 text-xl font-semibold">Paylaşılan Yorumlar</h2>
           {!testimonials?.length ? (
-            <Card>
-              <CardContent className="py-12 text-center text-muted-foreground">
-                Henüz yorum yok. İlk yorumu siz bırakın!
-              </CardContent>
+            <Card className="border-accent-500/20 bg-white/70 dark:bg-zinc-900/60">
+              <CardContent className="py-12 text-center text-muted-foreground">Henüz yorum yok. İlk yorumu siz bırakın!</CardContent>
             </Card>
           ) : (
             <ul className="space-y-4">
@@ -72,9 +69,10 @@ export default async function YorumlarPage() {
                 const author = (t as { profiles?: { full_name?: string; avatar_url?: string } | null }).profiles
                 const name = author?.full_name ?? "Kullanıcı"
                 const avatarUrl = author?.avatar_url ?? null
+
                 return (
                   <li key={t.id}>
-                    <Card>
+                    <Card className="border-accent-500/20 bg-white/70 dark:bg-zinc-900/60">
                       <CardHeader className="pb-2">
                         <div className="flex items-center gap-3">
                           <Avatar className="size-10">
@@ -83,10 +81,7 @@ export default async function YorumlarPage() {
                           </Avatar>
                           <div>
                             <p className="font-medium">{name}</p>
-                            <time
-                              dateTime={t.created_at}
-                              className="text-sm text-muted-foreground"
-                            >
+                            <time dateTime={t.created_at} className="text-sm text-muted-foreground">
                               {new Date(t.created_at).toLocaleDateString("tr-TR", {
                                 day: "numeric",
                                 month: "long",
@@ -97,7 +92,7 @@ export default async function YorumlarPage() {
                         </div>
                       </CardHeader>
                       <CardContent>
-                        <p className="text-foreground/90 whitespace-pre-wrap">{t.body}</p>
+                        <p className="whitespace-pre-wrap text-foreground/90">{t.body}</p>
                       </CardContent>
                     </Card>
                   </li>

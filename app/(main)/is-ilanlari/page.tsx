@@ -1,6 +1,7 @@
 import type { Metadata } from "next"
-import { Suspense } from "react"
 import Link from "next/link"
+import { Suspense } from "react"
+
 import { buildPageMetadata, getSiteTitle } from "@/lib/seo"
 import { createServerClient } from "@/lib/supabase/server"
 import {
@@ -11,11 +12,12 @@ import {
   BreadcrumbPage,
   BreadcrumbSeparator,
 } from "@/components/ui/breadcrumb"
-import { JobsHero } from "./_components/JobsHero"
-import { JobsFiltersSection } from "./_components/JobsFiltersSection"
+
 import { JobsActiveFilters } from "./_components/JobsActiveFilters"
-import { JobsList } from "./_components/JobsList"
 import { JobsCta } from "./_components/JobsCta"
+import { JobsFiltersSection } from "./_components/JobsFiltersSection"
+import { JobsHero } from "./_components/JobsHero"
+import { JobsList } from "./_components/JobsList"
 
 export const metadata: Metadata = buildPageMetadata({
   title: getSiteTitle("İş İlanları"),
@@ -41,6 +43,7 @@ type PageProps = {
 function getDateFilter(date: string | undefined): { from: Date } | null {
   if (!date) return null
   const now = new Date()
+
   switch (date) {
     case "today": {
       const start = new Date(now)
@@ -115,7 +118,6 @@ export default async function IsIlanlariPage({ searchParams }: PageProps) {
   }
 
   const { data: rawIlanlar } = await query
-
   let ilanlar = rawIlanlar ?? []
 
   if (q) {
@@ -130,9 +132,7 @@ export default async function IsIlanlariPage({ searchParams }: PageProps) {
     ilanlar = ilanlar.filter((ilan: any) => {
       const single = ilan.work_preference
       const list = Array.isArray(ilan.work_preference_list) ? ilan.work_preference_list : []
-      return workPreferenceList.some(
-        (w: string) => single === w || list.includes(w),
-      )
+      return workPreferenceList.some((w: string) => single === w || list.includes(w))
     })
   }
 
@@ -146,15 +146,11 @@ export default async function IsIlanlariPage({ searchParams }: PageProps) {
   }
 
   const count = ilanlar.length
-  const pageTitle = city
-    ? `${count} ${city} İş İlanları`
-    : country
-      ? `${count} İş İlanları`
-      : `${count} İş İlanları`
+  const pageTitle = city ? `${count} ${city} İş İlanları` : `${count} İş İlanları`
 
   return (
     <div className="min-h-screen bg-background pt-12">
-      <div className="container mx-auto px-3 pt-6 pb-4 sm:px-4 md:pt-8 md:pb-5">
+      <div className="container mx-auto px-3 pb-4 pt-6 sm:px-4 md:pb-5 md:pt-8">
         <Breadcrumb className="mb-3 sm:mb-4">
           <BreadcrumbList>
             <BreadcrumbItem>
@@ -180,23 +176,20 @@ export default async function IsIlanlariPage({ searchParams }: PageProps) {
         </Breadcrumb>
 
         <div className="flex flex-col gap-4 lg:flex-row lg:items-start lg:gap-6 xl:gap-8">
-          <Suspense fallback={<div className="h-64 shrink-0 lg:w-[280px] rounded-lg border bg-muted/30 animate-pulse" />}>
+          <Suspense fallback={<div className="h-64 shrink-0 rounded-lg border bg-muted/30 animate-pulse lg:w-[280px]" />}>
             <JobsFiltersSection />
           </Suspense>
+
           <div className="order-1 min-w-0 flex-1 lg:order-2">
             <JobsHero />
             <Suspense fallback={null}>
               <JobsActiveFilters />
             </Suspense>
-            <JobsList
-              ilanlar={ilanlar}
-              count={count}
-              pageTitle={pageTitle}
-              sort={sort}
-            />
+            <JobsList ilanlar={ilanlar} count={count} pageTitle={pageTitle} sort={sort} />
           </div>
         </div>
       </div>
+
       <JobsCta />
     </div>
   )

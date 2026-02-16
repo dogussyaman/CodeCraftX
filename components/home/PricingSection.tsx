@@ -111,20 +111,20 @@ function PricingCard({
             <Card
                 className={cn(
                     "relative h-full flex flex-col transition-all duration-300",
-                    "bg-card border-border hover:shadow-lg",
-                    isHighlighted && "border-2 border-primary shadow-lg shadow-primary/10"
+                    "bg-white/75 dark:bg-zinc-900/60 border border-accent-500/20 hover:shadow-xl hover:shadow-accent-500/10",
+                    isHighlighted && "border-2 border-accent-500 shadow-lg shadow-accent-500/20"
                 )}
             >
                 {plan.popular && (
                     <div className="absolute -top-3 left-1/2 -translate-x-1/2">
-                        <Badge className="bg-primary text-primary-foreground hover:bg-primary/90 px-3 py-1 text-xs font-medium rounded-full">
+                        <Badge className="bg-gradient-to-r from-accent-500 to-accent-400 text-white hover:from-accent-600 hover:to-accent-500 px-3 py-1 text-xs font-medium rounded-full">
                             En Popüler
                         </Badge>
                     </div>
                 )}
                 {isCurrentPlan && !plan.popular && (
                     <div className="absolute -top-3 left-1/2 -translate-x-1/2">
-                        <Badge className="bg-primary text-primary-foreground hover:bg-primary px-3 py-1 text-xs font-medium rounded-full">
+                        <Badge className="bg-gradient-to-r from-accent-500 to-accent-400 text-white hover:from-accent-600 hover:to-accent-500 px-3 py-1 text-xs font-medium rounded-full">
                             Mevcut Planınız
                         </Badge>
                     </div>
@@ -159,8 +159,8 @@ function PricingCard({
                         className={cn(
                             "w-full mb-8 transition-colors",
                             isHighlighted
-                                ? "bg-primary text-primary-foreground border-2 border-primary hover:bg-primary/90 hover:border-primary/80 dark:hover:bg-primary/80 dark:hover:border-primary/70"
-                                : "bg-muted text-foreground border-2 border-border hover:bg-secondary hover:border-primary/50 dark:hover:bg-secondary/80 dark:hover:border-primary/40"
+                                ? "bg-gradient-to-r from-accent-500 to-accent-400 text-white border-2 border-accent-500 hover:from-accent-600 hover:to-accent-500 hover:border-accent-600"
+                                : "bg-accent-100/70 dark:bg-zinc-800 text-foreground border-2 border-accent-500/25 hover:bg-accent-200/70 dark:hover:bg-zinc-700 hover:border-accent-500/55"
                         )}
                     >
                         <Link href={ctaLink}>{plan.cta}</Link>
@@ -176,7 +176,7 @@ function PricingCard({
                                 {plan.features.map((feature, idx) => (
                                     <li key={idx} className="flex items-center justify-between gap-2">
                                         <div className="flex items-center gap-3">
-                                            <Check className="size-4 text-muted-foreground shrink-0" />
+                                            <Check className="size-4 text-accent-500 dark:text-accent-300 shrink-0" />
                                             <span className="text-sm text-foreground">{feature.text}</span>
                                         </div>
                                         {feature.tooltip && (
@@ -234,9 +234,9 @@ export function PricingSection({
                     initial={{ opacity: 0, y: 20 }}
                     whileInView={{ opacity: 1, y: 0 }}
                     viewport={{ once: true }}
-                    className="text-4xl md:text-5xl font-bold mb-6"
+                    className="text-4xl md:text-5xl font-bold mb-6 text-foreground"
                 >
-                    Size Uygun <span className="gradient-text">Planı Seçin</span>
+                    Size uygun <span className="bg-gradient-to-r from-accent-500 to-accent-400 bg-clip-text text-transparent">planı seçin</span>
                 </motion.h2>
                 <motion.p
                     initial={{ opacity: 0, y: 20 }}
@@ -245,7 +245,7 @@ export function PricingSection({
                     transition={{ delay: 0.1 }}
                     className="text-lg text-muted-foreground max-w-2xl mx-auto mb-8"
                 >
-                    İhtiyaçlarınıza göre en uygun planı seçin ve hemen başlayın
+                    İhtiyacınıza göre en uygun planı seçin ve hemen başlayın
                 </motion.p>
 
                 {/* Billing Toggle */}
@@ -254,14 +254,14 @@ export function PricingSection({
                     whileInView={{ opacity: 1, y: 0 }}
                     viewport={{ once: true }}
                     transition={{ delay: 0.2 }}
-                    className="inline-flex items-center gap-1 p-1 rounded-full border border-border bg-muted/50"
+                    className="inline-flex items-center gap-1 p-1 rounded-full border border-accent-500/25 bg-accent-100/60 dark:bg-zinc-900/70"
                 >
                     <button
                         onClick={() => setBillingPeriod("monthly")}
                         className={cn(
                             "px-4 py-2 rounded-full text-sm font-medium transition-all duration-200 border border-transparent",
                             billingPeriod === "monthly"
-                                ? "bg-background text-foreground shadow-sm dark:bg-white/15 dark:text-white dark:border-white/20"
+                                ? "bg-white text-foreground shadow-sm border-accent-500/30 dark:bg-zinc-800 dark:text-white dark:border-accent-400/30"
                                 : "text-muted-foreground hover:text-foreground"
                         )}
                     >
@@ -272,12 +272,12 @@ export function PricingSection({
                         className={cn(
                             "px-4 py-2 rounded-full text-sm font-medium transition-all duration-200 flex items-center gap-2 border border-transparent",
                             billingPeriod === "annually"
-                                ? "bg-background text-foreground shadow-sm dark:bg-white/15 dark:text-white dark:border-white/20"
+                                ? "bg-white text-foreground shadow-sm border-accent-500/30 dark:bg-zinc-800 dark:text-white dark:border-accent-400/30"
                                 : "text-muted-foreground hover:text-foreground"
                         )}
                     >
                         Yıllık
-                        <Badge variant="secondary" className="bg-primary/10 text-primary text-xs px-2 py-0.5">
+                        <Badge variant="secondary" className="bg-accent-500/15 text-accent-700 dark:text-accent-200 text-xs px-2 py-0.5">
                             %20 Tasarruf
                         </Badge>
                     </button>
