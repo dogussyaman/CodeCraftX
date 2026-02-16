@@ -144,7 +144,7 @@ Return JSON only:`
           "Content-Type": "application/json",
         },
         body: JSON.stringify({
-          model: "gpt-4o-mini", // veya "gpt-3.5-turbo" (daha ucuz)
+          model: "gpt-4.1-mini", // veya "gpt-3.5-turbo" (daha ucuz)
           messages: [
             {
               role: "system",
