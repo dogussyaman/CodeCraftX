@@ -217,13 +217,13 @@ export function ResetPasswordForm() {
                     </div>
                 )}
 
-                <Button type="submit" className="w-full h-11" disabled={isLoading}>
+                <Button type="submit" className="w-full h-11 bg-accent-500 text-white hover:bg-accent-600 dark:bg-accent-500 dark:hover:bg-accent-600" disabled={isLoading}>
                     {isLoading ? "Şifre güncelleniyor..." : "Şifreyi Güncelle"}
                 </Button>
             </form>
 
             <div className="text-center space-y-2">
-                <Link href="/auth/giris" className="text-sm text-muted-foreground hover:text-foreground">
+                <Link href="/auth/giris" className="text-sm text-accent-600 hover:underline dark:text-accent-400">
                     Giriş sayfasına dön
                 </Link>
             </div>

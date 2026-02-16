@@ -1,4 +1,5 @@
 export { HeroSection } from "./HeroSection"
+export { IsverenHeroSection } from "./IsverenHeroSection"
 export { FeaturesSection } from "./FeaturesSection"
 export { PricingSection } from "./PricingSection"
 export { HowItWorksSection } from "./HowItWorksSection"

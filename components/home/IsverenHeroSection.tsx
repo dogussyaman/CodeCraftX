@@ -14,16 +14,7 @@ const STACK_SOURCES = [
   { light: "/ss2lgth.png", dark: "/ss2drk.png" },
   { light: "/ss1lgth.png", dark: "/ss1drk.png" },
 ] as const
-
-const HERO_HINT = "İster aday olun ister işe alın; AI destekli eşleşme ve şeffaf süreçlerle doğru eşleşmeyi tek platformda bulun."
-const FLOATING_BADGES_HOME = [
-  { text: "İlanlar", pos: "left-2 top-3", delay: 0, dur: 5.5 },
-  { text: "CV Eşleşme", pos: "left-24 top-14", delay: 0.2, dur: 6.2 },
-  { text: "Skill Match", pos: "left-10 top-28", delay: 0.35, dur: 5.8 },
-  { text: "Başvurular", pos: "left-40 top-8", delay: 0.5, dur: 6.5 },
-  { text: "Şirketler", pos: "left-44 top-24", delay: 0.65, dur: 5.4 },
-  { text: "AI Analiz", pos: "left-28 top-40", delay: 0.8, dur: 6.1 },
-] as const
+const HERO_HINT = "AI destekli CV analizi, akıllı eşleşme ve şeffaf işe alım süreci — tek platformda."
 const HERO_STACK = [
   {
     id: 0,
@@ -44,16 +35,25 @@ const HERO_STACK = [
     open: { x: "28%", y: 4, rotate: -9, scale: 0.95, opacity: 0.96 },
   },
 ] as const
-export function HeroSection() {
+const FLOATING_BADGES = [
+  { text: "CV İncele", pos: "left-2 top-3", delay: 0, dur: 5.5 },
+  { text: "AI Analiz", pos: "left-24 top-14", delay: 0.2, dur: 6.2 },
+  { text: "Skill Match", pos: "left-10 top-28", delay: 0.35, dur: 5.8 },
+  { text: "Aday Skoru", pos: "left-40 top-8", delay: 0.5, dur: 6.5 },
+  { text: "HR Pipeline", pos: "left-44 top-24", delay: 0.65, dur: 5.4 },
+  { text: "İlan Analizi", pos: "left-28 top-40", delay: 0.8, dur: 6.1 },
+] as const
+
+export function IsverenHeroSection() {
   const { resolvedTheme } = useTheme()
-  const isDark = resolvedTheme === "dark" // undefined (SSR) → light fallback
+  const isDark = resolvedTheme === "dark"
 
   return (
     <section className="relative overflow-hidden pb-16 pt-24 md:pb-24 md:pt-32">
       <div className="container relative mx-auto px-4">
         <div className="mx-auto max-w-6xl">
           <div className="pointer-events-none absolute right-0 top-8 hidden h-64 w-80 xl:block">
-            {FLOATING_BADGES_HOME.map((item, idx) => (
+            {FLOATING_BADGES.map((item, idx) => (
               <motion.div
                 key={item.text}
                 initial={{ opacity: 0.5, y: 0, x: 0 }}
@@ -82,7 +82,7 @@ export function HeroSection() {
             className="mb-6 inline-flex items-center gap-2 rounded-full border border-accent-300/50 bg-accent-100/80 px-4 py-2 text-xs font-medium text-accent-900 backdrop-blur-xl dark:border-accent-300/20 dark:bg-white/5 dark:text-accent-100"
           >
             <Sparkles className="size-3.5 text-accent-500 dark:text-accent-300" />
-            <span>Geliştiriciler ve işverenler tek platformda</span>
+            <span>CodeCraftX ile güçlü işe alım süreçleri</span>
           </motion.div>
 
           <motion.h1
@@ -91,9 +91,9 @@ export function HeroSection() {
             transition={{ duration: 0.6, delay: 0.05 }}
             className="max-w-4xl text-3xl font-semibold leading-tight text-foreground dark:text-white sm:text-4xl md:text-5xl md:max-w-5xl"
           >
-            <span className="block text-balance">Yetenekle fırsatı bir araya getirin.</span>
+            <span className="block text-balance">Doğru adayı bul. Hızlı işe al.</span>
             <span className="mt-2 block font-semibold text-accent-600 dark:text-accent-400">
-              İlanlar, eşleşme ve işe alım. Hepsi tek platformda.
+              CV analizi ve akıllı eşleşme tek platformda.
             </span>
           </motion.h1>
 
@@ -117,8 +117,8 @@ export function HeroSection() {
               size="lg"
               className="h-12 rounded-full border border-accent-500/50 from-accent-500 to-accent-400 px-6 text-sm font-semibold text-white shadow-lg shadow-accent-500/25 transition hover:from-accent-600 hover:to-accent-500"
             >
-              <Link href="/auth/kayit" className="inline-flex items-center gap-2">
-                Hemen Başla
+              <Link href="/isveren#sirket-talebi" className="inline-flex items-center gap-2">
+                Şirket Talebi Oluştur
                 <ArrowRight className="size-4" />
               </Link>
             </Button>
@@ -128,7 +128,7 @@ export function HeroSection() {
               variant="outline"
               className="h-12 rounded-full border border-accent-500/30 bg-background/70 px-6 text-sm font-medium text-foreground backdrop-blur-md hover:bg-accent-100/60 dark:bg-background/20 dark:hover:bg-white/10"
             >
-              <Link href="#ozellikler">Özellikleri İncele</Link>
+              <Link href="/isveren#ozellikler">Özellikleri İncele</Link>
             </Button>
           </motion.div>
 

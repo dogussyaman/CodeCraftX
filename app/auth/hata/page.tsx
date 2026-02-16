@@ -37,7 +37,7 @@ export default function AuthErrorPage() {
             <div className="flex flex-col gap-3">
               <Button
                 asChild
-                className="w-full h-12 rounded-xl bg-gradient-to-r from-primary to-accent hover:opacity-90 transition-opacity"
+                className="w-full h-12 rounded-xl bg-accent-500 text-white hover:bg-accent-600 dark:bg-accent-500 dark:hover:bg-accent-600"
               >
                 <Link href="/auth/giris">Tekrar Dene</Link>
               </Button>

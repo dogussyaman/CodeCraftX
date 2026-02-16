@@ -77,7 +77,7 @@ function TestimonialCard({
       <CardContent className="p-6">
         <div className="flex items-center justify-between">
           <div className="flex items-center gap-3">
-            <div className="flex size-11 items-center justify-center rounded-full bg-gradient-to-br from-accent-500/25 via-accent-500/20 to-accent-500/10 text-sm font-semibold text-foreground">
+            <div className="flex size-11 items-center justify-center rounded-full from-accent-500/25 via-accent-500/20 to-accent-500/10 text-sm font-semibold text-foreground">
               {initials}
             </div>
             <div>
@@ -101,36 +101,36 @@ function TestimonialCard({
 
 export function TestimonialsMarqueeSection() {
   return (
-    <section className="relative overflow-hidden py-20 md:py-28">
-      <div className="pointer-events-none absolute inset-0 bg-gradient-to-b from-transparent via-accent-100/40 to-transparent dark:via-accent-500/5" />
-      <div className="container relative mx-auto px-4">
-        <div className="mb-12 text-center">
-          <span className="inline-flex items-center gap-2 rounded-full border border-accent-500/30 bg-accent-100/70 px-4 py-1 text-xs font-semibold uppercase tracking-[0.2em] text-accent-800 dark:bg-accent-500/10 dark:text-accent-200">
-            Yorumlar
-          </span>
-          <h2 className="mt-4 text-3xl font-bold text-foreground md:text-4xl">
-            Topluluktan gerçek deneyimler
-          </h2>
-          <p className="mx-auto mt-3 max-w-2xl text-base text-muted-foreground">
-            CodeCraftX kullanıcıları, işe alım ve kariyer süreçlerinde yarattığı etkiyi paylaşıyor.
-          </p>
-        </div>
+    <section className="relative w-full overflow-hidden py-20 md:py-28">
+      <div className="pointer-events-none absolute inset-0 from-transparent via-accent-100/40 to-transparent dark:via-accent-500/5" />
+      {/* Başlık alanı: max-width container içinde, ortada */}
+      <div className="container relative z-10 mx-auto mb-12 px-4 text-center">
+        <span className="inline-flex items-center gap-2 rounded-full border border-accent-500/30 bg-accent-100/70 px-4 py-1 text-xs font-semibold uppercase tracking-[0.2em] text-accent-800 dark:bg-accent-500/10 dark:text-accent-200">
+          Yorumlar
+        </span>
+        <h2 className="mt-4 text-3xl font-bold text-foreground md:text-4xl">
+          Topluluktan gerçek deneyimler
+        </h2>
+        <p className="mx-auto mt-3 max-w-2xl text-base text-muted-foreground">
+          CodeCraftX kullanıcıları, işe alım ve kariyer süreçlerinde yarattığı etkiyi paylaşıyor.
+        </p>
+      </div>
 
-        <div className="relative">
-          <div className="pointer-events-none absolute inset-y-0 left-0 w-24 bg-gradient-to-r from-background to-transparent" />
-          <div className="pointer-events-none absolute inset-y-0 right-0 w-24 bg-gradient-to-l from-background to-transparent" />
-          <div className="space-y-6">
-            <Marquee pauseOnHover repeat={6} className="[--duration:45s]">
-              {firstRow.map((testimonial) => (
-                <TestimonialCard key={testimonial.name} {...testimonial} />
-              ))}
-            </Marquee>
-            <Marquee pauseOnHover reverse repeat={6} className="[--duration:55s]">
-              {secondRow.map((testimonial) => (
-                <TestimonialCard key={testimonial.name} {...testimonial} />
-              ))}
-            </Marquee>
-          </div>
+      {/* Marquee: tam genişlik, container yok — sonsuz band */}
+      <div className="relative z-10 w-full">
+        <div className="pointer-events-none absolute inset-y-0 left-0 z-10 w-24 from-background to-transparent" />
+        <div className="pointer-events-none absolute inset-y-0 right-0 z-10 w-24 from-background to-transparent" />
+        <div className="w-full space-y-6">
+          <Marquee pauseOnHover repeat={6} className="w-full [--duration:45s]">
+            {firstRow.map((testimonial) => (
+              <TestimonialCard key={testimonial.name} {...testimonial} />
+            ))}
+          </Marquee>
+          <Marquee pauseOnHover reverse repeat={6} className="w-full [--duration:55s]">
+            {secondRow.map((testimonial) => (
+              <TestimonialCard key={testimonial.name} {...testimonial} />
+            ))}
+          </Marquee>
         </div>
       </div>
     </section>

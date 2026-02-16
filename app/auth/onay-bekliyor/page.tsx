@@ -131,7 +131,7 @@ function VerifyOTPContent() {
   if (!email) {
     return (
       <div className="min-h-[calc(100vh-4rem)] flex items-center justify-center relative overflow-hidden bg-background p-6">
-        <div className="absolute inset-0 from-primary/20 via-transparent to-accent/20" />
+        <div className="absolute inset-0 bg-gradient-to-br from-accent-500/20 via-transparent to-accent-400/20" />
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
@@ -151,7 +151,7 @@ function VerifyOTPContent() {
 
   return (
     <div className="min-h-[calc(100vh-4rem)] flex items-center justify-center relative overflow-hidden bg-background p-6">
-      <div className="absolute inset-0 from-primary/20 via-transparent to-accent/20" />
+      <div className="absolute inset-0 bg-gradient-to-br from-accent-500/20 via-transparent to-accent-400/20" />
 
       <motion.div
         initial={{ opacity: 0, y: 20 }}
@@ -177,8 +177,8 @@ function VerifyOTPContent() {
             </div>
           ) : (
             <div className="space-y-6 text-center">
-              <div className="size-20 rounded-full bg-primary/10 flex items-center justify-center mx-auto">
-                <Mail className="size-10 text-primary" />
+              <div className="size-20 rounded-full bg-accent-500/10 flex items-center justify-center mx-auto">
+                <Mail className="size-10 text-accent-600 dark:text-accent-400" />
               </div>
 
               <div className="space-y-2">
@@ -214,7 +214,7 @@ function VerifyOTPContent() {
               <Button
                 onClick={handleVerify}
                 disabled={isLoading || otp.join("").length !== 8}
-                className="w-full h-12 rounded-xl  from-primary to-accent hover:opacity-90 transition-opacity"
+                className="w-full h-12 rounded-xl bg-accent-500 text-white hover:bg-accent-600 dark:bg-accent-500 dark:hover:bg-accent-600"
               >
                 {isLoading ? "Doğrulanıyor..." : "Doğrula"}
               </Button>
@@ -237,7 +237,7 @@ function VerifyOTPContent() {
               </div>
 
               <div className="pt-4 border-t border-border/50">
-                <Link href="/auth/kayit" className="text-sm text-primary hover:underline">
+                <Link href="/auth/kayit" className="text-sm text-accent-600 hover:underline dark:text-accent-400">
                   Farklı bir e-posta ile kayıt ol
                 </Link>
               </div>
@@ -255,7 +255,7 @@ function VerifyOTPContent() {
 function LoadingFallback() {
   return (
     <div className="min-h-[calc(100vh-4rem)] flex items-center justify-center bg-background">
-      <Loader2 className="size-8 animate-spin text-primary" />
+      <Loader2 className="size-8 animate-spin text-accent-500" />
     </div>
   )
 }

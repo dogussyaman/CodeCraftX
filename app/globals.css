@@ -444,6 +444,19 @@
     }
   }
 
+  @keyframes gradient-shift {
+    0%, 100% {
+      background-position: 0% 50%;
+    }
+    50% {
+      background-position: 100% 50%;
+    }
+  }
+
+  .animate-gradient-shift {
+    animation: gradient-shift 6s ease-in-out infinite;
+  }
+
   /* Dark mode input/textarea border visibility fix */
   .dark input[type="text"],
   .dark input[type="email"],

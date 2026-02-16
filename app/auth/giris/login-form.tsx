@@ -158,7 +158,7 @@ export function LoginForm() {
                         </Label>
                         <Link
                             href="/auth/sifre-unuttum"
-                            className="text-xs text-primary hover:underline font-medium"
+                            className="text-xs text-accent-600 hover:underline font-medium dark:text-accent-400"
                         >
                             Şifremi Unuttum
                         </Link>
@@ -186,7 +186,7 @@ export function LoginForm() {
                     </div>
                 )}
 
-                <Button type="submit" className="w-full h-11" disabled={isLoading}>
+                <Button type="submit" className="w-full h-11 bg-accent-500 text-white hover:bg-accent-600 dark:bg-accent-500 dark:hover:bg-accent-600" disabled={isLoading}>
                     {isLoading ? "Giriş yapılıyor..." : "Giriş Yap"}
                 </Button>
             </form>
@@ -204,7 +204,7 @@ export function LoginForm() {
                 <Button
                     type="button"
                     variant="outline"
-                    className="w-full h-11 bg-transparent hover:bg-muted hover:text-foreground border-border"
+                    className="w-full h-11 bg-transparent hover:bg-accent-100/60 hover:text-accent-700 hover:border-accent-500/40 dark:hover:bg-accent-500/20 dark:hover:text-accent-200 dark:border-accent-500/20"
                     onClick={() => handleOAuthLogin("google")}
                     disabled={isLoading}
                 >
@@ -219,7 +219,7 @@ export function LoginForm() {
                 <Button
                     type="button"
                     variant="outline"
-                    className="w-full h-11 bg-transparent hover:bg-muted hover:text-foreground border-border"
+                    className="w-full h-11 bg-transparent hover:bg-accent-100/60 hover:text-accent-700 hover:border-accent-500/40 dark:hover:bg-accent-500/20 dark:hover:text-accent-200 dark:border-accent-500/20"
                     onClick={() => handleOAuthLogin("github")}
                     disabled={isLoading}
                 >
@@ -232,7 +232,7 @@ export function LoginForm() {
 
             <p className="text-center text-sm text-muted-foreground mt-6">
                 Hesabınız yok mu?{" "}
-                <Link href="/auth/kayit" className="text-primary hover:underline font-semibold">
+                <Link href="/auth/kayit" className="text-accent-600 hover:underline font-semibold dark:text-accent-400">
                     Kayıt Ol
                 </Link>
             </p>

@@ -60,12 +60,12 @@ export function ThemeToggle({ showLabel = false, size = "sm" }: ThemeToggleProps
         className={`
           ${config.button}
           relative inline-flex items-center justify-center shrink-0
-          cursor-pointer rounded-lg border border-border
+          cursor-pointer rounded-lg border border-accent-500/25
           transition-all duration-300 ease-out
-          hover:bg-muted/50 active:scale-95
-          focus:outline-none focus-visible:ring-2 focus-visible:ring-primary/50 focus-visible:ring-offset-2 focus-visible:ring-offset-background
+          hover:bg-accent-100/60 hover:text-accent-700 active:scale-95 dark:hover:bg-accent-500/20 dark:hover:text-accent-200
+          focus:outline-none focus-visible:ring-2 focus-visible:ring-accent-500/50 focus-visible:ring-offset-2 focus-visible:ring-offset-background
           ${isDark
-            ? "bg-muted/30 text-muted-foreground hover:text-foreground"
+            ? "bg-accent-500/10 text-muted-foreground hover:text-foreground"
             : "bg-background text-muted-foreground hover:text-foreground"
           }
         `}

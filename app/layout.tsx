@@ -3,6 +3,7 @@ import type { Metadata } from "next"
 import { Inter, JetBrains_Mono } from "next/font/google"
 import { Analytics } from "@vercel/analytics/next"
 import { ThemeProvider } from "@/components/theme-provider"
+import { ThemeAccentProvider } from "@/components/theme-accent-provider"
 import { ReduxProvider } from "@/components/providers/redux-provider"
 import { Toaster } from "@/components/ui/toaster"
 import { Toaster as SonnerToaster } from "@/components/ui/sonner"
@@ -55,9 +56,11 @@ export default function RootLayout({
     <html lang="tr" suppressHydrationWarning>
       <body className={`${inter.variable} ${jetbrainsMono.variable} font-sans antialiased`}>
         <ThemeProvider attribute="class" defaultTheme="dark" enableSystem disableTransitionOnChange>
-          <ReduxProvider>
-            {children}
-          </ReduxProvider>
+          <ThemeAccentProvider>
+            <ReduxProvider>
+              {children}
+            </ReduxProvider>
+          </ThemeAccentProvider>
           <Analytics />
           <Toaster />
           <SonnerToaster />

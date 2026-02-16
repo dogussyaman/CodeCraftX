@@ -3,7 +3,7 @@ import type { Metadata } from "next"
 import { Separator } from "@/components/ui/separator"
 import { PricingSection } from "@/components/home/PricingSection"
 
-import { IsverenHero } from "./_components/IsverenHero"
+import { IsverenHeroSection } from "@/components/home/IsverenHeroSection"
 import { IsverenBenefits } from "./_components/IsverenBenefits"
 import { IsverenHowItWorks } from "./_components/IsverenHowItWorks"
 import { IsverenFeatures } from "./_components/IsverenFeatures"
@@ -22,7 +22,7 @@ export default function IsverenPage() {
     <div className="relative min-h-screen overflow-x-clip bg-background">
       <div className="pointer-events-none absolute inset-x-0 top-0 -z-10 h-[48rem] bg-accent-500/20" />
 
-      <IsverenHero />
+      <IsverenHeroSection />
       <Separator className="mx-auto max-w-6xl border-accent-500/20" />
       <IsverenBenefits />
       <Separator className="mx-auto max-w-6xl border-accent-500/20" />
