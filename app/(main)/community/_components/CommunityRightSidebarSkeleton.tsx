@@ -1,7 +1,6 @@
 "use client"
 
 import Link from "next/link"
-import { Skeleton } from "@/components/ui/skeleton"
 import { Card, CardContent } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
 import { MoreHorizontal, Sparkles, Link2 } from "lucide-react"
@@ -36,11 +35,10 @@ export function CommunityRightSidebarSkeleton() {
           <ul className="mt-3 space-y-3">
             {[1, 2, 3].map((i) => (
               <li key={i} className="flex gap-3 rounded-lg border border-border bg-muted/20 p-3">
-                <Skeleton className="size-10 shrink-0 rounded-lg" />
+                <div className="size-10 shrink-0 rounded-lg bg-muted/50 animate-pulse" aria-hidden />
                 <div className="min-w-0 flex-1 space-y-2">
-                  <Skeleton className="h-4 w-full" />
-                  <Skeleton className="h-3 w-24" />
-                  <Skeleton className="h-3 w-16" />
+                  <div className="h-4 w-full rounded bg-muted/50 animate-pulse" aria-hidden />
+                  <div className="h-3 w-24 rounded bg-muted/40 animate-pulse" aria-hidden />
                 </div>
               </li>
             ))}
@@ -60,9 +58,9 @@ export function CommunityRightSidebarSkeleton() {
           </h3>
           <ul className="mt-3 space-y-2">
             {[1, 2, 3].map((i) => (
-              <li key={i}>
-                <Skeleton className="h-8 w-full rounded-md" />
-                <Skeleton className="ml-2 mt-1 h-3 w-20" />
+              <li key={i} className="flex flex-col gap-1">
+                <div className="h-8 w-full rounded-md bg-muted/50 animate-pulse" aria-hidden />
+                <div className="ml-2 h-3 w-20 rounded bg-muted/40 animate-pulse" aria-hidden />
               </li>
             ))}
           </ul>

@@ -1,7 +1,6 @@
 "use client"
 
 import Link from "next/link"
-import { Skeleton } from "@/components/ui/skeleton"
 import { Card, CardContent, CardHeader } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
 import { Badge } from "@/components/ui/badge"
@@ -31,10 +30,10 @@ const DEFAULT_TOPICS = [
 export function CommunitySidebarSkeleton() {
   return (
     <aside className="flex w-full flex-col gap-6 lg:w-[280px] lg:shrink-0">
-      {/* CodeCraftX Topluluğu - kart hemen, sadece logo skeleton (görsel yüklenir) */}
+      {/* CodeCraftX Topluluğu - kart hemen, hafif placeholder */}
       <Card className="overflow-hidden border-border bg-card">
         <CardHeader>
-          <Skeleton className="h-20 w-full rounded" />
+          <div className="h-20 w-full rounded bg-muted/40 animate-pulse" aria-hidden />
         </CardHeader>
         <CardContent className="px-4 pb-4 pt-2">
           <h2 className="mt-3 text-center font-semibold text-foreground">CodeCraftX Topluluğu</h2>

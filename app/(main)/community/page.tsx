@@ -37,53 +37,52 @@ type AnnouncementRow = {
   profiles?: { full_name?: string; avatar_url?: string } | { full_name?: string; avatar_url?: string }[] | null
 }
 
+const DEFAULT_TOPICS = [
+  { slug: "duyurular", label: "Duyurular" },
+  { slug: "frontend", label: "Frontend" },
+  { slug: "backend", label: "Backend" },
+  { slug: "kariyer", label: "Kariyer" },
+  { slug: "open-source", label: "Open Source" },
+]
+
 export default async function CommunityPage() {
-  const supabase = await createServerClient()
-
-  const blogPromise = supabase
-    .from("blog_posts")
-    .select(
-      "id, title, slug, cover_image_url, published_at, created_at, view_count, like_count, profiles(full_name, avatar_url)"
-    )
-    .eq("status", "published")
-    .order("published_at", { ascending: false })
-    .limit(MAX_BLOG_POSTS)
-
-  const userPromise = supabase.auth.getUser()
-  const newsPromise: Promise<AggregatedNews | null> = getAggregatedNews().catch(() => null)
-
-  const [{ data: blogRows }, { data: { user } }] = await Promise.all([blogPromise, userPromise])
-
-  const postIds = (blogRows ?? []).map((p) => p.id)
-  const commentsPromise = postIds.length
-    ? supabase.from("blog_comments").select("post_id").in("post_id", postIds)
-    : Promise.resolve({ data: [] as { post_id: string }[] })
-
-  const feedPostsFromBlog: FeedPost[] = (blogRows ?? []).map((row: any) => ({
-    id: row.id,
-    title: row.title,
-    slug: row.slug,
-    excerpt: undefined,
-    cover_image_url: row.cover_image_url,
-    published_at: row.published_at,
-    created_at: row.created_at,
-    view_count: row.view_count,
-    like_count: row.like_count,
-    author: row.profiles,
-    isPinned: false,
-    type: "blog",
-  }))
-
+  type BlogRow = { id: string; title: string; slug: string; cover_image_url?: string | null; published_at?: string | null; created_at: string; view_count?: number; like_count?: number; profiles?: { full_name?: string; avatar_url?: string } | null }
+  let blogRows: BlogRow[] = []
+  let user: { id: string } | null = null
   let events: { id: string; title: string; description?: string | null; location?: string | null; starts_at: string; ends_at?: string | null }[] = []
   let featuredBlogs: { id: string; title: string; slug: string; view_count?: number }[] = []
   let announcements: AnnouncementRow[] = []
-  let topics: { slug: string; label: string }[] = []
+  let topics: { slug: string; label: string }[] = DEFAULT_TOPICS
   let isMember = false
   let canAddTopic = false
   let role: string | undefined
   const commentCounts: Record<string, number> = {}
 
+  const newsPromise: Promise<AggregatedNews | null> = getAggregatedNews().catch(() => null)
+
   try {
+    const supabase = await createServerClient()
+
+    const blogPromise = supabase
+      .from("blog_posts")
+      .select(
+        "id, title, slug, cover_image_url, published_at, created_at, view_count, like_count, profiles(full_name, avatar_url)"
+      )
+      .eq("status", "published")
+      .order("published_at", { ascending: false })
+      .limit(MAX_BLOG_POSTS)
+
+    const userPromise = supabase.auth.getUser()
+
+    const [blogRes, userRes] = await Promise.all([blogPromise, userPromise])
+    blogRows = (blogRes.data ?? []) as BlogRow[]
+    user = userRes.data?.user ?? null
+
+    const postIds = blogRows.map((p) => p.id)
+    const commentsPromise = postIds.length
+      ? supabase.from("blog_comments").select("post_id").in("post_id", postIds)
+      : Promise.resolve({ data: [] as { post_id: string }[] })
+
     const [commentsRes, eventsRes, featuredRes, announcementsRes, topicsRes, memberRes, profileRes] = await Promise.all([
       commentsPromise,
       supabase
@@ -118,23 +117,28 @@ export default async function CommunityPage() {
     if (eventsRes.data) events = eventsRes.data
     if (featuredRes.data) featuredBlogs = featuredRes.data
     if (announcementsRes.data) announcements = announcementsRes.data as AnnouncementRow[]
-    if (topicsRes.data) topics = topicsRes.data
+    if (topicsRes.data?.length) topics = topicsRes.data
     if (memberRes.data) isMember = true
     role = (profileRes.data as { role?: string } | null)?.role
     if (role && ["admin", "platform_admin", "mt"].includes(role)) canAddTopic = true
   } catch {
-    // tables may not exist yet
+    // Backend yok veya tablolar hazır değil; varsayılan/boş veri ile sayfa çalışır
   }
 
-  if (topics.length === 0) {
-    topics = [
-      { slug: "duyurular", label: "Duyurular" },
-      { slug: "frontend", label: "Frontend" },
-      { slug: "backend", label: "Backend" },
-      { slug: "kariyer", label: "Kariyer" },
-      { slug: "open-source", label: "Open Source" },
-    ]
-  }
+  const feedPostsFromBlog: FeedPost[] = (blogRows ?? []).map((row: BlogRow) => ({
+    id: row.id,
+    title: row.title,
+    slug: row.slug,
+    excerpt: undefined,
+    cover_image_url: row.cover_image_url,
+    published_at: row.published_at,
+    created_at: row.created_at,
+    view_count: row.view_count,
+    like_count: row.like_count,
+    author: row.profiles,
+    isPinned: false,
+    type: "blog",
+  }))
 
   const announcementPosts: FeedPost[] = announcements.map((a) => {
     const plain = a.body ? String(a.body).replace(/<[^>]*>/g, "").trim() : ""
@@ -203,7 +207,7 @@ export default async function CommunityPage() {
           </p>
           <div className="mt-6 grid gap-4 sm:grid-cols-2">
             <Card className="overflow-hidden border-border bg-card transition-colors hover:bg-muted/20">
-              <div className="aspect-video w-full bg-gradient-to-br from-primary/20 to-primary/5" />
+              <div className="aspect-video w-full from-primary/20 to-primary/5" />
               <CardContent className="p-4">
                 <div className="flex items-center gap-2 text-primary">
                   <FileText className="size-5" />
