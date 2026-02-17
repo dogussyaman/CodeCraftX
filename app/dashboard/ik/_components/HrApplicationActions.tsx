@@ -15,9 +15,19 @@ const STATUS_OPTIONS = [
   { value: "pending", label: "Bekliyor" },
   { value: "reviewed", label: "İncelendi" },
   { value: "interview", label: "Görüşme" },
+  { value: "offered", label: "Teklif" },
   { value: "rejected", label: "Reddedildi" },
   { value: "accepted", label: "Mülakat Aşamasında" },
 ]
+
+/** DB'den gelen Türkçe status'u dropdown için İngilizceye çevirir (migration öncesi/rollback sonrası uyum) */
+const STATUS_DB_TO_UI: Record<string, string> = {
+  yeni: "pending",
+  değerlendiriliyor: "reviewed",
+  randevu: "interview",
+  teklif: "offered",
+  red: "rejected",
+}
 
 interface HrApplicationActionsProps {
   applicationId: string
@@ -34,7 +44,7 @@ export function HrApplicationActions({
 }: HrApplicationActionsProps) {
   const supabaseRef = useRef(createClient())
   const supabase = supabaseRef.current
-  const [status, setStatus] = useState<string>(initialStatus || "pending")
+  const [status, setStatus] = useState<string>(STATUS_DB_TO_UI[initialStatus] ?? (initialStatus || "pending"))
   const [loading, setLoading] = useState(false)
   const [feedbackOpen, setFeedbackOpen] = useState(false)
   const [interviewModalOpen, setInterviewModalOpen] = useState(false)
@@ -46,6 +56,10 @@ export function HrApplicationActions({
   const [proposedTimeSlotsStr, setProposedTimeSlotsStr] = useState("")
   const [feedbackTemplates, setFeedbackTemplates] = useState<{ id: string; title: string; body: string; type: string }[]>([])
   const [selectedTemplateId, setSelectedTemplateId] = useState<string>("__none__")
+
+  useEffect(() => {
+    setStatus(STATUS_DB_TO_UI[initialStatus] ?? (initialStatus || "pending"))
+  }, [initialStatus])
 
   useEffect(() => {
     if (!feedbackOpen) return
@@ -265,6 +279,10 @@ export function HrApplicationActions({
         interview: {
           title: "Görüşme talebi aldınız",
           body: `${jobTitle} pozisyonu için görüşme talebi aldınız. Detaylar için başvurularınız sayfasını kontrol edin.`,
+        },
+        offered: {
+          title: "Teklif aldınız",
+          body: `${jobTitle} pozisyonu için size teklif sunuldu. Detaylar için başvurularınız sayfasını kontrol edin.`,
         },
         rejected: {
           title: "Başvurunuz reddedildi",

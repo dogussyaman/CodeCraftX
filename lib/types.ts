@@ -25,7 +25,7 @@ export type CVStatus = "pending" | "processed" | "failed"
 
 export type MatchStatus = "suggested" | "viewed" | "contacted" | "rejected" | "hired"
 
-export type ApplicationStatus = "pending" | "reviewed" | "interview" | "rejected" | "accepted"
+export type ApplicationStatus = "pending" | "reviewed" | "interview" | "offered" | "rejected" | "accepted"
 
 export type ContentStatus = "draft" | "published" | "archived"
 

@@ -9,7 +9,7 @@ import { Logo } from "@/components/logo";
 import { NAV_ITEMS, springTransition, springFast } from "./constants";
 
 const btnClass =
-  "navbar-btn w-full justify-center gap-2 h-11 min-h-[44px] rounded-lg transition-transform duration-200 hover:scale-[1.02] active:scale-[0.98]";
+  "navbar-btn w-full justify-center gap-2 h-11 min-h-[44px] rounded-lg transition-[border-color,background-color,color] duration-200";
 
 type Props = {
   isOpen: boolean;
@@ -19,6 +19,7 @@ type Props = {
   user: unknown;
   getDashboardLink: () => string;
   onLogout: () => void;
+  isLoggingOut?: boolean;
 };
 
 export function MobileMenuPanel({
@@ -29,6 +30,7 @@ export function MobileMenuPanel({
   user,
   getDashboardLink,
   onLogout,
+  isLoggingOut = false,
 }: Props) {
   return (
     <AnimatePresence>
@@ -115,10 +117,11 @@ export function MobileMenuPanel({
                       <Button
                         variant="outline"
                         onClick={() => { onLogout(); onClose(); }}
+                        disabled={isLoggingOut}
                         className={`${btnClass} text-destructive hover:bg-destructive/10 hover:border-destructive/50`}
                       >
                         <LogOut className="size-4" />
-                        Çıkış Yap
+                        {isLoggingOut ? "Çıkılıyor…" : "Çıkış Yap"}
                       </Button>
                     </>
                   ) : (

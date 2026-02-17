@@ -6,7 +6,7 @@ import { LogOut, LayoutDashboard } from "lucide-react";
 import { ThemeToggle } from "@/components/theme-toggle";
 
 const btnClass =
-  "navbar-btn text-[15px] font-medium rounded-lg gap-2 transition-transform duration-200 hover:scale-[1.02] active:scale-[0.98]";
+  "navbar-btn text-[15px] font-medium rounded-lg gap-2 transition-[border-color,background-color,color] duration-200";
 
 type Props = {
   loading: boolean;

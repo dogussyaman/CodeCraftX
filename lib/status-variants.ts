@@ -17,19 +17,26 @@ export interface StatusOption {
   variant: BadgeVariant
 }
 
-/** Başvuru durumları: pending=warning, reviewed=primary, interview=accent, rejected=destructive, accepted=success */
+/** Başvuru durumları (İngilizce + Türkçe DB değerleri desteklenir) */
 export const APPLICATION_STATUS_MAP: Record<string, StatusOption> = {
   pending: { label: "Bekliyor", variant: "warning" },
   reviewed: { label: "İncelendi", variant: "default" },
   interview: { label: "Görüşme", variant: "accent" },
+  offered: { label: "Teklif", variant: "success" },
   rejected: { label: "Reddedildi", variant: "destructive" },
   accepted: { label: "Mülakat Aşamasında", variant: "success" },
+  yeni: { label: "Bekliyor", variant: "warning" },
+  değerlendiriliyor: { label: "İncelendi", variant: "default" },
+  randevu: { label: "Görüşme", variant: "accent" },
+  teklif: { label: "Teklif", variant: "success" },
+  red: { label: "Reddedildi", variant: "destructive" },
 } as const
 
-/** Geliştirici başvuru sayfası için aynı map, "İnceleniyor" etiketi */
+/** Geliştirici başvuru sayfası için aynı map, bekleyen durum "İnceleniyor" olarak gösterilir */
 export const APPLICATION_STATUS_MAP_DEV = {
   ...APPLICATION_STATUS_MAP,
   pending: { label: "İnceleniyor", variant: "warning" as BadgeVariant },
+  yeni: { label: "İnceleniyor", variant: "warning" as BadgeVariant },
 } as const
 
 /** Rol etiketleri: developer=primary, hr=success, admin=accent */
