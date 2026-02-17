@@ -19,7 +19,7 @@ export function Logo({ className, showText = true, href = "/" }: LogoProps) {
         >
             {/* Icon – logo ile yazı oranı uyumlu */}
             <Image
-                src="/logo.png"
+                src="/logo2.png"
                 alt="CodeCraftX logo"
                 width={28}
                 height={28}

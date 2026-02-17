@@ -1,5 +1,6 @@
 "use client"
 
+import { useEffect, useState } from "react"
 import Image from "next/image"
 import Link from "next/link"
 import { useTheme } from "next-themes"
@@ -46,7 +47,12 @@ const HERO_STACK = [
 ] as const
 export function HeroSection() {
   const { resolvedTheme } = useTheme()
-  const isDark = resolvedTheme === "dark" // undefined (SSR) → light fallback
+  const [mounted, setMounted] = useState(false)
+
+  useEffect(() => setMounted(true), [])
+
+  // Tema sadece mount sonrası kullanılır; SSR ile ilk client render aynı src ile eşleşir (hydration hatası önlenir)
+  const isDark = mounted && resolvedTheme === "dark"
 
   return (
     <section className="relative overflow-hidden pb-16 pt-24 md:pb-24 md:pt-32">

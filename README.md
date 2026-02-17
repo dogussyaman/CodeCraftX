@@ -1,5 +1,5 @@
 <p align="center">
-  <img src="public/logo.png" alt="CodeCraftX" width="96" height="96" />
+  <img src="public/logo2.png" alt="CodeCraftX" width="96" height="96" />
 </p>
 
 <h1 align="center">CodeCraftX</h1>
@@ -9,7 +9,7 @@
 </p>
 
 <p align="center">
-  <img src="public/hero.png" alt="CodeCraftX ana sayfa" width="100%" />
+  <img src="public/ss1.png" alt="CodeCraftX ana sayfa" width="100%" />
 </p>
 
 <p align="center">
