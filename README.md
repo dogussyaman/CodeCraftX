@@ -1,5 +1,5 @@
 <p align="center">
-  <img src="public/logo2.png" alt="CodeCraftX" width="96" height="96" />
+  <img src="public/CCLOGO.png" alt="CodeCraftX" width="96" height="96" />
 </p>
 
 <h1 align="center">CodeCraftX</h1>

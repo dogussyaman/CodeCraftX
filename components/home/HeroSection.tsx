@@ -29,20 +29,20 @@ const HERO_STACK = [
   {
     id: 0,
     z: "z-10",
-    rest: { x: "-18%", y: 20, rotate: -10, scale: 0.92, opacity: 0.92 },
-    open: { x: "-28%", y: 12, rotate: -11, scale: 0.95, opacity: 0.96 },
+    rest: { x: "-18%", y: 20, rotate: -9, scale: 1, opacity: 0.94 },
+    open: { x: "-26%", y: 12, rotate: -10, scale: 1, opacity: 0.98 },
   },
   {
     id: 1,
     z: "z-20",
-    rest: { x: "0%", y: 34, rotate: -10, scale: 0.98, opacity: 1 },
-    open: { x: "0%", y: 26, rotate: -10, scale: 1, opacity: 1 },
+    rest: { x: "0%", y: 34, rotate: -8, scale: 1, opacity: 1 },
+    open: { x: "0%", y: 26, rotate: -8, scale: 1, opacity: 1 },
   },
   {
     id: 2,
     z: "z-30",
-    rest: { x: "18%", y: 12, rotate: -10, scale: 0.92, opacity: 0.92 },
-    open: { x: "28%", y: 4, rotate: -9, scale: 0.95, opacity: 0.96 },
+    rest: { x: "18%", y: 12, rotate: -9, scale: 1, opacity: 0.94 },
+    open: { x: "26%", y: 4, rotate: -8, scale: 1, opacity: 0.98 },
   },
 ] as const
 export function HeroSection() {
@@ -150,15 +150,15 @@ export function HeroSection() {
 
           <motion.div
             initial={{ opacity: 0, y: 30, rotate: -5 }}
-            animate={{ opacity: 1, y: 0, rotate: -7 }}
+            animate={{ opacity: 1, y: 0, rotate: -4 }}
             transition={{ duration: 0.8, delay: 0.35 }}
             className="relative mt-14 origin-top"
           >
-            <div className="absolute -inset-6 bg-accent-500/28 blur-2xl dark:bg-accent-400/35" />
+            <div className="pointer-events-none absolute -inset-6 -z-10 bg-accent-500/28 blur-2xl dark:bg-accent-400/35" />
             <motion.div
               initial="rest"
               whileHover="open"
-              className="relative mx-auto h-[220px] w-full max-w-5xl sm:h-[300px] md:h-[380px] lg:h-[460px]"
+              className="relative mx-auto h-[230px] w-full max-w-5xl transform-gpu sm:h-[310px] md:h-[400px] lg:h-[480px]"
             >
               {HERO_STACK.map((layer) => {
                 const sources = STACK_SOURCES[layer.id]
@@ -168,18 +168,26 @@ export function HeroSection() {
                     key={layer.id}
                     variants={{ rest: layer.rest, open: layer.open }}
                     transition={{ type: "spring", stiffness: 180, damping: 20 }}
-                    className={`absolute inset-x-0 mx-auto h-[190px] w-[92%] sm:h-[260px] sm:w-[88%] md:h-[330px] lg:h-[410px] lg:w-[82%] ${layer.z}`}
+                    className={`absolute inset-x-0 mx-auto h-[190px] w-[92%] transform-gpu sm:h-[260px] sm:w-[88%] md:h-[340px] lg:h-[430px] lg:w-[82%] ${layer.z}`}
                   >
-                    <div className="relative h-full overflow-hidden rounded-2xl border border-accent-500/10 bg-white/70 p-0.5 shadow-[0_24px_64px_rgba(124,45,18,0.18)] backdrop-blur dark:border-white/5 dark:bg-zinc-950/70 dark:shadow-[0_24px_64px_rgba(0,0,0,0.5)]">
+                    <div
+                      style={{ transform: "translateZ(0)", willChange: "transform" }}
+                      className="relative h-full overflow-hidden rounded-2xl border border-accent-500/10 bg-white/80 p-0.5 shadow-[0_24px_64px_rgba(124,45,18,0.18)] dark:border-white/5 dark:bg-zinc-950/80 dark:shadow-[0_24px_64px_rgba(0,0,0,0.5)]"
+                    >
                       <Image
                         src={src}
                         alt="CodeCraftX dashboard görünümü"
                         width={1920}
                         height={1080}
                         priority={layer.id === 2}
-                        quality={92}
-                        sizes="(max-width: 640px) 92vw, (max-width: 1024px) 88vw, 82vw"
-                        className="h-full w-full rounded-[10px] object-cover"
+                        quality={100}
+                        sizes="(max-width: 640px) 100vw, (max-width: 1024px) 95vw, 85vw"
+                        className="
+    h-full w-full
+    object-contain
+    rounded-[10px]
+    [image-rendering:-webkit-optimize-contrast]
+  "
                       />
                     </div>
                   </motion.div>

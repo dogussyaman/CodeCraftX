@@ -6,6 +6,7 @@ import { PricingSection } from "@/components/home/PricingSection"
 import { IsverenHeroSection } from "@/components/home/IsverenHeroSection"
 import { IsverenBenefits } from "./_components/IsverenBenefits"
 import { IsverenHowItWorks } from "./_components/IsverenHowItWorks"
+import { IsverenLiveSupportAndMatching } from "./_components/IsverenLiveSupportAndMatching"
 import { IsverenFeatures } from "./_components/IsverenFeatures"
 import { IsverenStats } from "./_components/IsverenStats"
 import { IsverenCompanyRequest } from "./_components/IsverenCompanyRequest"
@@ -27,6 +28,8 @@ export default function IsverenPage() {
       <IsverenBenefits />
       <Separator className="mx-auto max-w-6xl border-accent-500/20" />
       <IsverenHowItWorks />
+      <Separator className="mx-auto max-w-6xl border-accent-500/20" />
+      <IsverenLiveSupportAndMatching />
       <Separator className="mx-auto max-w-6xl border-accent-500/20" />
       <IsverenFeatures />
       <Separator className="mx-auto max-w-6xl border-accent-500/20" />
