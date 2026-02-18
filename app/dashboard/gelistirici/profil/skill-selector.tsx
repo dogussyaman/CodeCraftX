@@ -1,6 +1,6 @@
 "use client"
 
-import { useState, useEffect } from "react"
+import { useState, useEffect, useMemo } from "react"
 import { createClient } from "@/lib/supabase/client"
 import { Badge } from "@/components/ui/badge"
 import { Button } from "@/components/ui/button"
@@ -34,17 +34,23 @@ export function SkillSelector({ userId, initialSkills }: SkillSelectorProps) {
     const [availableSkills, setAvailableSkills] = useState<Skill[]>([])
     const [userSkills, setUserSkills] = useState<UserSkill[]>(initialSkills)
     const [loading, setLoading] = useState(false)
+    const [search, setSearch] = useState("")
     const router = useRouter()
     const supabase = createClient()
 
-    // Tüm yetenekleri getir
     useEffect(() => {
         async function fetchSkills() {
-            const { data, error } = await supabase.from("skills").select("*").order("name")
+            const { data } = await supabase.from("skills").select("*").order("name")
             if (data) setAvailableSkills(data)
         }
         fetchSkills()
     }, [])
+
+    const exactMatchExists = useMemo(() => {
+        const q = search.trim().toLowerCase()
+        if (!q) return true
+        return availableSkills.some((s) => s.name.toLowerCase() === q)
+    }, [search, availableSkills])
 
     async function addSkill(skill: Skill) {
         if (userSkills.some(us => us.skill_id === skill.id)) {
@@ -76,12 +82,55 @@ export function SkillSelector({ userId, initialSkills }: SkillSelectorProps) {
                 toast.success(`${skill.name} eklendi`)
                 router.refresh()
             }
-        } catch (error: any) {
+        } catch (error: unknown) {
             console.error("Skill add error:", error)
             toast.error("Yetenek eklenirken hata oluştu")
         } finally {
             setLoading(false)
             setOpen(false)
+        }
+    }
+
+    async function createAndAddSkill(name: string) {
+        const trimmed = name.trim()
+        if (!trimmed) return
+
+        if (userSkills.some(us => us.skills?.name?.toLowerCase() === trimmed.toLowerCase())) {
+            toast.info("Bu yetenek zaten ekli")
+            return
+        }
+
+        try {
+            setLoading(true)
+            const res = await fetch("/api/profile/apply-cv-skills", {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({ skill_names: [trimmed] }),
+            })
+            const data = await res.json().catch(() => ({}))
+
+            if (res.ok && data.count > 0) {
+                toast.success(`${trimmed} eklendi`)
+
+                const { data: refreshed } = await supabase
+                    .from("developer_skills")
+                    .select("*, skills:skill_id (name, category)")
+                    .eq("developer_id", userId)
+                if (refreshed) setUserSkills(refreshed)
+
+                const { data: allSkills } = await supabase.from("skills").select("*").order("name")
+                if (allSkills) setAvailableSkills(allSkills)
+
+                router.refresh()
+            } else {
+                toast.error(data.error || "Yetenek eklenemedi")
+            }
+        } catch {
+            toast.error("Yetenek eklenirken hata oluştu")
+        } finally {
+            setLoading(false)
+            setOpen(false)
+            setSearch("")
         }
     }
 
@@ -133,11 +182,35 @@ export function SkillSelector({ userId, initialSkills }: SkillSelectorProps) {
                     </Button>
                 </PopoverTrigger>
                 <PopoverContent className="w-[400px] p-0">
-                    <Command>
-                        <CommandInput placeholder="Yetenek ara..." />
+                    <Command shouldFilter>
+                        <CommandInput placeholder="Yetenek ara veya yeni yaz..." value={search} onValueChange={setSearch} />
                         <CommandList>
-                            <CommandEmpty>Yetenek bulunamadı.</CommandEmpty>
+                            <CommandEmpty>
+                                {search.trim() ? (
+                                    <button
+                                        type="button"
+                                        className="w-full flex items-center gap-2 px-2 py-2 text-sm cursor-pointer hover:bg-accent rounded-sm"
+                                        onClick={() => createAndAddSkill(search)}
+                                        disabled={loading}
+                                    >
+                                        <Plus className="h-4 w-4 text-primary" />
+                                        <span>&quot;{search.trim()}&quot; yeni yetenek olarak ekle</span>
+                                    </button>
+                                ) : (
+                                    "Yetenek bulunamadı."
+                                )}
+                            </CommandEmpty>
                             <CommandGroup>
+                                {!exactMatchExists && search.trim() && (
+                                    <CommandItem
+                                        value={`__create__${search.trim()}`}
+                                        onSelect={() => createAndAddSkill(search)}
+                                        disabled={loading}
+                                    >
+                                        <Plus className="mr-2 h-4 w-4 text-primary" />
+                                        &quot;{search.trim()}&quot; yeni yetenek olarak ekle
+                                    </CommandItem>
+                                )}
                                 {availableSkills.map((skill) => {
                                     const isSelected = userSkills.some(us => us.skill_id === skill.id)
                                     return (

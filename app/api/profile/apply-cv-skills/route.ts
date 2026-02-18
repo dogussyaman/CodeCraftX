@@ -1,12 +1,14 @@
 import { NextRequest, NextResponse } from "next/server"
 import { createClient } from "@/lib/supabase/server"
+import { createAdminClient } from "@/lib/supabase/admin"
 
 type Body = { cv_id?: string; skill_names?: string[] }
 
 /**
  * POST /api/profile/apply-cv-skills
  * Body: { cv_id: string } or { skill_names: string[] }
- * Adds suggested skills from CV to developer_skills (and creates skills if needed). User must own the CV if cv_id is used.
+ * Adds suggested skills from CV to developer_skills.
+ * Uses admin client for skill creation (bypasses RLS) to support arbitrary skill names.
  */
 export async function POST(req: NextRequest) {
   try {
@@ -14,6 +16,8 @@ export async function POST(req: NextRequest) {
     const { cv_id, skill_names: rawNames } = body
 
     const supabase = await createClient()
+    const admin = createAdminClient()
+
     const {
       data: { user },
     } = await supabase.auth.getUser()
@@ -67,38 +71,74 @@ export async function POST(req: NextRequest) {
     }
 
     const added: string[] = []
+    const failed: string[] = []
+
     for (const name of skillNames) {
-      let { data: skill } = await supabase
-        .from("skills")
-        .select("id")
-        .eq("name", name)
-        .single()
-      if (!skill) {
-        const { data: newSkill } = await supabase
+      try {
+        // Case-insensitive arama: "SASS" vs "Sass" gibi farklılıkları yakala
+        let { data: skill } = await admin
           .from("skills")
-          .insert({ name, category: "other" })
-          .select("id")
-          .single()
-        skill = newSkill
-      }
-      if (skill) {
-        const { error: upsertErr } = await supabase
+          .select("id, name")
+          .ilike("name", name)
+          .limit(1)
+          .maybeSingle()
+
+        if (!skill) {
+          const { data: newSkill, error: insertErr } = await admin
+            .from("skills")
+            .insert({ name, category: "other" })
+            .select("id, name")
+            .single()
+          if (insertErr) {
+            console.error("apply-cv-skills: failed to create skill", { name, error: insertErr })
+            failed.push(name)
+            continue
+          }
+          skill = newSkill
+        }
+
+        if (!skill) {
+          failed.push(name)
+          continue
+        }
+
+        const skillId = (skill as { id: string }).id
+
+        const { data: existing } = await admin
           .from("developer_skills")
-          .upsert(
-            {
-              developer_id: user.id,
-              skill_id: (skill as { id: string }).id,
-              source: "cv",
-            },
-            { onConflict: "developer_id,skill_id" }
-          )
-        if (!upsertErr) added.push(name)
+          .select("id")
+          .eq("developer_id", user.id)
+          .eq("skill_id", skillId)
+          .maybeSingle()
+
+        if (existing) {
+          added.push((skill as { name: string }).name)
+          continue
+        }
+
+        const { error: insertErr2 } = await admin
+          .from("developer_skills")
+          .insert({
+            developer_id: user.id,
+            skill_id: skillId,
+            source: "cv",
+          })
+        if (insertErr2) {
+          console.error("apply-cv-skills: failed to insert developer_skill", { name, error: insertErr2 })
+          failed.push(name)
+        } else {
+          added.push((skill as { name: string }).name)
+        }
+      } catch (err) {
+        console.error("apply-cv-skills: unexpected error for skill", { name, err })
+        failed.push(name)
       }
     }
 
     return NextResponse.json({
       success: true,
       added,
+      failed,
       count: added.length,
     })
   } catch (err: unknown) {

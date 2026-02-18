@@ -64,8 +64,43 @@ export default function UploadCVPage() {
     setPhase("uploading")
     setError(null)
 
+    const supabase = createClient()
+    let uploadedFilePath: string | null = null
+    let createdCvId: string | null = null
+
+    const cleanupOnError = async () => {
+      try {
+        // Storage'daki dosyayı sil
+        if (uploadedFilePath) {
+          const path =
+            uploadedFilePath.startsWith("http") && uploadedFilePath.includes("/cvs/")
+              ? uploadedFilePath.split("/cvs/")[1] ?? ""
+              : uploadedFilePath
+
+          if (path.trim().length > 0) {
+            const { error: storageError } = await supabase.storage
+              .from("cvs")
+              .remove([path.trim()])
+
+            if (storageError) {
+              console.warn("CV upload cleanup storage error:", storageError)
+            }
+          }
+        }
+
+        // Veritabanındaki CV kaydını sil
+        if (createdCvId) {
+          const { error: dbError } = await supabase.from("cvs").delete().eq("id", createdCvId)
+          if (dbError) {
+            console.warn("CV upload cleanup DB error:", dbError)
+          }
+        }
+      } catch (cleanupErr) {
+        console.error("CV upload cleanup unexpected error:", cleanupErr)
+      }
+    }
+
     try {
-      const supabase = createClient()
       const {
         data: { user },
       } = await supabase.auth.getUser()
@@ -75,6 +110,7 @@ export default function UploadCVPage() {
       const fileExt = file.name.split(".").pop()
       const fileName = `${user.id}/${Date.now()}.${fileExt}`
       const filePath = fileName
+      uploadedFilePath = filePath
 
       const { error: uploadError } = await supabase.storage
         .from("cvs")
@@ -101,7 +137,11 @@ export default function UploadCVPage() {
         .select()
         .single()
 
-      if (dbError) throw dbError
+      if (dbError || !cvData) {
+        throw dbError || new Error("CV kaydı oluşturulamadı")
+      }
+
+      createdCvId = cvData.id
 
       setCvId(cvData.id)
       setPhase("analyzing")
@@ -115,12 +155,14 @@ export default function UploadCVPage() {
       const data = await res.json().catch(() => ({}))
 
       if (!res.ok) {
+        await cleanupOnError()
         setError(data.error || "Analiz tamamlanamadı")
         setPhase("error")
         return
       }
 
       if (data.status === "failed") {
+        await cleanupOnError()
         setError("CV analizi başarısız oldu.")
         setPhase("error")
         return
@@ -133,6 +175,7 @@ export default function UploadCVPage() {
       setPhase("result")
       toast.success("CV analiz edildi. Önerileri profilize ekleyebilirsiniz.")
     } catch (err) {
+      await cleanupOnError()
       setError(err instanceof Error ? err.message : "Yükleme sırasında bir hata oluştu")
       setPhase("error")
     }
