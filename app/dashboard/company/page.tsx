@@ -2,6 +2,7 @@ import type { ReactNode } from "react"
 import { createClient } from "@/lib/supabase/server"
 import { SubscriptionCard } from "@/components/company/SubscriptionCard"
 import type { SubscriptionStatus } from "@/lib/types"
+import { getPlanDisplayName } from "@/lib/billing/plans"
 import Link from "next/link"
 import {
   Card,
@@ -219,11 +220,7 @@ export default async function CompanyDashboardPage() {
                     : "—"}
                 </p>
                 <p className="text-xs text-muted-foreground mt-1">
-                  {company?.plan === "premium"
-                    ? "Premium plan"
-                    : company?.plan === "orta"
-                      ? "Orta plan"
-                      : "Free plan"}
+                  {company?.plan ? `${getPlanDisplayName(company.plan)} plan` : "—"}
                 </p>
               </div>
               <div

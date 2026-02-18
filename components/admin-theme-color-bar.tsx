@@ -1,5 +1,6 @@
 "use client"
 
+import { useState } from "react"
 import { usePathname } from "next/navigation"
 import { useAuth } from "@/hooks/use-auth"
 import { useThemeAccent, type ThemeAccent } from "@/components/theme-accent-provider"
@@ -19,6 +20,23 @@ export function AdminThemeColorBar() {
   const pathname = usePathname()
   const { user, role, loading } = useAuth()
   const { accent, setAccent } = useThemeAccent()
+  const [saving, setSaving] = useState(false)
+  const [saved, setSaved] = useState(false)
+
+  const setAsSiteDefault = async () => {
+    setSaving(true)
+    setSaved(false)
+    try {
+      const res = await fetch("/api/site-settings", {
+        method: "PATCH",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ defaultThemeAccent: accent }),
+      })
+      if (res.ok) setSaved(true)
+    } finally {
+      setSaving(false)
+    }
+  }
 
   const isAdmin = role !== null && ADMIN_ROLES.includes(role as (typeof ADMIN_ROLES)[number])
   const isHome = pathname === "/" || pathname === "" || pathname?.replace(/\/$/, "") === ""
@@ -40,12 +58,7 @@ export function AdminThemeColorBar() {
           <button
             key={opt.value}
             type="button"
-            onClick={() => {
-              {
-                console.log("[ThemeAccent] Bar’da renk tıklandı:", opt.value, opt.label)
-              }
-              setAccent(opt.value)
-            }}
+            onClick={() => setAccent(opt.value)}
             className={cn(
               "flex size-9 shrink-0 items-center justify-center rounded-full transition-all hover:scale-110 focus:outline-none focus:ring-2 focus:ring-foreground/20",
               opt.bgClass,
@@ -59,6 +72,14 @@ export function AdminThemeColorBar() {
           />
         ))}
       </div>
+      <button
+        type="button"
+        onClick={setAsSiteDefault}
+        disabled={saving}
+        className="ml-1 rounded-full bg-muted px-3 py-1.5 text-xs font-medium text-muted-foreground hover:bg-muted/80 hover:text-foreground disabled:opacity-50"
+      >
+        {saving ? "..." : saved ? "Kaydedildi" : "Varsayılanı bu yap"}
+      </button>
     </div>
   )
 }

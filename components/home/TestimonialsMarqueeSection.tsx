@@ -116,11 +116,15 @@ export function TestimonialsMarqueeSection() {
         </p>
       </div>
 
-      {/* Marquee: tam genişlik, container yok — sonsuz band */}
-      <div className="relative z-10 w-full">
-        <div className="pointer-events-none absolute inset-y-0 left-0 z-10 w-24 from-background to-transparent" />
-        <div className="pointer-events-none absolute inset-y-0 right-0 z-10 w-24 from-background to-transparent" />
-        <div className="w-full space-y-6">
+      {/* Marquee: kenarlar mask ile yumuşak fade/blur geçişi */}
+      <div className="relative z-10 w-full overflow-hidden">
+        <div
+          className="w-full space-y-6 [mask-image:linear-gradient(to_right,transparent_0,black_80px,black_calc(100%-80px),transparent_100%)] [-webkit-mask-image:linear-gradient(to_right,transparent_0,black_80px,black_calc(100%-80px),transparent_100%)]"
+          style={{
+            maskImage: "linear-gradient(to right, transparent 0, black 80px, black calc(100% - 80px), transparent 100%)",
+            WebkitMaskImage: "linear-gradient(to right, transparent 0, black 80px, black calc(100% - 80px), transparent 100%)",
+          }}
+        >
           <Marquee pauseOnHover repeat={6} className="w-full [--duration:45s]">
             {firstRow.map((testimonial) => (
               <TestimonialCard key={testimonial.name} {...testimonial} />

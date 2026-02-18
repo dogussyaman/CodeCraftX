@@ -59,18 +59,18 @@
 }
 
 .dark {
-  --brand-ember: oklch(0.72 0.12 55);
-  /* Dark mod: turuncu daha yumuşak (düşük doygunluk, koyu tonlar) */
-  --theme-accent-50: oklch(0.22 0.02 55);
-  --theme-accent-100: oklch(0.28 0.04 55);
-  --theme-accent-200: oklch(0.38 0.06 55);
-  --theme-accent-300: oklch(0.52 0.10 55);
-  --theme-accent-400: oklch(0.62 0.12 55);
-  --theme-accent-500: oklch(0.68 0.14 55);
-  --theme-accent-600: oklch(0.72 0.14 55);
-  --theme-accent-700: oklch(0.65 0.12 55);
-  --theme-accent-800: oklch(0.55 0.10 55);
-  --theme-accent-900: oklch(0.42 0.06 55);
+  --brand-ember: #fd9846;
+  /* Dark mod: turuncu light ile aynı ana tonlar (500–900); sadece açık tonlar koyu arka plana uyumlu */
+  --theme-accent-50: #2d1a0a;
+  --theme-accent-100: #4a2610;
+  --theme-accent-200: #6b3810;
+  --theme-accent-300: #c96b1f;
+  --theme-accent-400: #e8822e;
+  --theme-accent-500: #fd9846;
+  --theme-accent-600: #fda55c;
+  --theme-accent-700: #c96b1f;
+  --theme-accent-800: #9a5118;
+  --theme-accent-900: #6b3810;
   --background: oklch(0.13 0.015 265);
   --foreground: oklch(0.965 0.005 247);
   --card: oklch(0.23 0.02 265);
@@ -142,6 +142,38 @@
 }
 [data-segment="developer"] {
   /* Varsayılan primary mavi – zaten :root/.dark ile tanımlı */
+}
+
+/* Auth sayfaları: tema accent’ten bağımsız, sabit renk dili (login, register, şifre vb.) */
+.auth-pages[data-auth-page],
+[data-auth-page].auth-pages {
+  --theme-accent-50: #eff6ff;
+  --theme-accent-100: #dbeafe;
+  --theme-accent-200: #bfdbfe;
+  --theme-accent-300: #93c5fd;
+  --theme-accent-400: #60a5fa;
+  --theme-accent-500: #3b82f6;
+  --theme-accent-600: #2563eb;
+  --theme-accent-700: #1d4ed8;
+  --theme-accent-800: #1e40af;
+  --theme-accent-900: #1e3a8a;
+  --primary: oklch(0.488 0.243 264);
+  --ring: oklch(0.488 0.243 264);
+}
+.dark .auth-pages[data-auth-page],
+.dark [data-auth-page].auth-pages {
+  --theme-accent-50: oklch(0.22 0.02 264);
+  --theme-accent-100: oklch(0.28 0.04 264);
+  --theme-accent-200: oklch(0.38 0.06 264);
+  --theme-accent-300: oklch(0.52 0.10 264);
+  --theme-accent-400: oklch(0.62 0.12 264);
+  --theme-accent-500: oklch(0.65 0.2 264);
+  --theme-accent-600: oklch(0.55 0.22 264);
+  --theme-accent-700: oklch(0.55 0.22 264);
+  --theme-accent-800: oklch(0.5 0.2 264);
+  --theme-accent-900: oklch(0.42 0.15 264);
+  --primary: oklch(0.55 0.22 265);
+  --ring: oklch(0.55 0.22 265);
 }
 
 @theme inline {

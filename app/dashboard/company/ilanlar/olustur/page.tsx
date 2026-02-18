@@ -5,6 +5,7 @@ import { useState, useEffect } from "react"
 import { useRouter } from "next/navigation"
 import { createClient } from "@/lib/supabase/client"
 import type { CompanyPlan } from "@/lib/types"
+import { getPlanDisplayName } from "@/lib/billing/plans"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
@@ -158,7 +159,7 @@ export default function CompanyCreateJobPage() {
       }
       if (atJobLimit)
         throw new Error(
-          `İlan limitine ulaştınız (${companyPlan === "free" ? "Free" : "Orta"} plan: ${planLimit} ilan). Plan yükseltmek için fiyatlandırma sayfamızı inceleyin.`
+          `İlan limitine ulaştınız (${getPlanDisplayName(companyPlan)} plan: ${planLimit} ilan). Plan yükseltmek için fiyatlandırma sayfamızı inceleyin.`
         )
 
       const toJsonb = (arr: string[]) => (arr.filter((s) => s.trim()).length ? arr.filter((s) => s.trim()) : [])
@@ -273,8 +274,8 @@ export default function CompanyCreateJobPage() {
             <div>
               <p className="font-semibold">İlan limitine ulaştınız</p>
               <p className="mt-1 text-muted-foreground dark:text-amber-200/80">
-                {companyPlan === "free" && "Free plan: en fazla 5 aktif ilan."}
-                {companyPlan === "orta" && "Orta plan: en fazla 100 aktif ilan."}
+                {companyPlan === "free" && "Basic plan: en fazla 5 aktif ilan."}
+                {companyPlan === "orta" && "Pro plan: en fazla 100 aktif ilan."}
                 {" "}
                 <Link href="/#ucretlendirme" className="font-medium text-primary underline underline-offset-2 hover:no-underline">
                   Fiyatlandırma

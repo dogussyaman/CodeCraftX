@@ -1,7 +1,6 @@
 "use client"
 
 import { AnimatedCard } from "@/components/animated-card"
-import { Card, CardContent } from "@/components/ui/card"
 import { motion } from "motion/react"
 import { BarChart3, Brain, Shield, Sparkles, Target, Users, Zap } from "lucide-react"
 
@@ -63,8 +62,8 @@ export function FeaturesSection() {
           viewport={{ once: true }}
           className="mt-6 text-4xl font-bold text-foreground md:text-5xl"
         >
-          Platformu modern yapan
-          <span className="block bg-gradient-to-r from-accent-500 to-accent-400 bg-clip-text text-transparent">
+          Platformu modern yapan{" "}
+          <span className="inline-block whitespace-nowrap bg-gradient-to-r from-accent-500 to-accent-400 bg-clip-text text-transparent">
             çekirdek yetenekler
           </span>
         </motion.h2>
@@ -82,17 +81,15 @@ export function FeaturesSection() {
       <div className="mx-auto grid max-w-6xl grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-3">
         {features.map((feature, idx) => (
           <AnimatedCard key={feature.title} delay={idx * 0.08}>
-            <Card className="group h-full overflow-hidden border border-accent-500/15 bg-white/70 backdrop-blur-xl transition-all duration-300 hover:-translate-y-1 hover:border-accent-500/40 hover:shadow-xl hover:shadow-accent-500/10 dark:bg-zinc-900/60">
-              <CardContent className="p-6">
-                <div className={`mb-4 flex size-14 items-center justify-center rounded-xl bg-gradient-to-br ${feature.gradient}`}>
-                  <feature.icon className="size-7 text-accent-600 dark:text-accent-300" />
-                </div>
-                <h3 className="mb-3 text-xl font-semibold text-foreground transition-colors group-hover:text-accent-600 dark:group-hover:text-accent-300">
-                  {feature.title}
-                </h3>
-                <p className="leading-relaxed text-muted-foreground">{feature.description}</p>
-              </CardContent>
-            </Card>
+            <div className="group h-full overflow-hidden rounded-xl border border-accent-500/15 bg-white/70 p-6 backdrop-blur-xl transition-all duration-300 hover:-translate-y-1 hover:border-accent-500/40 hover:shadow-xl hover:shadow-accent-500/10 dark:bg-zinc-900/60">
+              <div className={`mb-4 flex size-14 items-center justify-center rounded-xl bg-gradient-to-br ${feature.gradient}`}>
+                <feature.icon className="size-7 text-accent-600 dark:text-accent-300" />
+              </div>
+              <h3 className="mb-3 text-xl font-semibold text-foreground transition-colors group-hover:text-accent-600 dark:group-hover:text-accent-300">
+                {feature.title}
+              </h3>
+              <p className="leading-relaxed text-muted-foreground">{feature.description}</p>
+            </div>
           </AnimatedCard>
         ))}
       </div>

@@ -13,16 +13,10 @@ import {
   SelectValue,
 } from "@/components/ui/select"
 import { useToast } from "@/hooks/use-toast"
-import { getPlanPrice } from "@/lib/billing/plans"
+import { getPlanPrice, getPlanDisplayName } from "@/lib/billing/plans"
 import type { CompanyPlan, SubscriptionStatus, BillingPeriod } from "@/lib/types"
 import { ArrowUpCircle, Loader2 } from "lucide-react"
 import Link from "next/link"
-
-const PLAN_LABELS: Record<CompanyPlan, string> = {
-  free: "Free",
-  orta: "Orta",
-  premium: "Premium",
-}
 
 const BILLING_LABELS: Record<BillingPeriod, string> = {
   monthly: "Aylık",
@@ -133,7 +127,7 @@ export function PlanChangeSection({
                   <SelectContent>
                     {upgradePlans.map((p) => (
                       <SelectItem key={p} value={p}>
-                        {PLAN_LABELS[p]} — {getPlanPrice(p, "monthly")} ₺/ay
+                        {getPlanDisplayName(p)} — {getPlanPrice(p, "monthly")} ₺/ay
                       </SelectItem>
                     ))}
                   </SelectContent>
@@ -174,12 +168,12 @@ export function PlanChangeSection({
         )}
         {isPaidPlan && upgradePlans.length === 0 && (
           <p className="text-sm text-muted-foreground">
-            Şu an en yüksek plandasınız (Premium).
+            Şu an en yüksek plandasınız (Enterprise).
           </p>
         )}
         {isPaidPlan && (
           <div className="rounded-lg border border-amber-500/30 bg-amber-500/5 p-3 text-sm text-muted-foreground">
-            <strong className="text-foreground">Plan düşürmek</strong> (örn. Premium → Orta veya Free) için
+            <strong className="text-foreground">Plan düşürmek</strong> (örn. Enterprise → Pro veya Basic) için
             destek talebi oluşturun. Dönem sonunda geçiş yapılabilir.
             <Link
               href="/dashboard/company/destek"

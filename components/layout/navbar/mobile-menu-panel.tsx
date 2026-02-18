@@ -84,8 +84,8 @@ export function MobileMenuPanel({
                     onClick={onClose}
                     className={`flex items-center min-h-[44px] px-3 py-3 rounded-lg text-sm font-medium transition-colors ${
                       active
-                        ? "bg-accent-100/70 dark:bg-accent-500/20 text-accent-800 dark:text-accent-200"
-                        : "text-muted-foreground hover:text-foreground hover:bg-accent-100/60 dark:hover:bg-accent-500/20 dark:hover:text-accent-200"
+                        ? "bg-muted text-foreground dark:text-white"
+                        : "text-muted-foreground hover:text-foreground hover:bg-muted/70 dark:hover:bg-white/10 dark:hover:text-white/90"
                     }`}
                   >
                     {item.label}
@@ -108,7 +108,7 @@ export function MobileMenuPanel({
                 >
                   {user ? (
                     <>
-                      <Button variant="outline" asChild className={`${btnClass} border-accent-500/30 hover:bg-accent-100/60 hover:text-accent-700 dark:hover:bg-accent-500/20 dark:hover:text-accent-200`} onClick={onClose}>
+                      <Button variant="outline" asChild className={`${btnClass} border-border hover:bg-muted`} onClick={onClose}>
                         <Link href={getDashboardLink()}>
                           <LayoutDashboard className="size-4" />
                           Panelim
@@ -128,7 +128,7 @@ export function MobileMenuPanel({
                     <Button
                       variant="outline"
                       asChild
-                      className={`${btnClass} h-11 border-accent-500/30 hover:bg-accent-100/60 hover:text-accent-700 dark:hover:bg-accent-500/20 dark:hover:text-accent-200`}
+                      className={`${btnClass} h-11 border-border hover:bg-muted`}
                       onClick={onClose}
                     >
                       <Link href="/auth/giris">Giriş Yap</Link>

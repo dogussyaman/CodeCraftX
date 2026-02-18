@@ -7,10 +7,10 @@ export type ThemeAccent = "orange" | "blue" | "purple" | "green" | "red"
 
 const ACCENT_VALUES: ThemeAccent[] = ["orange", "blue", "purple", "green", "red"]
 
-function getStored(): ThemeAccent {
-  if (typeof window === "undefined") return "orange"
+function getStored(): ThemeAccent | null {
+  if (typeof window === "undefined") return null
   const stored = localStorage.getItem(STORAGE_KEY) as ThemeAccent | null
-  return stored && ACCENT_VALUES.includes(stored) ? stored : "orange"
+  return stored && ACCENT_VALUES.includes(stored) ? stored : null
 }
 
 type ThemeAccentContextValue = {
@@ -25,8 +25,24 @@ export function ThemeAccentProvider({ children }: { children: React.ReactNode })
   const [mounted, setMounted] = useState(false)
 
   useEffect(() => {
-    setAccentState(getStored())
-    setMounted(true)
+    const stored = getStored()
+    if (stored) {
+      setAccentState(stored)
+      setMounted(true)
+      return
+    }
+    fetch("/api/site-settings")
+      .then((res) => res.json())
+      .then((data) => {
+        const serverDefault = data?.defaultThemeAccent
+        const value =
+          serverDefault && ACCENT_VALUES.includes(serverDefault as ThemeAccent)
+            ? (serverDefault as ThemeAccent)
+            : "orange"
+        setAccentState(value)
+      })
+      .catch(() => setAccentState("orange"))
+      .finally(() => setMounted(true))
   }, [])
 
   const applyThemeToDom = useCallback((value: ThemeAccent) => {
@@ -34,15 +50,9 @@ export function ThemeAccentProvider({ children }: { children: React.ReactNode })
     const root = document.documentElement
     ACCENT_VALUES.forEach((a) => root.classList.remove(`theme-${a}`))
     root.classList.add(`theme-${value}`)
-    console.log("[ThemeAccent] DOM güncellendi:", {
-      theme: value,
-      htmlClasses: root.className,
-      computedAccent500: getComputedStyle(root).getPropertyValue("--theme-accent-500").trim() || "(yok)",
-    })
   }, [])
 
   const setAccent = useCallback((value: ThemeAccent) => {
-    console.log("[ThemeAccent] setAccent çağrıldı:", value)
     setAccentState(value)
     if (typeof window !== "undefined") {
       localStorage.setItem(STORAGE_KEY, value)
@@ -52,12 +62,10 @@ export function ThemeAccentProvider({ children }: { children: React.ReactNode })
 
   useEffect(() => {
     if (!mounted) return
-    console.log("[ThemeAccent] Provider mount/effect – accent:", accent, "mounted:", mounted)
     applyThemeToDom(accent)
     return () => {
       const root = document.documentElement
       ACCENT_VALUES.forEach((a) => root.classList.remove(`theme-${a}`))
-      console.log("[ThemeAccent] Provider unmount – tema sınıfları kaldırıldı")
     }
   }, [accent, mounted, applyThemeToDom])
 

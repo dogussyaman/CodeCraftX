@@ -35,7 +35,7 @@ interface PricingPlan {
 
 const plans: PricingPlan[] = [
     {
-        name: "Free",
+        name: "Basic",
         slug: "free",
         description: "Bireyler ve küçük projeler için ideal",
         features: [
@@ -48,7 +48,7 @@ const plans: PricingPlan[] = [
         ctaLink: "/auth/kayit?plan=free",
     },
     {
-        name: "Orta",
+        name: "Pro",
         slug: "orta",
         description: "Büyüyen takımlar ve işletmeler için ideal",
         popular: true,
@@ -63,7 +63,7 @@ const plans: PricingPlan[] = [
         ctaLink: "/auth/kayit?plan=orta",
     },
     {
-        name: "Premium",
+        name: "Enterprise",
         slug: "premium",
         description: "Büyük kurumlar ve ileri düzey ihtiyaçlar için",
         features: [
@@ -169,7 +169,7 @@ function PricingCard({
                     {/* Features */}
                     <div className="grow">
                         <p className="text-sm font-medium text-foreground mb-4">
-                            {plan.name === "Free" ? "Neler dahil:" : plan.name === "Orta" ? "Free'daki her şey, artı:" : "Orta'daki her şey, artı:"}
+                            {plan.name === "Basic" ? "Neler dahil:" : plan.name === "Pro" ? "Basic'teki her şey, artı:" : "Pro'daki her şey, artı:"}
                         </p>
                         <TooltipProvider>
                             <ul className="space-y-3">
@@ -292,7 +292,7 @@ export function PricingSection({
                         plan={plan}
                         billingPeriod={billingPeriod}
                         delay={idx * 0.1}
-                        isCurrentPlan={plan.name === "Free" ? freePlanIsCurrent : undefined}
+                        isCurrentPlan={plan.name === "Basic" ? freePlanIsCurrent : undefined}
                         ctaLink={getCtaLink(plan)}
                     />
                 ))}

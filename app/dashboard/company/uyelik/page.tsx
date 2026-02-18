@@ -2,17 +2,11 @@ import { redirect } from "next/navigation"
 import { createClient } from "@/lib/supabase/server"
 import { SubscriptionCard } from "@/components/company/SubscriptionCard"
 import { PlanChangeSection } from "@/components/company/PlanChangeSection"
-import { getPlanPrice } from "@/lib/billing/plans"
+import { getPlanPrice, getPlanDisplayName } from "@/lib/billing/plans"
 import type { CompanyPlan, SubscriptionStatus, BillingPeriod } from "@/lib/types"
 import { Card, CardContent, CardHeader } from "@/components/ui/card"
 import { Badge } from "@/components/ui/badge"
 import { History, Calendar, Check, Sparkles } from "lucide-react"
-
-const PLAN_LABELS: Record<CompanyPlan, string> = {
-  free: "Free",
-  orta: "Orta",
-  premium: "Premium",
-}
 
 const PLAN_DESCRIPTIONS: Record<CompanyPlan, string> = {
   free: "Temel özellikler, 5 ilan hakkı",
@@ -140,7 +134,7 @@ export default async function CompanyUyelikPage() {
                 Mevcut plan
               </p>
               <h2 className="text-3xl md:text-4xl font-bold text-foreground mt-1">
-                {PLAN_LABELS[plan]}
+                {getPlanDisplayName(plan)}
               </h2>
               <p className="text-muted-foreground mt-2 max-w-md">
                 {PLAN_DESCRIPTIONS[plan]}
@@ -185,15 +179,15 @@ export default async function CompanyUyelikPage() {
         </CardContent>
       </Card>
 
-      {/* Premium ayrıcalıkları */}
+      {/* Enterprise ayrıcalıkları */}
       <Card className="rounded-2xl border border-amber-500/20  from-amber-500/5 via-card to-card dark:from-amber-500/10 dark:via-card dark:to-card overflow-hidden">
         <CardHeader className="pb-2">
           <div className="flex items-center gap-2">
             <Sparkles className="size-5 text-amber-600 dark:text-amber-400" />
-            <h2 className="text-xl font-semibold">Premium ayrıcalıkları</h2>
+            <h2 className="text-xl font-semibold">Enterprise ayrıcalıkları</h2>
           </div>
           <p className="text-sm text-muted-foreground">
-            Premium plana geçerek aşağıdaki özelliklerin tamamına erişin.
+            Enterprise plana geçerek aşağıdaki özelliklerin tamamına erişin.
           </p>
         </CardHeader>
         <CardContent>
@@ -273,7 +267,7 @@ export default async function CompanyUyelikPage() {
                       <td className="py-3 pr-4">
                         {p.paid_at ? formatDate(p.paid_at) : formatDate(p.created_at)}
                       </td>
-                      <td className="py-3 pr-4 font-medium">{PLAN_LABELS[p.plan as CompanyPlan] ?? p.plan}</td>
+                      <td className="py-3 pr-4 font-medium">{getPlanDisplayName(p.plan as CompanyPlan)}</td>
                       <td className="py-3 pr-4">{p.billing_period === "annually" ? "Yıllık" : "Aylık"}</td>
                       <td className="py-3 pr-4 font-medium tabular-nums">{p.amount} ₺</td>
                       <td className="py-3">{STATUS_LABELS[p.status] ?? p.status}</td>

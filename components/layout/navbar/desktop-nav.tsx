@@ -33,12 +33,12 @@ export function DesktopNav({
 
   return (
     <ul
-      className="relative flex w-fit list-none rounded-full border border-accent-500/20 px-2 py-1.5 flex-nowrap bg-accent-500/5 dark:border-accent-500/10 dark:bg-accent-500/5"
+      className="relative flex w-fit list-none rounded-full border border-border px-2 py-1.5 flex-nowrap bg-muted/50 dark:bg-muted/30"
       role="list"
     >
       {showPill && (
         <motion.li
-          className="pointer-events-none absolute inset-y-0 my-1.5 rounded-full bg-accent-200/90 shadow-sm dark:bg-accent-500/10 dark:shadow-none"
+          className="pointer-events-none absolute inset-y-0 my-1.5 rounded-full bg-muted shadow-sm dark:bg-white/10 dark:shadow-none"
           aria-hidden
           initial={false}
           animate={{ left: pill.left, width: pill.width }}
@@ -61,10 +61,10 @@ export function DesktopNav({
               className={`
                 block w-full px-4 py-1.5 text-[15px] font-medium tracking-tight whitespace-nowrap
                 transition-colors duration-300 ease-out
-                focus-visible:text-accent-600 focus-visible:outline-none dark:focus-visible:text-accent-200
+                focus-visible:text-foreground focus-visible:outline-none
                 ${isHighlight
                   ? "text-foreground dark:text-white"
-                  : "text-muted-foreground hover:text-accent-600 dark:hover:text-accent-200/90"
+                  : "text-muted-foreground hover:text-foreground dark:hover:text-white/90"
                 }
               `}
             >
