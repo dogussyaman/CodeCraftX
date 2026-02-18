@@ -34,6 +34,8 @@ interface HrApplicationActionsProps {
   initialStatus: string
   developerId: string
   jobTitle: string
+  /** Kart içinde tek satır, etiket ve select yan yana (butonla hiza için) */
+  inline?: boolean
 }
 
 export function HrApplicationActions({
@@ -41,6 +43,7 @@ export function HrApplicationActions({
   initialStatus,
   developerId,
   jobTitle,
+  inline = false,
 }: HrApplicationActionsProps) {
   const supabaseRef = useRef(createClient())
   const supabase = supabaseRef.current
@@ -369,10 +372,12 @@ export function HrApplicationActions({
 
   return (
     <>
-      <div className="flex flex-col gap-2 items-end">
-        <Label className="text-xs text-muted-foreground">Başvuru Durumu</Label>
+      <div className={inline ? "flex items-center gap-2" : "flex flex-col gap-2 items-end"}>
+        <Label className={`text-muted-foreground ${inline ? "text-xs shrink-0 whitespace-nowrap" : "text-xs"}`}>
+          Başvuru Durumu
+        </Label>
         <Select value={status} onValueChange={startStatusChange} disabled={loading}>
-          <SelectTrigger className="w-[180px] h-8 text-xs">
+          <SelectTrigger className={`text-xs rounded-lg ${inline ? "h-8 w-[160px] shrink-0" : "w-[180px] h-8"}`}>
             <SelectValue />
           </SelectTrigger>
           <SelectContent>

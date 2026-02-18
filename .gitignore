@@ -66,3 +66,5 @@ json/
 # Root-level provinces.json ignored; public copy is tracked
 /provinces.json
 !public/provinces.json
+
+supabase test sql/
