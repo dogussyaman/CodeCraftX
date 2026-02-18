@@ -54,12 +54,26 @@
   --theme-accent-800: #1e40af;
   --theme-accent-900: #1e3a8a;
   /* Sabit marka rengi – hero ve vurgu metinleri */
-  --brand-ember: #3b82f6;
+  --brand-ember: #3366b9;
   --brand-ember-dark: oklch(0.55 0.22 264);
+  /* Modern navbar – görseldeki tonlar: bej arka plan, turuncu-kırmızı yazı, hover’da mavi yazı */
+  --nav-pill-bg: #fafafa;
+  --nav-pill-bg-container: #fafafa;
+  --nav-link: #000000;
+  --nav-link-hover: #2563eb;
+  --nav-pill-border: rgba(0, 0, 0, 0.08);
+  --nav-pill-shadow: 0 1px 3px rgba(0, 0, 0, 0.06);
 }
 
 .dark {
   --brand-ember: #3b82f6;
+  /* Modern navbar – dark: aynı bej pill, turuncu-kırmızı yazı, hover’da mavi */
+  --nav-pill-bg: #f9f6f0;
+  --nav-pill-bg-container: rgba(249, 246, 240, 0.12);
+  --nav-link: #ffffff;
+  --nav-link-hover: #2563eb;
+  --nav-pill-border: rgba(255, 255, 255, 0.12);
+  --nav-pill-shadow: 0 1px 3px rgba(0, 0, 0, 0.25);
   /* Dark mod: mavi light ile aynı ana tonlar; açık tonlar koyu arka plana uyumlu */
   --theme-accent-50: #1e3a8a;
   --theme-accent-100: #1e40af;

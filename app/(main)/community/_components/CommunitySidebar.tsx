@@ -21,7 +21,8 @@ import {
   COMMUNITY_GITHUB_URL,
   COMMUNITY_LINKEDIN_URL,
 } from "@/lib/constants"
-import { Users, Code2, Settings2, Plus, Check } from "lucide-react"
+import { Users, Settings2, Plus, Check } from "lucide-react"
+import { Avatar, AvatarFallback, AvatarGroup, AvatarGroupCount, AvatarImage } from "@/components/ui/avatar"
 
 export type CommunityTopic = { slug: string; label: string }
 
@@ -87,13 +88,13 @@ export function CommunitySidebar({ topics = [], isMember = false, canAddTopic = 
     <aside className="flex w-full flex-col gap-6 lg:w-[280px] lg:shrink-0">
       {/* Topluluk kartı */}
       <Card className="overflow-hidden border-border bg-card">
-      
+
         <CardHeader>
           <CardTitle>
-            <Image src="logo.png" alt="CodeCraftX Topluluğu" className="w-full h-20 object-contain" width={280} height={24} />
+            <Image src="CCLOGO.png" alt="CodeCraftX Topluluğu" className="w-full h-20 object-contain" width={280} height={24} />
           </CardTitle>
         </CardHeader>
-        <CardContent className="relative px-4 pb-4 pt-2">
+        <CardContent className="relative px-4 pb-4 ">
           <h2 className="mt-3 text-center font-semibold text-foreground">
             CodeCraftX Topluluğu
           </h2>
@@ -108,6 +109,29 @@ export function CommunitySidebar({ topics = [], isMember = false, canAddTopic = 
               <Users className="size-3" />
               Topluluk
             </Badge>
+          </div>
+          <div className="flex flex-row flex-wrap items-center gap-6 md:gap-12 mt-4 justify-center">
+            <AvatarGroup className="grayscale">
+              <Avatar>
+                <AvatarImage src="https://github.com/shadcn.png" alt="@shadcn" />
+                <AvatarFallback>CN</AvatarFallback>
+              </Avatar>
+              <Avatar>
+                <AvatarImage
+                  src="https://github.com/maxleiter.png"
+                  alt="@maxleiter"
+                />
+                <AvatarFallback>LR</AvatarFallback>
+              </Avatar>
+              <Avatar>
+                <AvatarImage
+                  src="https://github.com/evilrabbit.png"
+                  alt="@evilrabbit"
+                />
+                <AvatarFallback>ER</AvatarFallback>
+              </Avatar>
+              <AvatarGroupCount>+3</AvatarGroupCount>
+            </AvatarGroup>
           </div>
           {!userId ? (
             <Button className="mt-4 w-full" size="sm" asChild>

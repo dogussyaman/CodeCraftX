@@ -33,12 +33,12 @@ export function DesktopNav({
 
   return (
     <ul
-      className="relative flex w-fit list-none rounded-full border border-border px-2 py-1.5 flex-nowrap bg-muted/50 dark:bg-muted/30"
+      className="relative flex w-fit list-none rounded-full border border-[var(--nav-pill-border)] px-2 py-1.5 flex-nowrap bg-[var(--nav-pill-bg-container)]"
       role="list"
     >
       {showPill && (
         <motion.li
-          className="pointer-events-none absolute inset-y-0 my-1.5 rounded-full bg-muted shadow-sm dark:bg-white/10 dark:shadow-none"
+          className="pointer-events-none absolute inset-y-0 my-1.5 rounded-full bg-[var(--nav-pill-bg)] border border-[var(--nav-pill-border)] shadow-[var(--nav-pill-shadow)]"
           aria-hidden
           initial={false}
           animate={{ left: pill.left, width: pill.width }}
@@ -48,6 +48,13 @@ export function DesktopNav({
       )}
       {NAV_ITEMS.map((item, idx) => {
         const isHighlight = highlightIndex === idx;
+        const isHovered = hoveredIndex === idx;
+        const active = isActive(item.href);
+        const textClass = isHovered
+          ? "text-[var(--nav-link-hover)]"
+          : active
+            ? "text-[#2563eb]"
+            : "text-[var(--nav-link)]";
         return (
           <li
             key={item.href}
@@ -61,11 +68,9 @@ export function DesktopNav({
               className={`
                 block w-full px-4 py-1.5 text-[15px] font-medium tracking-tight whitespace-nowrap
                 transition-colors duration-300 ease-out
-                focus-visible:text-foreground focus-visible:outline-none
-                ${isHighlight
-                  ? "text-foreground dark:text-white"
-                  : "text-muted-foreground hover:text-foreground dark:hover:text-white/90"
-                }
+                focus-visible:outline-none
+                ${textClass}
+                focus-visible:text-[var(--nav-link-hover)]
               `}
             >
               <motion.span

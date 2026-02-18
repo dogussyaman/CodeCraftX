@@ -1,5 +1,6 @@
 "use client"
 
+import { useEffect, useState } from "react"
 import Image from "next/image"
 import Link from "next/link"
 import { useTheme } from "next-themes"
@@ -8,7 +9,7 @@ import { ArrowRight, Circle, Sparkles } from "lucide-react"
 
 import { Button } from "@/components/ui/button"
 
-/** Sıra: ss3 (arkada), ss2 (ortada), ss1 (önde). Light = lgth, dark = drk. */
+/** Ana sayfa HeroSection ile aynı resim yapısı. Sıra: 3 (arkada), 2 (ortada), 1 (önde). Yeni işveren resimlerini ekleyince light/dark path'leri burada güncelle. */
 const STACK_SOURCES = [
   { light: "/ss3lgth.png", dark: "/ss3drkpng.png" },
   { light: "/ss2lgth.png", dark: "/ss2drk.png" },
@@ -46,7 +47,9 @@ const FLOATING_BADGES = [
 
 export function IsverenHeroSection() {
   const { resolvedTheme } = useTheme()
-  const isDark = resolvedTheme === "dark"
+  const [mounted, setMounted] = useState(false)
+  useEffect(() => setMounted(true), [])
+  const isDark = mounted && resolvedTheme === "dark"
 
   return (
     <section className="relative overflow-hidden pb-16 pt-24 md:pb-24 md:pt-32">
@@ -157,6 +160,7 @@ export function IsverenHeroSection() {
               {HERO_STACK.map((layer) => {
                 const sources = STACK_SOURCES[layer.id]
                 const src = isDark ? sources.dark : sources.light
+                const entranceDelay = 0.45 + layer.id * 0.32
                 return (
                   <motion.div
                     key={layer.id}
@@ -164,26 +168,31 @@ export function IsverenHeroSection() {
                     transition={{ type: "spring", stiffness: 180, damping: 20 }}
                     className={`absolute inset-x-0 mx-auto h-[190px] w-[92%] transform-gpu sm:h-[260px] sm:w-[88%] md:h-[340px] lg:h-[430px] lg:w-[82%] ${layer.z}`}
                   >
-                    <div
-                      style={{ transform: "translateZ(0)", willChange: "transform" }}
-                      className="relative h-full overflow-hidden rounded-2xl border border-accent-500/10 bg-white/80 p-0.5 shadow-[0_24px_64px_rgba(124,45,18,0.18)] dark:border-white/5 dark:bg-zinc-950/80 dark:shadow-[0_24px_64px_rgba(0,0,0,0.5)]"
+                    <motion.div
+                      initial={{ opacity: 0, scale: 0.97 }}
+                      animate={{ opacity: 1, scale: 1 }}
+                      transition={{
+                        opacity: { duration: 0.5, delay: entranceDelay, ease: "easeOut" },
+                        scale: { duration: 0.5, delay: entranceDelay, ease: "easeOut" },
+                      }}
+                      style={{ height: "100%", width: "100%" }}
                     >
-                      <Image
-                        src={src}
-                        alt="CodeCraftX dashboard görünümü"
-                        width={1920}
-                        height={1080}
-                        priority={layer.id === 2}
-                        quality={100}
-                        sizes="(max-width: 640px) 100vw, (max-width: 1024px) 95vw, 85vw"
-                        className="
-                          h-full w-full
-                          object-contain
-                          rounded-[10px]
-                          [image-rendering:-webkit-optimize-contrast]
-                        "
-                      />
-                    </div>
+                      <div
+                        style={{ transform: "translateZ(0)", willChange: "transform" }}
+                        className="relative h-full overflow-hidden rounded-2xl border border-accent-500/10 bg-white/80 p-0.5 shadow-[0_24px_64px_rgba(124,45,18,0.18)] dark:border-white/5 dark:bg-zinc-950/80 dark:shadow-[0_24px_64px_rgba(0,0,0,0.5)]"
+                      >
+                        <Image
+                          src={src}
+                          alt="CodeCraftX işveren dashboard görünümü"
+                          width={1920}
+                          height={1080}
+                          priority={layer.id === 2}
+                          quality={100}
+                          sizes="(max-width: 640px) 100vw, (max-width: 1024px) 95vw, 85vw"
+                          className="h-full w-full object-contain rounded-[10px] [image-rendering:-webkit-optimize-contrast]"
+                        />
+                      </div>
+                    </motion.div>
                   </motion.div>
                 )
               })}

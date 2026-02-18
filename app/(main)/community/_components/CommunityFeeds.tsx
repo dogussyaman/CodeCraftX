@@ -1,6 +1,6 @@
 "use client"
 
-import { useMemo, useState } from "react"
+import { useMemo, useState, useEffect } from "react"
 import Link from "next/link"
 import { motion, AnimatePresence } from "framer-motion"
 import { Card, CardContent, CardHeader } from "@/components/ui/card"
@@ -15,13 +15,16 @@ import {
   Heart,
   Eye,
   FileText,
-  Image as ImageIcon,
-  Send,
   PenLine,
   ChevronDown,
+  ChevronLeft,
+  ChevronRight,
 } from "lucide-react"
 import type { AggregatedNews } from "@/lib/news/types"
 import { NewsCard } from "./news/NewsCard"
+
+const POSTS_PER_PAGE = 8
+const NEWS_PER_PAGE = 12
 
 export type FeedPost = {
   id: string
@@ -78,7 +81,31 @@ export function CommunityFeeds({ posts, commentCounts = {}, aggregatedNews, isLo
   const [search, setSearch] = useState("")
   const [activeFilter, setActiveFilter] = useState("all")
   const [composerOpen, setComposerOpen] = useState(false)
+  const [feedPage, setFeedPage] = useState(1)
+  const [newsPage, setNewsPage] = useState(1)
   const canWriteBlog = Boolean(userRole && ROLES_CAN_WRITE_BLOG.includes(userRole))
+
+  useEffect(() => {
+    setFeedPage(1)
+    setNewsPage(1)
+  }, [activeFilter])
+
+  const scrollToFeedTop = () => {
+    const feed = document.getElementById("feed")
+    if (feed) {
+      feed.scrollIntoView({ behavior: "smooth", block: "start" })
+    } else {
+      window.scrollTo({ top: 0, behavior: "smooth" })
+    }
+  }
+  const handleFeedPageChange = (p: number) => {
+    setFeedPage(p)
+    setTimeout(scrollToFeedTop, 150)
+  }
+  const handleNewsPageChange = (p: number) => {
+    setNewsPage(p)
+    setTimeout(scrollToFeedTop, 150)
+  }
 
   const isNewsFilter = NEWS_FILTERS.includes(activeFilter as (typeof NEWS_FILTERS)[number])
   const newsItems = useMemo(() => {
@@ -119,6 +146,16 @@ export function CommunityFeeds({ posts, commentCounts = {}, aggregatedNews, isLo
 
   const pinnedPosts = filteredPosts.filter((p) => p.isPinned)
   const feedPosts = filteredPosts.filter((p) => !p.isPinned)
+  const feedTotalPages = Math.max(1, Math.ceil(feedPosts.length / POSTS_PER_PAGE))
+  const paginatedFeedPosts = feedPosts.slice(
+    (feedPage - 1) * POSTS_PER_PAGE,
+    feedPage * POSTS_PER_PAGE
+  )
+  const newsTotalPages = Math.max(1, Math.ceil(newsItems.length / NEWS_PER_PAGE))
+  const paginatedNewsItems = newsItems.slice(
+    (newsPage - 1) * NEWS_PER_PAGE,
+    newsPage * NEWS_PER_PAGE
+  )
 
   return (
     <div id="feed" className="flex min-w-0 flex-1 flex-col gap-6">
@@ -254,11 +291,22 @@ export function CommunityFeeds({ posts, commentCounts = {}, aggregatedNews, isLo
               </CardContent>
             </Card>
           ) : (
-            <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
-              {newsItems.map((item) => (
-                <NewsCard key={item.id} item={item} />
-              ))}
-            </div>
+            <>
+              <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
+                {paginatedNewsItems.map((item) => (
+                  <NewsCard key={item.id} item={item} />
+                ))}
+              </div>
+              {newsTotalPages > 1 && (
+                <FeedPagination
+                  currentPage={newsPage}
+                  totalPages={newsTotalPages}
+                  onPageChange={handleNewsPageChange}
+                  totalItems={newsItems.length}
+                  pageSize={NEWS_PER_PAGE}
+                />
+              )}
+            </>
           )
         ) : feedPosts.length === 0 ? (
           <Card className="border-dashed border-border bg-muted/20">
@@ -272,18 +320,91 @@ export function CommunityFeeds({ posts, commentCounts = {}, aggregatedNews, isLo
             </CardContent>
           </Card>
         ) : (
-          <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
-            {feedPosts.map((post) => (
-              <FeedCard
-                key={post.id}
-                post={post}
-                commentCount={commentCounts[post.id] ?? 0}
+          <>
+            <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
+              {paginatedFeedPosts.map((post) => (
+                <FeedCard
+                  key={post.id}
+                  post={post}
+                  commentCount={commentCounts[post.id] ?? 0}
+                />
+              ))}
+            </div>
+            {feedTotalPages > 1 && (
+              <FeedPagination
+                currentPage={feedPage}
+                totalPages={feedTotalPages}
+                onPageChange={handleFeedPageChange}
+                totalItems={feedPosts.length}
+                pageSize={POSTS_PER_PAGE}
               />
-            ))}
-          </div>
+            )}
+          </>
         )}
       </div>
     </div>
+  )
+}
+
+function FeedPagination({
+  currentPage,
+  totalPages,
+  onPageChange,
+  totalItems,
+  pageSize,
+}: {
+  currentPage: number
+  totalPages: number
+  onPageChange: (p: number) => void
+  totalItems: number
+  pageSize: number
+}) {
+  const start = (currentPage - 1) * pageSize + 1
+  const end = Math.min(currentPage * pageSize, totalItems)
+  if (totalPages <= 1) return null
+  return (
+    <nav
+      className="mt-6 flex flex-wrap items-center justify-center gap-2 border-t border-border pt-6"
+      aria-label="Sayfa navigasyonu"
+    >
+      <Button
+        variant="outline"
+        size="sm"
+        onClick={() => onPageChange(currentPage - 1)}
+        disabled={currentPage <= 1}
+        className="gap-1"
+      >
+        <ChevronLeft className="size-4" />
+        Önceki
+      </Button>
+      <span className="flex items-center gap-2 px-2 text-sm text-muted-foreground">
+        {Array.from({ length: totalPages }, (_, i) => i + 1).map((p) => (
+          <Button
+            key={p}
+            variant={p === currentPage ? "default" : "ghost"}
+            size="sm"
+            className="min-w-9"
+            onClick={() => onPageChange(p)}
+            aria-current={p === currentPage ? "page" : undefined}
+          >
+            {p}
+          </Button>
+        ))}
+      </span>
+      <Button
+        variant="outline"
+        size="sm"
+        onClick={() => onPageChange(currentPage + 1)}
+        disabled={currentPage >= totalPages}
+        className="gap-1"
+      >
+        Sonraki
+        <ChevronRight className="size-4" />
+      </Button>
+      <span className="text-xs text-muted-foreground">
+        {start}–{end} / {totalItems}
+      </span>
+    </nav>
   )
 }
 
