@@ -4,7 +4,7 @@ import { createAdminClient } from "@/lib/supabase/admin"
 import type { ThemeAccent } from "@/components/theme-accent-provider"
 
 const ACCENT_KEYS = ["orange", "blue", "purple", "green", "red"] as const
-const DEFAULT_ACCENT: ThemeAccent = "orange"
+const DEFAULT_ACCENT: ThemeAccent = "blue"
 
 export async function GET() {
   try {

@@ -12,5 +12,5 @@ CREATE POLICY "site_settings_select_all" ON public.site_settings
 
 -- Only service role or backend with admin check should update (API uses service role after auth check).
 INSERT INTO public.site_settings (key, value)
-VALUES ('default_theme_accent', 'orange')
+VALUES ('default_theme_accent', 'blue')
 ON CONFLICT (key) DO NOTHING;

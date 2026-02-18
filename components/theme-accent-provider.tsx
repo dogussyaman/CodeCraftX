@@ -21,7 +21,7 @@ type ThemeAccentContextValue = {
 const ThemeAccentContext = createContext<ThemeAccentContextValue | null>(null)
 
 export function ThemeAccentProvider({ children }: { children: React.ReactNode }) {
-  const [accent, setAccentState] = useState<ThemeAccent>("orange")
+  const [accent, setAccentState] = useState<ThemeAccent>("blue")
   const [mounted, setMounted] = useState(false)
 
   useEffect(() => {
@@ -38,10 +38,10 @@ export function ThemeAccentProvider({ children }: { children: React.ReactNode })
         const value =
           serverDefault && ACCENT_VALUES.includes(serverDefault as ThemeAccent)
             ? (serverDefault as ThemeAccent)
-            : "orange"
+            : "blue"
         setAccentState(value)
       })
-      .catch(() => setAccentState("orange"))
+      .catch(() => setAccentState("blue"))
       .finally(() => setMounted(true))
   }, [])
 

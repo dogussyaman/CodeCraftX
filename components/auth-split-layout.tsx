@@ -182,7 +182,7 @@ export function AuthSplitLayout({ children, title, subtitle }: AuthSplitLayoutPr
             <Logo className="mb-8" />
             <Link
               href="/"
-              className="inline-flex items-center gap-2 text-sm text-muted-foreground hover:text-accent-600 dark:hover:text-accent-400 transition-colors mb-6"
+              className="inline-flex items-center gap-2 text-sm text-muted-foreground hover:text-foreground transition-colors mb-6"
             >
               <ArrowLeft className="size-4" />
               Ana Sayfaya Dön
