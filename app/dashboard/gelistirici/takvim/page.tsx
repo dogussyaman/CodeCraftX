@@ -104,9 +104,41 @@ export default async function GelistiriciTakvimPage() {
         interviewId: int.id,
         jobLocation,
         attendees,
+        eventType: "interview",
       })
     }
   }
+
+  const { data: registrations } = await supabase
+    .from("platform_event_registrations")
+    .select("event_id, platform_events(id, title, start_date, end_date, online_link, organizer_name)")
+    .eq("user_id", user.id)
+
+  for (const reg of registrations ?? []) {
+    const ev = (reg as { platform_events: unknown }).platform_events
+    if (!ev || typeof ev !== "object") continue
+    const e = ev as { id: string; title?: string; start_date?: string; end_date?: string | null; online_link?: string | null; organizer_name?: string | null }
+    const startDate = e.start_date
+    if (!startDate) continue
+    const d = new Date(startDate)
+    const dateStr = d.toISOString().slice(0, 10)
+    const timeStr = d.toLocaleTimeString("tr-TR", { hour: "2-digit", minute: "2-digit", hour12: false })
+    events.push({
+      date: dateStr,
+      time: timeStr,
+      title: e.title ?? "Etkinlik",
+      companyName: e.organizer_name ?? "Etkinlik",
+      meetLink: e.online_link ?? null,
+      eventId: e.id,
+      eventType: "platform_event",
+    })
+  }
+
+  events.sort((a, b) => {
+    const d = a.date.localeCompare(b.date)
+    if (d !== 0) return d
+    return (a.time || "").localeCompare(b.time || "")
+  })
 
   return (
     <TakvimView

@@ -17,6 +17,8 @@ export type CommunityEventItem = {
   location?: string | null
   starts_at: string
   ends_at?: string | null
+  /** platform_events slug for link to /etkinlikler/[slug] */
+  slug?: string | null
 }
 
 export type FeaturedBlogItem = {
@@ -73,23 +75,28 @@ export function CommunityRightSidebar({ events = [], featuredBlogs = [] }: Commu
                 Şu an listelenecek etkinlik yok.
               </li>
             ) : (
-              events.map((ev) => (
-                <li
-                  key={ev.id}
-                  className="flex gap-3 rounded-lg border border-border bg-muted/20 p-3 transition-colors hover:bg-muted/30"
-                >
-                  <div className="flex size-10 shrink-0 items-center justify-center rounded-lg bg-primary/10 text-primary">
-                    <Calendar className="size-5" />
-                  </div>
-                  <div className="min-w-0 flex-1">
-                    <p className="text-sm font-medium text-foreground">{ev.title}</p>
-                    <p className="text-xs text-muted-foreground">
-                      {formatEventDate(ev.starts_at, ev.ends_at)}
-                    </p>
-                    <p className="mt-0.5 text-xs text-muted-foreground">{ev.location ?? "Online"}</p>
-                  </div>
-                </li>
-              ))
+              events.map((ev) => {
+                const link = ev.slug ? `/etkinlikler/${ev.slug}` : "/etkinlikler"
+                return (
+                  <li key={ev.id}>
+                    <Link
+                      href={link}
+                      className="flex gap-3 rounded-lg border border-border bg-muted/20 p-3 transition-colors hover:bg-muted/30"
+                    >
+                      <div className="flex size-10 shrink-0 items-center justify-center rounded-lg bg-primary/10 text-primary">
+                        <Calendar className="size-5" />
+                      </div>
+                      <div className="min-w-0 flex-1 text-left">
+                        <p className="text-sm font-medium text-foreground">{ev.title}</p>
+                        <p className="text-xs text-muted-foreground">
+                          {formatEventDate(ev.starts_at, ev.ends_at)}
+                        </p>
+                        <p className="mt-0.5 text-xs text-muted-foreground">{ev.location ?? "Online"}</p>
+                      </div>
+                    </Link>
+                  </li>
+                )
+              })
             )}
           </ul>
           <Button variant="outline" size="sm" className="mt-3 w-full" asChild>

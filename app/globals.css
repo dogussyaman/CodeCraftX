@@ -42,24 +42,35 @@
   --sidebar-accent-foreground: oklch(0.13 0.02 265);
   --sidebar-border: oklch(0.90 0.01 265);
   --sidebar-ring: oklch(0.488 0.243 264);
-  /* Ana sayfa vurgu rengi (theme-orange/blue/purple/green/red ile değişir) */
-  --theme-accent-50: #fff7ed;
-  --theme-accent-100: #ffedd5;
-  --theme-accent-200: #fed7aa;
-  --theme-accent-300: #fdba74;
-  --theme-accent-400: #fb923c;
-  --theme-accent-500: #f97316;
-  --theme-accent-600: #ea580c;
-  --theme-accent-700: #c2410c;
-  --theme-accent-800: #9a3412;
-  --theme-accent-900: #7c2d12;
-  /* Sabit marka rengi – hero ve vurgu metinleri (her zaman görünür) */
-  --brand-ember: #fb923c;
-  --brand-ember-dark: lab(80.7451% 19.3313 45.9131);
+  /* Ana sayfa vurgu rengi – turuncu tema #fd9846 */
+  --theme-accent-50: #fff8f2;
+  --theme-accent-100: #ffecd9;
+  --theme-accent-200: #fed9ad;
+  --theme-accent-300: #fdc078;
+  --theme-accent-400: #fda55c;
+  --theme-accent-500: #fd9846;
+  --theme-accent-600: #e8822e;
+  --theme-accent-700: #c96b1f;
+  --theme-accent-800: #9a5118;
+  --theme-accent-900: #6b3810;
+  /* Sabit marka rengi – hero ve vurgu metinleri */
+  --brand-ember: #fd9846;
+  --brand-ember-dark: oklch(0.72 0.12 55);
 }
 
 .dark {
-  --brand-ember: lab(80.7451% 19.3313 45.9131);
+  --brand-ember: oklch(0.72 0.12 55);
+  /* Dark mod: turuncu daha yumuşak (düşük doygunluk, koyu tonlar) */
+  --theme-accent-50: oklch(0.22 0.02 55);
+  --theme-accent-100: oklch(0.28 0.04 55);
+  --theme-accent-200: oklch(0.38 0.06 55);
+  --theme-accent-300: oklch(0.52 0.10 55);
+  --theme-accent-400: oklch(0.62 0.12 55);
+  --theme-accent-500: oklch(0.68 0.14 55);
+  --theme-accent-600: oklch(0.72 0.14 55);
+  --theme-accent-700: oklch(0.65 0.12 55);
+  --theme-accent-800: oklch(0.55 0.10 55);
+  --theme-accent-900: oklch(0.42 0.06 55);
   --background: oklch(0.13 0.015 265);
   --foreground: oklch(0.965 0.005 247);
   --card: oklch(0.23 0.02 265);

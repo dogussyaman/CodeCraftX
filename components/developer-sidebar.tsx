@@ -15,6 +15,7 @@ import {
   Code2,
   BookOpen,
   Bookmark,
+  Calendar,
   CalendarDays,
 } from "lucide-react"
 import {
@@ -35,6 +36,7 @@ const menuItems = [
   { title: "Ön Yazılarım", href: "/dashboard/gelistirici/on-yazilar", icon: PenTool },
   { title: "Başvurularım", href: "/dashboard/gelistirici/basvurular", icon: Briefcase },
   { title: "Takvim", href: "/dashboard/gelistirici/takvim", icon: CalendarDays },
+  { title: "Etkinliklerim", href: "/dashboard/gelistirici/etkinlikler", icon: Calendar },
   { title: "Kaydettiğim İlanlar", href: "/dashboard/gelistirici/kaydettigim-ilanlar", icon: Bookmark },
   { title: "Projelerim", href: "/dashboard/gelistirici/projelerim", icon: Code2 },
   { title: "Blog Yazılarım", href: "/dashboard/gelistirici/yazilarim", icon: BookOpen },

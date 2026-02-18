@@ -27,4 +27,7 @@ export interface CalendarEvent {
   attendees?: CalendarEventAttendee[]
   /** Toplantı notları (İK tarafında düzenlenebilir) */
   notes?: string | null
+  /** Platform etkinliği kayıtları için */
+  eventId?: string
+  eventType?: "interview" | "platform_event"
 }

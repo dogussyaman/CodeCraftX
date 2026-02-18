@@ -27,7 +27,7 @@ export function DesktopActions({ loading, user, getDashboardLink, onLogout }: Pr
         </div>
       ) : user ? (
         <>
-          <Button variant="outline" size="sm" asChild className={`${btnClass} border-accent-500/30 hover:bg-accent-100/60 hover:text-accent-700 hover:border-accent-500/50 dark:hover:bg-accent-500/20 dark:hover:text-accent-200 dark:border-accent-500/30`}>
+          <Button variant="outline" size="sm" asChild className={`${btnClass} border-accent-500/30 hover:bg-accent-100/60 hover:text-accent-700 hover:border-accent-500/50 dark:border-accent-500/15 dark:hover:bg-accent-500/10 dark:hover:text-accent-200`}>
             <Link href={getDashboardLink()}>
               <LayoutDashboard className="size-4" />
               Panelim
@@ -48,7 +48,7 @@ export function DesktopActions({ loading, user, getDashboardLink, onLogout }: Pr
           variant="outline"
           size="sm"
           asChild
-          className={`${btnClass} border-accent-500/30 hover:bg-accent-100/60 hover:text-accent-700 hover:border-accent-500/50 dark:hover:bg-accent-500/20 dark:hover:text-accent-200 text-foreground`}
+          className={`${btnClass} border-accent-500/30 hover:bg-accent-100/60 hover:text-accent-700 hover:border-accent-500/50 dark:border-accent-500/15 dark:hover:bg-accent-500/10 dark:hover:text-accent-200 text-foreground`}
         >
           <Link href="/auth/giris">Giriş Yap</Link>
         </Button>

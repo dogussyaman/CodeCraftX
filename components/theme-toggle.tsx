@@ -62,10 +62,10 @@ export function ThemeToggle({ showLabel = false, size = "sm" }: ThemeToggleProps
           relative inline-flex items-center justify-center shrink-0
           cursor-pointer rounded-lg border border-accent-500/25
           transition-all duration-300 ease-out
-          hover:bg-accent-100/60 hover:text-accent-700 active:scale-95 dark:hover:bg-accent-500/20 dark:hover:text-accent-200
+          hover:bg-accent-100/60 hover:text-accent-700 active:scale-95 dark:border-accent-500/15 dark:hover:bg-accent-500/10 dark:hover:text-accent-200
           focus:outline-none focus-visible:ring-2 focus-visible:ring-accent-500/50 focus-visible:ring-offset-2 focus-visible:ring-offset-background
           ${isDark
-            ? "bg-accent-500/10 text-muted-foreground hover:text-foreground"
+            ? "bg-accent-500/5 text-muted-foreground hover:text-foreground"
             : "bg-background text-muted-foreground hover:text-foreground"
           }
         `}

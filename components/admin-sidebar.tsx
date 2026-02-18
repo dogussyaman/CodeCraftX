@@ -19,6 +19,7 @@ import {
   Banknote,
   UsersRound,
   List,
+  Calendar,
 } from "lucide-react"
 import {
   Sidebar,
@@ -42,6 +43,7 @@ const baseMenuItems = [
   { title: "Gelir / Gider", href: "/dashboard/admin/gelir-gider", icon: Banknote },
   { title: "Bildirimler", href: "/dashboard/admin/bildirimler", icon: Bell },
   { title: "Blog", href: "/dashboard/admin/blog", icon: FileText },
+  { title: "Etkinlikler", href: "/dashboard/admin/etkinlikler", icon: Calendar },
   { title: "Topluluk Üyeleri", href: "/dashboard/admin/topluluk-uyeleri", icon: UsersRound },
   { title: "Topluluk Konuları", href: "/dashboard/admin/topluluk-konulari", icon: List },
   { title: "Bülten", href: "/dashboard/admin/bulten", icon: Mail },

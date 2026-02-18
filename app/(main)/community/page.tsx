@@ -49,7 +49,7 @@ export default async function CommunityPage() {
   type BlogRow = { id: string; title: string; slug: string; cover_image_url?: string | null; published_at?: string | null; created_at: string; view_count?: number; like_count?: number; profiles?: { full_name?: string; avatar_url?: string } | null }
   let blogRows: BlogRow[] = []
   let user: { id: string } | null = null
-  let events: { id: string; title: string; description?: string | null; location?: string | null; starts_at: string; ends_at?: string | null }[] = []
+  let events: { id: string; title: string; description?: string | null; location?: string | null; starts_at: string; ends_at?: string | null; slug?: string | null }[] = []
   let featuredBlogs: { id: string; title: string; slug: string; view_count?: number }[] = []
   let announcements: AnnouncementRow[] = []
   let topics: { slug: string; label: string }[] = DEFAULT_TOPICS
@@ -86,11 +86,11 @@ export default async function CommunityPage() {
     const [commentsRes, eventsRes, featuredRes, announcementsRes, topicsRes, memberRes, profileRes] = await Promise.all([
       commentsPromise,
       supabase
-        .from("community_events")
-        .select("id, title, description, location, starts_at, ends_at")
+        .from("platform_events")
+        .select("id, title, short_description, start_date, end_date, is_online, location, slug")
         .eq("status", "published")
-        .gte("starts_at", new Date().toISOString())
-        .order("starts_at", { ascending: true })
+        .gte("start_date", new Date().toISOString())
+        .order("start_date", { ascending: true })
         .limit(5),
       supabase
         .from("blog_posts")
@@ -114,7 +114,17 @@ export default async function CommunityPage() {
       commentCounts[c.post_id] = (commentCounts[c.post_id] ?? 0) + 1
     }
 
-    if (eventsRes.data) events = eventsRes.data
+    if (eventsRes.data) {
+      events = (eventsRes.data as { id: string; title: string; short_description?: string | null; start_date: string; end_date?: string | null; is_online?: boolean; location?: { city?: string; venue?: string } | null; slug?: string | null }[]).map((e) => ({
+        id: e.id,
+        title: e.title,
+        description: e.short_description ?? null,
+        location: e.is_online ? "Online" : (e.location?.city ?? e.location?.venue ?? null),
+        starts_at: e.start_date,
+        ends_at: e.end_date ?? null,
+        slug: e.slug ?? null,
+      }))
+    }
     if (featuredRes.data) featuredBlogs = featuredRes.data
     if (announcementsRes.data) announcements = announcementsRes.data as AnnouncementRow[]
     if (topicsRes.data?.length) topics = topicsRes.data
