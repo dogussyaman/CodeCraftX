@@ -163,6 +163,7 @@ export function HeroSection() {
               {HERO_STACK.map((layer) => {
                 const sources = STACK_SOURCES[layer.id]
                 const src = isDark ? sources.dark : sources.light
+                const entranceDelay = 0.45 + layer.id * 0.32
                 return (
                   <motion.div
                     key={layer.id}
@@ -170,6 +171,15 @@ export function HeroSection() {
                     transition={{ type: "spring", stiffness: 180, damping: 20 }}
                     className={`absolute inset-x-0 mx-auto h-[190px] w-[92%] transform-gpu sm:h-[260px] sm:w-[88%] md:h-[340px] lg:h-[430px] lg:w-[82%] ${layer.z}`}
                   >
+                    <motion.div
+                      initial={{ opacity: 0, scale: 0.97 }}
+                      animate={{ opacity: 1, scale: 1 }}
+                      transition={{
+                        opacity: { duration: 0.5, delay: entranceDelay, ease: "easeOut" },
+                        scale: { duration: 0.5, delay: entranceDelay, ease: "easeOut" },
+                      }}
+                      style={{ height: "100%", width: "100%" }}
+                    >
                     <div
                       style={{ transform: "translateZ(0)", willChange: "transform" }}
                       className="relative h-full overflow-hidden rounded-2xl border border-accent-500/10 bg-white/80 p-0.5 shadow-[0_24px_64px_rgba(124,45,18,0.18)] dark:border-white/5 dark:bg-zinc-950/80 dark:shadow-[0_24px_64px_rgba(0,0,0,0.5)]"
@@ -190,6 +200,7 @@ export function HeroSection() {
   "
                       />
                     </div>
+                    </motion.div>
                   </motion.div>
                 )
               })}
