@@ -1,13 +1,22 @@
 import { createAdminClient } from "@/lib/supabase/admin"
-import OpenAI from "openai"
 import type { SemanticResult } from "./types"
 
 const EMBEDDING_MODEL = "text-embedding-3-small"
 
-function getOpenAIClient(): OpenAI | null {
+type OpenAIEmbeddingClient = {
+  embeddings: { create: (opts: { model: string; input: string }) => Promise<{ data: { embedding: number[] }[]; usage?: { total_tokens?: number } }> }
+}
+
+/** OpenAI client'ı sadece gerektiğinde yükler; paket yoksa veya API key yoksa null döner. */
+async function getOpenAIClient(): Promise<OpenAIEmbeddingClient | null> {
   const apiKey = process.env.OPENAI_API_KEY
   if (!apiKey) return null
-  return new OpenAI({ apiKey })
+  try {
+    const { default: OpenAI } = await import("openai")
+    return new OpenAI({ apiKey }) as OpenAIEmbeddingClient
+  } catch {
+    return null
+  }
 }
 
 export async function computeSemanticScoreForApplication(params: {
@@ -52,7 +61,7 @@ export async function computeSemanticScoreForApplication(params: {
     }
   }
 
-  const openai = getOpenAIClient()
+  const openai = await getOpenAIClient()
   if (!openai) {
     return {
       cosineSimilarity: null,

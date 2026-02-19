@@ -1,6 +1,39 @@
 import { NextRequest, NextResponse } from "next/server"
 import { createClient } from "@/lib/supabase/server"
 import { computeATSScore } from "@/lib/ats/service"
+import type { ScoringBreakdown } from "@/lib/ats/types"
+
+/** Map full ATS breakdown to UI MatchDetails shape (same as legacy /api/applications/match). */
+function breakdownToMatchDetails(breakdown: ScoringBreakdown) {
+  const skill = breakdown.components.skill
+  const exp = breakdown.components.experience
+  const edu = breakdown.components.education
+  return {
+    matching_skills: skill?.matching ?? [],
+    missing_skills: skill?.missing_required ?? [],
+    missing_optional: skill?.missing_optional ?? [],
+    positive_factors: breakdown.positive_factors ?? [],
+    negative_factors: breakdown.negative_factors ?? [],
+    experience_analysis:
+      exp != null
+        ? {
+            candidate_years: exp.candidate_years ?? 0,
+            required_level: exp.required_level ?? "",
+            candidate_level: exp.candidate_level ?? "",
+            level_match: exp.meets ?? false,
+            note: "",
+          }
+        : null,
+    education_match:
+      edu != null
+        ? {
+            relevant: edu.field_relevant ?? false,
+            degree_level: edu.degree ?? "Belirtilmemiş",
+            field_relevance: edu.field_relevant ? "İlgili" : "Farklı alan",
+          }
+        : null,
+  }
+}
 
 export async function POST(req: NextRequest) {
   try {
@@ -87,8 +120,20 @@ export async function POST(req: NextRequest) {
       algorithmVersion,
     })
 
+    const finalScore = breakdown.final_score
+    const matchReason =
+      finalScore >= 80
+        ? "Aday, ATS skoruna göre pozisyon için çok güçlü bir eşleşme."
+        : finalScore >= 60
+          ? "Aday, ATS skoruna göre pozisyon için uygun bir eşleşme."
+          : "Aday, ATS skoruna göre pozisyon gereksinimleriyle sınırlı uyum gösteriyor."
+    const match_details = breakdownToMatchDetails(breakdown)
+
     return NextResponse.json({
       success: true,
+      match_score: finalScore,
+      match_reason: matchReason,
+      match_details,
       data: {
         ats_score: atsScore,
         scoring_breakdown: breakdown,

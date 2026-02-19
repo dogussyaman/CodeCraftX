@@ -4,6 +4,7 @@ import { Button } from "@/components/ui/button"
 import { Badge } from "@/components/ui/badge"
 import { Briefcase, Plus, MapPin, Pencil, Users, ArrowRight } from "lucide-react"
 import Link from "next/link"
+import { RecalculateAtsButton } from "./_components/RecalculateAtsButton"
 
 export default async function CompanyJobsPage() {
   const supabase = await createClient()
@@ -184,13 +185,14 @@ export default async function CompanyJobsPage() {
                         <CardDescription className="mt-1">{job.companies.name}</CardDescription>
                       )}
                     </div>
-                    <div className="flex shrink-0 gap-2">
+                    <div className="flex shrink-0 flex-wrap gap-2">
                       <Button size="sm" variant="outline" className="rounded-lg" asChild>
                         <Link href={`/dashboard/company/ilanlar/${job.id}`} className="gap-1.5">
                           <Pencil className="size-3.5" />
                           Düzenle
                         </Link>
                       </Button>
+                      <RecalculateAtsButton jobId={job.id} className="rounded-lg gap-1.5" />
                       <Button size="sm" variant="outline" className="rounded-lg" asChild>
                         <Link href={`/dashboard/company/eslesmeler?job=${job.id}`} className="gap-1.5">
                           <Users className="size-3.5" />

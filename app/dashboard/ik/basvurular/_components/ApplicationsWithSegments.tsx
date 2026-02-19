@@ -95,7 +95,7 @@ export function ApplicationsWithSegments({
     if (segment === "all") return applications
     return applications.filter((a) => {
       const display = localAnalysis[a.id] ?? a
-      const s = display.match_score ?? null
+      const s = display.match_score ?? a.ats_scores?.[0]?.final_score ?? null
       if (s === null) return segment === "low"
       if (segment === "high") return s >= 80
       if (segment === "mid") return s >= 50 && s < 80
@@ -106,7 +106,7 @@ export function ApplicationsWithSegments({
   const runAnalysis = async (applicationId: string) => {
     setAnalyzingId(applicationId)
     try {
-      const res = await fetch("/api/applications/match", {
+      const res = await fetch("/api/ats/compute-score", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ applicationId }),
@@ -198,9 +198,9 @@ export function ApplicationsWithSegments({
       <div className="grid grid-cols-1 gap-3">
         {filtered.map((application) => {
           const display = localAnalysis[application.id] ?? application
-          const atsScore = application.ats_scores?.[0]?.final_score ?? null
+          const displayScore = display.match_score ?? application.ats_scores?.[0]?.final_score ?? null
           const hasAnalysis =
-            typeof display.match_score === "number" ||
+            displayScore != null ||
             display.match_reason ||
             (display.match_details && (display.match_details.matching_skills?.length || display.match_details.missing_skills?.length || display.match_details.missing_optional?.length))
           return (
@@ -215,13 +215,13 @@ export function ApplicationsWithSegments({
                     <CardDescription className="mt-1">{application.job_postings?.title}</CardDescription>
                   </div>
                   <div className="flex items-center gap-2 flex-wrap">
-                    {typeof atsScore === "number" && (
+                    {typeof displayScore === "number" && (
                       <Badge
                         variant={
-                          atsScore >= 80 ? "success" : atsScore >= 50 ? "default" : "destructive"
+                          displayScore >= 80 ? "success" : displayScore >= 50 ? "default" : "destructive"
                         }
                       >
-                        %{atsScore} ATS
+                        %{displayScore} ATS
                       </Badge>
                     )}
                     <Badge
@@ -270,7 +270,7 @@ export function ApplicationsWithSegments({
                 {hasAnalysis && (
                   <div className="border-t border-border/40 pt-1">
                     <MatchAnalysisCard
-                      matchScore={display.match_score || 0}
+                      matchScore={displayScore ?? display.match_score ?? 0}
                       matchReason={display.match_reason || undefined}
                       matchDetails={display.match_details || undefined}
                     />

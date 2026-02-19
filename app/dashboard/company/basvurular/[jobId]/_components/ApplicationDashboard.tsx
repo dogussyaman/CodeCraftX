@@ -73,7 +73,7 @@ export function ApplicationDashboard({ jobId, applications, matchedDeveloperIds 
   const runAnalysis = async (applicationId: string) => {
     setAnalyzingId(applicationId)
     try {
-      const res = await fetch("/api/applications/match", {
+      const res = await fetch("/api/ats/compute-score", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ applicationId }),
@@ -135,10 +135,10 @@ export function ApplicationDashboard({ jobId, applications, matchedDeveloperIds 
       })
       .filter((app) => {
         const effectiveScore =
-          typeof app.ats_scores?.[0]?.final_score === "number"
-            ? app.ats_scores[0].final_score
-            : typeof app.match_score === "number"
-              ? app.match_score
+          typeof app.match_score === "number"
+            ? app.match_score
+            : typeof app.ats_scores?.[0]?.final_score === "number"
+              ? app.ats_scores[0].final_score
               : null
 
         // Skor aralığı
@@ -186,8 +186,18 @@ export function ApplicationDashboard({ jobId, applications, matchedDeveloperIds 
         return true
       })
       .sort((a, b) => {
-        const aScore = typeof a.match_score === "number" ? a.match_score : -1
-        const bScore = typeof b.match_score === "number" ? b.match_score : -1
+        const aScore =
+          typeof a.match_score === "number"
+            ? a.match_score
+            : typeof a.ats_scores?.[0]?.final_score === "number"
+              ? a.ats_scores[0].final_score!
+              : -1
+        const bScore =
+          typeof b.match_score === "number"
+            ? b.match_score
+            : typeof b.ats_scores?.[0]?.final_score === "number"
+              ? b.ats_scores[0].final_score!
+              : -1
         return bScore - aScore
       })
   }, [applications, search, statusFilter, scoreRange, skillFilter, aiRecommendedOnly, localAnalysis])
@@ -332,9 +342,15 @@ export function ApplicationDashboard({ jobId, applications, matchedDeveloperIds 
                 match_details: localAnalysis[application.id].match_details,
               }
             : application
+          const effectiveScore =
+            typeof display.match_score === "number"
+              ? display.match_score
+              : typeof application.ats_scores?.[0]?.final_score === "number"
+                ? application.ats_scores[0].final_score
+                : null
 
           const hasAnalysis =
-            typeof display.match_score === "number" ||
+            effectiveScore != null ||
             display.match_reason ||
             (display.match_details &&
               ((display.match_details.matching_skills && display.match_details.matching_skills.length > 0) ||
@@ -342,12 +358,12 @@ export function ApplicationDashboard({ jobId, applications, matchedDeveloperIds 
                 (display.match_details.missing_optional && display.match_details.missing_optional.length > 0)))
 
           const ribbonColor =
-            typeof display.match_score === "number"
-              ? display.match_score >= 80
+            effectiveScore != null
+              ? effectiveScore >= 80
                 ? "bg-emerald-500"
-                : display.match_score >= 60
+                : effectiveScore >= 60
                   ? "bg-blue-500"
-                  : display.match_score >= 40
+                  : effectiveScore >= 40
                     ? "bg-amber-500"
                     : "bg-red-500"
               : "bg-muted-foreground"
@@ -362,10 +378,10 @@ export function ApplicationDashboard({ jobId, applications, matchedDeveloperIds 
               className="relative cursor-pointer overflow-hidden rounded-2xl border border-border/80 bg-card shadow-sm transition-all hover:border-primary/40 hover:shadow-md"
             >
               {/* Diagonal AI match ribbon */}
-              {typeof display.match_score === "number" && (
+              {effectiveScore != null && (
                 <div className="pointer-events-none absolute -right-12 -top-8 z-10 rotate-45">
                   <div className={`w-32 py-1.5 text-center text-xs font-semibold text-background ${ribbonColor}`}>
-                    %{display.match_score} uyum
+                    %{effectiveScore} uyum
                   </div>
                 </div>
               )}
@@ -434,7 +450,7 @@ export function ApplicationDashboard({ jobId, applications, matchedDeveloperIds 
                 {hasAnalysis && (
                   <div className="mt-1 rounded-xl border border-border/60 bg-muted/40 px-2 py-1.5">
                     <MatchAnalysisCard
-                      matchScore={display.match_score || 0}
+                      matchScore={effectiveScore ?? display.match_score ?? 0}
                       matchReason={display.match_reason || undefined}
                       matchDetails={display.match_details || undefined}
                     />
@@ -512,8 +528,14 @@ export function ApplicationDashboard({ jobId, applications, matchedDeveloperIds 
                   match_details: localAnalysis[app.id].match_details,
                 }
               : app
+            const modalEffectiveScore =
+              typeof display.match_score === "number"
+                ? display.match_score
+                : typeof app.ats_scores?.[0]?.final_score === "number"
+                  ? app.ats_scores[0].final_score
+                  : null
             const hasAnalysis =
-              typeof display.match_score === "number" ||
+              modalEffectiveScore != null ||
               display.match_reason ||
               (display.match_details &&
                 ((display.match_details.matching_skills?.length ?? 0) > 0 ||
@@ -610,7 +632,7 @@ export function ApplicationDashboard({ jobId, applications, matchedDeveloperIds 
                     <div className={sectionClass}>
                       <h4 className="text-sm font-semibold text-foreground mb-3">AI eşleşme analizi</h4>
                       <MatchAnalysisCard
-                        matchScore={display.match_score || 0}
+                        matchScore={modalEffectiveScore ?? display.match_score ?? 0}
                         matchReason={display.match_reason || undefined}
                         matchDetails={display.match_details || undefined}
                       />

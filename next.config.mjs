@@ -6,6 +6,7 @@ const nextConfig = {
   images: {
     unoptimized: true,
   },
+  serverExternalPackages: ["openai"],
   experimental: {
     serverActions: {
       bodySizeLimit: "4mb",

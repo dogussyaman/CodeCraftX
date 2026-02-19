@@ -218,14 +218,14 @@ export function JobApplyModal({ jobId, jobTitle, isOpen, onClose }: JobApplyModa
         })
       }
 
-            // AI eşleşme skoru hesapla (API)
+            // Tam ATS skoru hesapla (rule + semantic)
             if (applicationData?.id) {
-                fetch("/api/applications/match", {
+                fetch("/api/ats/compute-score", {
                     method: "POST",
                     headers: { "Content-Type": "application/json" },
                     body: JSON.stringify({ applicationId: applicationData.id }),
                 }).catch((err) => {
-                    console.warn("Match calculation failed:", err)
+                    console.warn("ATS score calculation failed:", err)
                 })
             }
 
