@@ -74,8 +74,9 @@ export default async function HRDashboardPage() {
       {/* Üst başlık */}
       <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
         <div className="flex items-center gap-4">
-          <div className="rounded-xl bg-primary/10 p-3">
-            <UserCircle className="size-8 text-primary" />
+          <div className="rounded-xl bg-primary/10 p-3 relative overflow-hidden">
+            <UserCircle className="size-8 text-primary relative z-10" />
+            <span className="pointer-events-none absolute inset-0 bg-gradient-to-tr from-primary/10 via-emerald-400/20 to-transparent opacity-70" />
           </div>
           <div>
             <h1 className="text-2xl font-bold text-foreground">
@@ -83,6 +84,9 @@ export default async function HRDashboardPage() {
             </h1>
             <p className="text-sm text-muted-foreground">
               İşe alım süreçlerinizi yönetin
+            </p>
+            <p className="mt-1 text-xs text-primary/80">
+              ATS skorları ve yapay zekâ destekli eşleştirme ile başvuruları daha akıllı yönetin.
             </p>
           </div>
         </div>
@@ -204,7 +208,7 @@ export default async function HRDashboardPage() {
               </div>
             </CardHeader>
             <CardContent className="p-0">
-              {!recentJobs || recentJobs.length === 0 ? (
+      {!recentJobs || (recentJobs as any[]).length === 0 ? (
                 <div className="px-6 pb-6">
                   <p className="text-sm text-muted-foreground py-8 text-center">
                     Henüz ilan oluşturmadınız.
@@ -230,7 +234,7 @@ export default async function HRDashboardPage() {
                       </tr>
                     </thead>
                     <tbody>
-                      {recentJobs.map((job: { id: string; title: string; status: string; created_at: string; companies?: { name: string | null } | null }) => (
+                      {(recentJobs as any[]).map((job) => (
                         <tr
                           key={job.id}
                           className="border-b border-border/50 hover:bg-muted/20 transition-colors"

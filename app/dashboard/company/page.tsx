@@ -113,27 +113,30 @@ export default async function CompanyDashboardPage() {
     <div className="container mx-auto px-4 py-8 space-y-8 min-h-screen max-w-7xl">
       {/* Üst başlık */}
       <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
-        <div className="flex items-center gap-4">
-          {company?.logo_url ? (
-            <img
-              src={company.logo_url}
-              alt=""
-              className="size-14 rounded-xl object-contain border border-border bg-card"
-            />
-          ) : (
-            <div className="size-14 rounded-xl border-2 border-dashed border-muted-foreground/30 bg-muted/50 flex items-center justify-center">
-              <Briefcase className="size-7 text-muted-foreground" />
+          <div className="flex items-center gap-4">
+            {company?.logo_url ? (
+              <img
+                src={company.logo_url}
+                alt=""
+                className="size-14 rounded-xl object-contain border border-border bg-card"
+              />
+            ) : (
+              <div className="size-14 rounded-xl border-2 border-dashed border-muted-foreground/30 bg-muted/50 flex items-center justify-center">
+                <Briefcase className="size-7 text-muted-foreground" />
+              </div>
+            )}
+            <div>
+              <h1 className="text-2xl font-bold text-foreground">
+                {company?.name ?? "Şirket Paneli"}
+              </h1>
+              <p className="text-sm text-muted-foreground">
+                İlanlarınızı ve başvuruları yönetin
+              </p>
+              <p className="mt-1 text-xs text-primary/80">
+                ATS skorları ve AI tabanlı CV eşleştirme ile en uygun adayları öne çıkarın.
+              </p>
             </div>
-          )}
-          <div>
-            <h1 className="text-2xl font-bold text-foreground">
-              {company?.name ?? "Şirket Paneli"}
-            </h1>
-            <p className="text-sm text-muted-foreground">
-              İlanlarınızı ve başvuruları yönetin
-            </p>
           </div>
-        </div>
         <Button asChild>
           <Link href="/dashboard/company/ayarlar" className="gap-2">
             Şirket bilgilerini düzenle

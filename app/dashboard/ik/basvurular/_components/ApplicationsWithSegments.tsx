@@ -38,6 +38,7 @@ type ApplicationRow = {
   match_score?: number | null
   match_reason?: string | null
   match_details?: MatchDetails | null
+  ats_scores?: { final_score: number | null }[] | null
   job_postings?: { title?: string } | null
   profiles?: { full_name?: string; email?: string; phone?: string } | null
   cvs?: { file_name?: string; file_url?: string } | null
@@ -197,6 +198,7 @@ export function ApplicationsWithSegments({
       <div className="grid grid-cols-1 gap-3">
         {filtered.map((application) => {
           const display = localAnalysis[application.id] ?? application
+          const atsScore = application.ats_scores?.[0]?.final_score ?? null
           const hasAnalysis =
             typeof display.match_score === "number" ||
             display.match_reason ||
@@ -213,17 +215,13 @@ export function ApplicationsWithSegments({
                     <CardDescription className="mt-1">{application.job_postings?.title}</CardDescription>
                   </div>
                   <div className="flex items-center gap-2 flex-wrap">
-                    {typeof display.match_score === "number" && (
+                    {typeof atsScore === "number" && (
                       <Badge
                         variant={
-                          display.match_score >= 80
-                            ? "success"
-                            : display.match_score >= 50
-                              ? "default"
-                              : "destructive"
+                          atsScore >= 80 ? "success" : atsScore >= 50 ? "default" : "destructive"
                         }
                       >
-                        %{display.match_score} eşleşme
+                        %{atsScore} ATS
                       </Badge>
                     )}
                     <Badge

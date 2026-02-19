@@ -37,6 +37,7 @@ type ApplicationRow = {
   match_score?: number | null
   match_reason?: string | null
   match_details?: MatchDetails | null
+  ats_scores?: { final_score: number | null }[] | null
   job_postings?: { title?: string } | null
   profiles?: { full_name?: string; email?: string; phone?: string } | null
   cvs?: { file_name?: string; file_url?: string } | null
@@ -133,7 +134,12 @@ export function ApplicationDashboard({ jobId, applications, matchedDeveloperIds 
         }
       })
       .filter((app) => {
-        const effectiveScore = typeof app.match_score === "number" ? app.match_score : null
+        const effectiveScore =
+          typeof app.ats_scores?.[0]?.final_score === "number"
+            ? app.ats_scores[0].final_score
+            : typeof app.match_score === "number"
+              ? app.match_score
+              : null
 
         // Skor aralığı
         if (effectiveScore !== null && (effectiveScore < scoreRange[0] || effectiveScore > scoreRange[1])) {

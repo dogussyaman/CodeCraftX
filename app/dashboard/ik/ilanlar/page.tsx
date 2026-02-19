@@ -128,6 +128,27 @@ export default async function JobsPage() {
                   <Button size="sm" variant="outline" asChild>
                     <Link href={`/dashboard/ik/ilanlar/${job.id}`}>Düzenle</Link>
                   </Button>
+                  <Button
+                    size="sm"
+                    variant="outline"
+                    onClick={async () => {
+                      try {
+                        const res = await fetch("/api/ats/recalculate-job", {
+                          method: "POST",
+                          headers: { "Content-Type": "application/json" },
+                          body: JSON.stringify({ jobId: job.id }),
+                        })
+                        const data = await res.json().catch(() => ({}))
+                        if (!res.ok || !data.success) {
+                          console.error("ATS recalculate failed", data)
+                        }
+                      } catch (e) {
+                        console.error(e)
+                      }
+                    }}
+                  >
+                    ATS Skorlarını Yenile
+                  </Button>
                   <Button size="sm" variant="outline" asChild>
                     <Link href={`/dashboard/ik/eslesmeler?job=${job.id}`}>Eşleşmeleri Gör</Link>
                   </Button>

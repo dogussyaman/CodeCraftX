@@ -9,6 +9,7 @@ import { Card, CardContent } from "@/components/ui/card"
 import { TypewriterEffect } from "@/components/ui/typewriter-effect"
 
 const TYPEWRITER_WORDS = [
+  "ATS skorları ile en uygun adayları öne çıkarın.",
   "Doğru adayı dakikalar içinde bulun.",
   "İşe alım sürenizi %90'a kadar kısaltın.",
   "CV analizi ile kaliteyi artırın.",
@@ -61,7 +62,7 @@ export function IsverenHero() {
           transition={{ duration: 0.5, delay: 0.25 }}
           className="mx-auto mb-8 max-w-2xl text-pretty text-lg text-muted-foreground"
         >
-          CV analizi ve beceri eşleştirme ile ihtiyacınız olan yazılımcıya hızlıca ulaşın.
+          CV analizi, ATS skoru ve semantik eşleştirme ile ilanlarınıza en iyi uyan geliştiricileri dakikalar içinde görün.
         </motion.p>
 
         <motion.div

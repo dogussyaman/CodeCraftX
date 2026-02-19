@@ -159,9 +159,51 @@ export interface Application {
   cover_letter?: string
   match_score?: number
   match_reason?: string
+  match_details?: any
   status: ApplicationStatus
   created_at: string
   updated_at: string
+}
+
+export interface ATSScoreRow {
+  id: string
+  application_id: string
+  job_id: string
+  candidate_id: string
+  rule_score: number
+  semantic_score: number
+  final_score: number
+  scoring_breakdown: any
+  algorithm_version: string
+  status: "pending" | "calculating" | "completed" | "failed"
+  error_message: string | null
+  calculated_at: string | null
+  created_at: string
+  updated_at: string
+}
+
+export interface AIMatchingLog {
+  id: string
+  ats_score_id: string | null
+  application_id: string
+  model_used: string
+  cv_embedding_source?: "stored" | "generated" | null
+  job_embedding_source?: "stored" | "generated" | null
+  cosine_similarity?: number | null
+  semantic_score?: number | null
+  tokens_used?: number | null
+  latency_ms?: number | null
+  error_message?: string | null
+  created_at: string
+}
+
+export interface ScoringAlgorithmVersion {
+  id: string
+  version: string
+  description?: string | null
+  weights: Record<string, any>
+  is_active: boolean
+  created_at: string
 }
 
 export interface Project {

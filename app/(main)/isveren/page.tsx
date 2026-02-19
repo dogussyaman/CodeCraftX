@@ -6,6 +6,7 @@ import { IsverenHeroSection } from "@/components/home/IsverenHeroSection"
 import { IsverenBenefits } from "./_components/IsverenBenefits"
 import { IsverenHowItWorks } from "./_components/IsverenHowItWorks"
 import { IsverenLiveSupportAndMatching } from "./_components/IsverenLiveSupportAndMatching"
+import { IsverenAtsFlow } from "./_components/IsverenAtsFlow"
 import { IsverenFeatures } from "./_components/IsverenFeatures"
 import { IsverenStats } from "./_components/IsverenStats"
 import { IsverenCompanyRequest } from "./_components/IsverenCompanyRequest"
@@ -26,6 +27,7 @@ export default function IsverenPage() {
       <IsverenBenefits />
       <IsverenHowItWorks />
       <IsverenLiveSupportAndMatching />
+      <IsverenAtsFlow />
       <IsverenFeatures />
       <IsverenStats />
       <PricingSection ctaPathPrefix="/isveren" ctaHashAnchor="sirket-talebi" />
