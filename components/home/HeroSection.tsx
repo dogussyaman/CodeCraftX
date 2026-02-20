@@ -185,6 +185,7 @@ export function HeroSection() {
                       className="relative h-full overflow-hidden rounded-2xl border border-accent-500/10 bg-white/80 p-0.5 shadow-[0_24px_64px_rgba(124,45,18,0.18)] dark:border-white/5 dark:bg-zinc-950/80 dark:shadow-[0_24px_64px_rgba(0,0,0,0.5)]"
                     >
                       <Image
+                        key={src}
                         src={src}
                         alt="CodeCraftX dashboard görünümü"
                         width={1920}
