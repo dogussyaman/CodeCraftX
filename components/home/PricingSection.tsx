@@ -1,6 +1,6 @@
 "use client"
 
-import { useState } from "react"
+import { useState, useEffect } from "react"
 import Link from "next/link"
 import { useAuth } from "@/hooks/use-auth"
 import { Button } from "@/components/ui/button"
@@ -17,6 +17,7 @@ import {
 } from "@/components/ui/tooltip"
 import { getPlanPrice } from "@/lib/billing/plans"
 import type { BillingPeriod } from "@/lib/payments/types"
+import type { CompanyPlan } from "@/lib/types"
 
 interface PlanFeature {
     text: string
@@ -99,6 +100,10 @@ function PricingCard({
               ? getPlanPrice(plan.slug, "monthly")
               : Math.round(getPlanPrice(plan.slug, "annually") / 12)
     const isHighlighted = plan.popular || isCurrentPlan
+    const showPopularBadge = plan.popular
+    const showCurrentPlanBadge = isCurrentPlan && !plan.popular
+    const isLoggedIn = useAuth()
+
 
     return (
         <motion.div
@@ -111,23 +116,27 @@ function PricingCard({
             <Card
                 className={cn(
                     "relative h-full flex flex-col transition-all duration-300",
-                    "bg-white/75 dark:bg-zinc-900/60 border border-accent-500/20 hover:shadow-xl hover:shadow-accent-500/10",
-                    isHighlighted && "border-2 border-accent-500 shadow-lg shadow-accent-500/20"
+                    "bg-white/75 dark:bg-zinc-900/60 hover:shadow-xl hover:shadow-accent-500/10",
+                    showCurrentPlanBadge
+                        ? "border border-border"
+                        : "border border-accent-500/20",
+                    showPopularBadge && !showCurrentPlanBadge && "border-2 border-accent-500 shadow-lg shadow-accent-500/20"
                 )}
             >
-                {plan.popular && (
+                {showPopularBadge && (
                     <div className="absolute -top-3 left-1/2 -translate-x-1/2">
-                        <Badge className="bg-gradient-to-r from-accent-500 to-accent-400 text-white hover:from-accent-600 hover:to-accent-500 px-3 py-1 text-xs font-medium rounded-full">
+                        <Badge className="from-accent-500 to-accent-400 text-white hover:from-accent-600 hover:to-accent-500 px-3 py-1 text-xs font-medium rounded-full">
                             En Popüler
                         </Badge>
                     </div>
-                )}
-                {isCurrentPlan && !plan.popular && (
-                    <div className="absolute -top-3 left-1/2 -translate-x-1/2">
-                        <Badge className="bg-gradient-to-r from-accent-500 to-accent-400 text-white hover:from-accent-600 hover:to-accent-500 px-3 py-1 text-xs font-medium rounded-full">
-                            Mevcut Planınız
-                        </Badge>
-                    </div>
+                )}          
+                {showCurrentPlanBadge && (
+                    <Badge variant= 'secondary'             
+                        className="absolute right-3 top-3 origin-top-right"
+                        aria-hidden
+                    >
+                        Mevcut plan
+                    </Badge>
                 )}
 
                 <CardContent className="p-8 grow flex flex-col">
@@ -159,11 +168,11 @@ function PricingCard({
                         className={cn(
                             "w-full mb-8 transition-colors",
                             isHighlighted
-                                ? "bg-gradient-to-r from-accent-500 to-accent-400 text-white border-2 border-accent-500 hover:from-accent-600 hover:to-accent-500 hover:border-accent-600"
+                                ? "from-accent-500 to-accent-400 text-white border-2 border-accent-500 hover:from-accent-600 hover:to-accent-500 hover:border-accent-600"
                                 : "bg-accent-100/70 dark:bg-zinc-800 text-foreground border-2 border-accent-500/25 hover:bg-accent-200/70 dark:hover:bg-zinc-700 hover:border-accent-500/55"
                         )}
                     >
-                        <Link href={ctaLink}>{plan.cta}</Link>
+                        <Link href={isLoggedIn ? ctaLink : "/auth/kayit"}>{showCurrentPlanBadge ? "Planımı Değiştir" : plan.cta}</Link>
                     </Button>
 
                     {/* Features */}
@@ -212,9 +221,20 @@ export function PricingSection({
     ctaHashAnchor?: string
 } = {}) {
     const [billingPeriod, setBillingPeriod] = useState<BillingPeriod>("annually")
+    const [currentPlanSlug, setCurrentPlanSlug] = useState<CompanyPlan | null>(null)
     const { role } = useAuth()
     const isCompanyOrEmployee = !!role && companyRoles.includes(role as (typeof companyRoles)[number])
-    const freePlanIsCurrent = isCompanyOrEmployee
+
+    useEffect(() => {
+        if (!isCompanyOrEmployee) {
+            setCurrentPlanSlug(null)
+            return
+        }
+        fetch("/api/me/company-plan")
+            .then((res) => res.json())
+            .then((data: { plan?: CompanyPlan | null }) => setCurrentPlanSlug(data?.plan ?? null))
+            .catch(() => setCurrentPlanSlug(null))
+    }, [isCompanyOrEmployee])
 
     const getCtaLink = (plan: PricingPlan) => {
         const query = `plan=${plan.slug}&billing=${billingPeriod}`
@@ -236,7 +256,7 @@ export function PricingSection({
                     viewport={{ once: true }}
                     className="text-4xl md:text-5xl font-bold mb-6 text-foreground"
                 >
-                    Size uygun <span className="bg-gradient-to-r from-accent-500 to-accent-400 bg-clip-text text-transparent">planı seçin</span>
+                    Size uygun <span className="from-accent-500 to-accent-400 bg-clip-text text-transparent">planı seçin</span>
                 </motion.h2>
                 <motion.p
                     initial={{ opacity: 0, y: 20 }}
@@ -292,7 +312,7 @@ export function PricingSection({
                         plan={plan}
                         billingPeriod={billingPeriod}
                         delay={idx * 0.1}
-                        isCurrentPlan={plan.name === "Basic" ? freePlanIsCurrent : undefined}
+                        isCurrentPlan={currentPlanSlug != null && plan.slug === currentPlanSlug ? true : undefined}
                         ctaLink={getCtaLink(plan)}
                     />
                 ))}

@@ -11,7 +11,7 @@ export function IsverenPricingCta() {
           <h2 className="mb-6 text-4xl font-bold">Hemen Başlayın</h2>
           <p className="mb-8 text-xl text-muted-foreground">İşe alım süreçlerinizi optimize etmek için bugün kaydolun.</p>
           <div className="flex flex-col justify-center gap-4 sm:flex-row">
-            <Button size="lg" asChild className="group bg-gradient-to-r from-accent-500 to-accent-400 text-white hover:from-accent-600 hover:to-accent-500">
+            <Button size="lg" asChild className="group from-accent-500 to-accent-400 text-white hover:from-accent-600 hover:to-accent-500">
               <Link href="/auth/kayit">
                 Ücretsiz Kaydol
                 <ArrowRight className="ml-2 size-4 transition-transform group-hover:translate-x-1" />
