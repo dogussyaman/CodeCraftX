@@ -14,13 +14,14 @@ function getBaseUrl(): string {
   return ""
 }
 
+/** 303 See Other: browser follows with GET (fixes POST→uyelik 405). */
 function redirectToUyelik(base: string, token: string | null) {
   const target = new URL("/dashboard/company/uyelik", base)
   if (token) {
     target.searchParams.set("payment", "callback")
     target.searchParams.set("token", token)
   }
-  return NextResponse.redirect(target)
+  return NextResponse.redirect(target, 303)
 }
 
 export async function GET(request: NextRequest) {

@@ -21,6 +21,14 @@ interface StoredCheckout {
   planDisplayName: string
 }
 
+interface PaymentDetailsResponse {
+  plan: CompanyPlan
+  billingPeriod: BillingPeriod
+  amount: number
+  planDisplayName: string
+  currency?: string
+}
+
 const PLAN_DESCRIPTIONS: Record<CompanyPlan, string> = {
   free: "Bireyler ve küçük projeler için ideal",
   orta: "Büyüyen takımlar ve işletmeler için",
@@ -89,10 +97,49 @@ export default function OdemePage() {
 
   useEffect(() => {
     if (!mounted) return
-    const plan = (searchParams.get("plan") as CompanyPlan) || "orta"
-    const billingPeriod = (searchParams.get("billing") as BillingPeriod) || "monthly"
+    const paymentId = searchParams.get("paymentId")
+    const planParam = (searchParams.get("plan") as CompanyPlan) || "orta"
+    const billingParam = (searchParams.get("billing") as BillingPeriod) || "monthly"
     const amountParam = searchParams.get("amount")
-    const amount = amountParam ? Number(amountParam) : 0
+    const amountFromQuery = amountParam ? Number(amountParam) : 0
+
+    const applyStoredOrFallback = (checkoutFormContent: string, details: { plan: CompanyPlan; billingPeriod: BillingPeriod; amount: number; planDisplayName: string }) => {
+      setData({
+        checkoutFormContent,
+        plan: details.plan,
+        billingPeriod: details.billingPeriod,
+        amount: details.amount,
+        planDisplayName: details.planDisplayName,
+      })
+    }
+
+    if (paymentId) {
+      fetch(`/api/company/payment-details?paymentId=${encodeURIComponent(paymentId)}`)
+        .then((res) => {
+          if (!res.ok) throw new Error("Payment details not found")
+          return res.json() as Promise<PaymentDetailsResponse>
+        })
+        .then((api) => {
+          const raw = typeof window !== "undefined" ? window.sessionStorage.getItem(STORAGE_KEY) : null
+          let checkoutFormContent = ""
+          try {
+            const stored = raw ? JSON.parse(raw) : null
+            checkoutFormContent = stored?.checkoutFormContent ?? ""
+          } catch {
+            // ignore
+          }
+          applyStoredOrFallback(checkoutFormContent, {
+            plan: api.plan,
+            billingPeriod: api.billingPeriod,
+            amount: api.amount,
+            planDisplayName: api.planDisplayName,
+          })
+        })
+        .catch(() => {
+          router.replace("/dashboard/company/uyelik")
+        })
+      return
+    }
 
     try {
       const raw = typeof window !== "undefined" ? window.sessionStorage.getItem(STORAGE_KEY) : null
@@ -100,18 +147,24 @@ export default function OdemePage() {
       if (stored?.checkoutFormContent) {
         setData({
           checkoutFormContent: stored.checkoutFormContent,
-          plan: stored.plan || plan,
-          billingPeriod: stored.billingPeriod || billingPeriod,
-          amount: stored.amount ?? amount,
-          planDisplayName: stored.planDisplayName || getPlanDisplayName(plan),
+          plan: stored.plan || planParam,
+          billingPeriod: stored.billingPeriod || billingParam,
+          amount: stored.amount ?? amountFromQuery,
+          planDisplayName: stored.planDisplayName || getPlanDisplayName(planParam),
         })
         return
       }
     } catch {
       // ignore
     }
-    if (amount > 0) {
-      setData({ checkoutFormContent: "", plan, billingPeriod, amount, planDisplayName: getPlanDisplayName(plan) })
+    if (amountFromQuery > 0) {
+      setData({
+        checkoutFormContent: "",
+        plan: planParam,
+        billingPeriod: billingParam,
+        amount: amountFromQuery,
+        planDisplayName: getPlanDisplayName(planParam),
+      })
       return
     }
     router.replace("/dashboard/company/uyelik")
@@ -130,13 +183,18 @@ export default function OdemePage() {
 
   const { plan, billingPeriod, amount, planDisplayName, checkoutFormContent } = data
   const features = PLAN_FEATURES[plan] ?? []
-  const monthlyEquivalent = billingPeriod === "annually" ? Math.round(getPlanPrice(plan, "annually") / 12) : amount
-  const annualSaving = billingPeriod === "annually"
-    ? getPlanPrice(plan, "monthly") * 12 - getPlanPrice(plan, "annually")
-    : 0
+  const monthlyEquivalent = billingPeriod === "annually" ? Math.round(amount / 12) : amount
+  const annualSaving =
+    billingPeriod === "annually"
+      ? getPlanPrice(plan, "monthly") * 12 - amount
+      : 0
 
   return (
     <div className="min-h-screen bg-background">
+      <div>
+        test kartı: 5528790000000008, 12/30, 123.
+        test kartı: 5528790000000009, 12/30, 123.
+      </div>
       {/* Top bar */}
       <div className="border-b border-border bg-background/90 backdrop-blur-sm sticky top-0 z-10">
         <div className="container max-w-6xl mx-auto px-4 h-14 flex items-center gap-4">

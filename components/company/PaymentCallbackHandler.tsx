@@ -28,15 +28,23 @@ export function PaymentCallbackHandler() {
         if (cancelled) return
         if (data.success) {
           toast({
-            title: "Ödeme tamamlandı",
-            description: "Aboneliğiniz aktif edildi.",
+            title: "Ödeme alındı",
+            description: "Ödemeniz onaylandı, aboneliğiniz aktif edildi.",
           })
+          if (!cancelled) {
+            router.replace("/dashboard/company/uyelik", { scroll: true })
+            router.refresh()
+          }
         } else {
           toast({
             title: "Ödeme doğrulanamadı",
             description: data.error ?? "Lütfen tekrar deneyin.",
             variant: "destructive",
           })
+          if (!cancelled) {
+            router.replace("/dashboard/company/uyelik", { scroll: true })
+            router.refresh()
+          }
         }
       } catch {
         if (!cancelled) {
@@ -45,9 +53,6 @@ export function PaymentCallbackHandler() {
             description: "Ödeme doğrulanırken bir hata oluştu.",
             variant: "destructive",
           })
-        }
-      } finally {
-        if (!cancelled) {
           router.replace("/dashboard/company/uyelik", { scroll: true })
           router.refresh()
         }

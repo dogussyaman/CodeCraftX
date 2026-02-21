@@ -4,11 +4,12 @@ import { createClient } from "@/lib/supabase/server"
 import { SubscriptionCard } from "@/components/company/SubscriptionCard"
 import { PlanChangeSection } from "@/components/company/PlanChangeSection"
 import { PaymentCallbackHandler } from "@/components/company/PaymentCallbackHandler"
+import { PaymentHistoryCard } from "@/components/company/PaymentHistoryCard"
 import { getPlanPrice, getPlanDisplayName } from "@/lib/billing/plans"
 import type { CompanyPlan, SubscriptionStatus, BillingPeriod } from "@/lib/types"
 import { Card, CardContent, CardHeader } from "@/components/ui/card"
 import { Badge } from "@/components/ui/badge"
-import { History, Calendar, Check, Sparkles } from "lucide-react"
+import { Calendar, Check, Sparkles } from "lucide-react"
 
 const PLAN_DESCRIPTIONS: Record<CompanyPlan, string> = {
   free: "Temel özellikler, 5 ilan hakkı",
@@ -31,17 +32,6 @@ const PREMIUM_FEATURES = [
   "API erişimi",
   "White-label / özelleştirme seçenekleri",
 ]
-
-const STATUS_LABELS: Record<string, string> = {
-  pending: "Beklemede",
-  success: "Başarılı",
-  failed: "Başarısız",
-}
-
-const PROVIDER_LABELS: Record<string, string> = {
-  mock: "Test",
-  iyzico: "Kart (iyzico)",
-}
 
 function formatDate(iso: string | null | undefined): string {
   if (!iso) return "-"
@@ -111,10 +101,10 @@ export default async function CompanyUyelikPage() {
 
   const { data: payments } = await supabase
     .from("company_payments")
-    .select("id, plan, billing_period, amount, status, provider, paid_at, created_at")
+    .select("id, plan, billing_period, amount, status, provider, paid_at, created_at, conversation_id, metadata")
     .eq("company_id", company.id)
     .order("created_at", { ascending: false })
-    .limit(10)
+    .limit(25)
 
   const plan = (company.plan as CompanyPlan) ?? "free"
   const subscriptionStatus = (company.subscription_status as SubscriptionStatus) ?? "pending_payment"
@@ -248,51 +238,16 @@ export default async function CompanyUyelikPage() {
               <span>{formatDate(company.subscription_started_at)}</span>
             </div>
           )}
-        </CardContent>
-      </Card>
-
-      <Card className="rounded-2xl border border-border shadow-sm">
-        <CardHeader className="pb-2">
-          <div className="flex items-center gap-2">
-            <History className="size-5 text-muted-foreground" />
-            <h2 className="text-lg font-semibold">Ödeme geçmişi</h2>
-          </div>
-        </CardHeader>
-        <CardContent>
-          {payments && payments.length > 0 ? (
-            <div className="overflow-x-auto">
-              <table className="w-full text-sm">
-                <thead>
-                  <tr className="border-b text-left text-muted-foreground">
-                    <th className="pb-3 pr-4 font-medium">Tarih</th>
-                    <th className="pb-3 pr-4 font-medium">Plan</th>
-                    <th className="pb-3 pr-4 font-medium">Dönem</th>
-                    <th className="pb-3 pr-4 font-medium">Tutar</th>
-                    <th className="pb-3 pr-4 font-medium">Ödeme yöntemi</th>
-                    <th className="pb-3 font-medium">Durum</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  {payments.map((p) => (
-                    <tr key={p.id} className="border-b last:border-0">
-                      <td className="py-3 pr-4">
-                        {p.paid_at ? formatDate(p.paid_at) : formatDate(p.created_at)}
-                      </td>
-                      <td className="py-3 pr-4 font-medium">{getPlanDisplayName(p.plan as CompanyPlan)}</td>
-                      <td className="py-3 pr-4">{p.billing_period === "annually" ? "Yıllık" : "Aylık"}</td>
-                      <td className="py-3 pr-4 font-medium tabular-nums">{p.amount} ₺</td>
-                      <td className="py-3 pr-4 text-muted-foreground">{PROVIDER_LABELS[p.provider] ?? p.provider ?? "—"}</td>
-                      <td className="py-3">{STATUS_LABELS[p.status] ?? p.status}</td>
-                    </tr>
-                  ))}
-                </tbody>
-              </table>
+          {isActive && company.subscription_ends_at && (
+            <div className="flex justify-between">
+              <span className="text-muted-foreground">Sonraki yenileme tarihi</span>
+              <span className="font-medium">{formatDate(company.subscription_ends_at)}</span>
             </div>
-          ) : (
-            <p className="text-sm text-muted-foreground py-4">Henüz ödeme kaydı bulunmuyor.</p>
           )}
         </CardContent>
       </Card>
+
+      <PaymentHistoryCard payments={payments ?? []} />
     </div>
   )
 }

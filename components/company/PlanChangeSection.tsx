@@ -85,20 +85,21 @@ export function PlanChangeSection({
         return
       }
       if (data.checkoutFormContent) {
-        const selectedPrice = getPlanPrice(plan, billingPeriod)
         const payload = {
           checkoutFormContent: data.checkoutFormContent,
-          plan,
-          billingPeriod,
-          amount: selectedPrice,
-          planDisplayName: getPlanDisplayName(plan),
+          ...(data.paymentId && { paymentId: data.paymentId }),
         }
         try {
           sessionStorage.setItem(PAYMENT_STORAGE_KEY, JSON.stringify(payload))
         } catch {
           // ignore
         }
-        router.push(`/dashboard/company/uyelik/odeme?plan=${plan}&billing=${billingPeriod}&amount=${selectedPrice}`)
+        if (data.paymentId) {
+          router.push(`/dashboard/company/uyelik/odeme?paymentId=${data.paymentId}`)
+        } else {
+          const selectedPrice = getPlanPrice(plan, billingPeriod)
+          router.push(`/dashboard/company/uyelik/odeme?plan=${plan}&billing=${billingPeriod}&amount=${selectedPrice}`)
+        }
         return
       }
       toast({

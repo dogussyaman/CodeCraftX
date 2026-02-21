@@ -98,17 +98,18 @@ export function SubscriptionCard({
       if (data.checkoutFormContent) {
         const payload = {
           checkoutFormContent: data.checkoutFormContent,
-          plan,
-          billingPeriod,
-          amount,
-          planDisplayName: getPlanDisplayName(plan),
+          ...(data.paymentId && { paymentId: data.paymentId }),
         }
         try {
           sessionStorage.setItem(PAYMENT_STORAGE_KEY, JSON.stringify(payload))
         } catch {
           // ignore
         }
-        router.push(`/dashboard/company/uyelik/odeme?plan=${plan}&billing=${billingPeriod}&amount=${amount}`)
+        if (data.paymentId) {
+          router.push(`/dashboard/company/uyelik/odeme?paymentId=${data.paymentId}`)
+        } else {
+          router.push(`/dashboard/company/uyelik/odeme?plan=${plan}&billing=${billingPeriod}&amount=${amount}`)
+        }
         return
       }
       toast({
