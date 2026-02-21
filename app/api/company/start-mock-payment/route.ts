@@ -6,6 +6,10 @@ import type { CompanyPlan, BillingPeriod } from "@/lib/types"
 const VALID_PLANS: CompanyPlan[] = ["free", "orta", "premium"]
 const VALID_BILLING: BillingPeriod[] = ["monthly", "annually"]
 
+const USE_IYZICO = process.env.NEXT_PUBLIC_PAYMENT_PROVIDER === "iyzico"
+const SUPABASE_URL = process.env.NEXT_PUBLIC_SUPABASE_URL
+const SUPABASE_SERVICE_ROLE_KEY = process.env.SUPABASE_SERVICE_ROLE_KEY
+
 export async function POST(request: Request) {
   try {
     const supabase = await createServerClient()
@@ -61,6 +65,41 @@ export async function POST(request: Request) {
     const billingPeriod: BillingPeriod = VALID_BILLING.includes(body?.billingPeriod)
       ? body.billingPeriod
       : (company?.billing_period as BillingPeriod) || "monthly"
+
+    if (USE_IYZICO && SUPABASE_URL && SUPABASE_SERVICE_ROLE_KEY) {
+      const edgeRes = await fetch(`${SUPABASE_URL}/functions/v1/create-payment`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${SUPABASE_SERVICE_ROLE_KEY}`,
+        },
+        body: JSON.stringify({
+          companyId,
+          plan,
+          billingPeriod,
+          userId: user.id,
+        }),
+      })
+      const edgeData = await edgeRes.json().catch(() => ({}))
+      if (!edgeRes.ok) {
+        return NextResponse.json(
+          { error: edgeData.error ?? "Ödeme başlatılamadı" },
+          { status: edgeRes.status >= 500 ? 500 : 400 }
+        )
+      }
+      if (edgeData.checkoutFormContent) {
+        return NextResponse.json({
+          success: true,
+          checkoutFormContent: edgeData.checkoutFormContent,
+          paymentId: edgeData.paymentId,
+          mustChangePassword: profile?.must_change_password ?? false,
+        })
+      }
+      return NextResponse.json(
+        { error: edgeData.error ?? "Ödeme formu alınamadı" },
+        { status: 400 }
+      )
+    }
 
     const provider = getPaymentProvider()
     const service = new PaymentService(provider)

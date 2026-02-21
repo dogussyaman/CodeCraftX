@@ -16,6 +16,8 @@ import { useToast } from "@/hooks/use-toast"
 import { getPlanPrice, getPlanDisplayName } from "@/lib/billing/plans"
 import type { CompanyPlan, SubscriptionStatus, BillingPeriod } from "@/lib/types"
 import { ArrowUpCircle, Loader2 } from "lucide-react"
+
+const PAYMENT_STORAGE_KEY = "iyzico_checkout"
 import Link from "next/link"
 
 const BILLING_LABELS: Record<BillingPeriod, string> = {
@@ -80,13 +82,30 @@ export function PlanChangeSection({
           variant: "destructive",
         })
         router.push("/auth/giris")
-      } else {
-        toast({
-          title: "Ödeme tamamlandı",
-          description: "Planınız güncellendi ve aboneliğiniz aktif.",
-        })
-        router.refresh()
+        return
       }
+      if (data.checkoutFormContent) {
+        const selectedPrice = getPlanPrice(plan, billingPeriod)
+        const payload = {
+          checkoutFormContent: data.checkoutFormContent,
+          plan,
+          billingPeriod,
+          amount: selectedPrice,
+          planDisplayName: getPlanDisplayName(plan),
+        }
+        try {
+          sessionStorage.setItem(PAYMENT_STORAGE_KEY, JSON.stringify(payload))
+        } catch {
+          // ignore
+        }
+        router.push(`/dashboard/company/uyelik/odeme?plan=${plan}&billing=${billingPeriod}&amount=${selectedPrice}`)
+        return
+      }
+      toast({
+        title: "Ödeme tamamlandı",
+        description: "Planınız güncellendi ve aboneliğiniz aktif.",
+      })
+      router.refresh()
     } catch {
       toast({
         title: "Hata",
@@ -112,7 +131,7 @@ export function PlanChangeSection({
         {canUpgrade && (
           <>
             <p className="text-sm text-muted-foreground">
-              Daha fazla özellik için planınızı yükseltebilirsiniz. Ödeme test ortamında mock olarak işlenir.
+              Daha fazla özellik için planınızı yükseltebilirsiniz.
             </p>
             <div className="grid gap-4 sm:grid-cols-2">
               <div className="space-y-2">

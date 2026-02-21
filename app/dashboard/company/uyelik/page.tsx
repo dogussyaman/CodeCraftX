@@ -1,7 +1,9 @@
+import { Suspense } from "react"
 import { redirect } from "next/navigation"
 import { createClient } from "@/lib/supabase/server"
 import { SubscriptionCard } from "@/components/company/SubscriptionCard"
 import { PlanChangeSection } from "@/components/company/PlanChangeSection"
+import { PaymentCallbackHandler } from "@/components/company/PaymentCallbackHandler"
 import { getPlanPrice, getPlanDisplayName } from "@/lib/billing/plans"
 import type { CompanyPlan, SubscriptionStatus, BillingPeriod } from "@/lib/types"
 import { Card, CardContent, CardHeader } from "@/components/ui/card"
@@ -34,6 +36,11 @@ const STATUS_LABELS: Record<string, string> = {
   pending: "Beklemede",
   success: "Başarılı",
   failed: "Başarısız",
+}
+
+const PROVIDER_LABELS: Record<string, string> = {
+  mock: "Test",
+  iyzico: "Kart (iyzico)",
 }
 
 function formatDate(iso: string | null | undefined): string {
@@ -104,7 +111,7 @@ export default async function CompanyUyelikPage() {
 
   const { data: payments } = await supabase
     .from("company_payments")
-    .select("id, plan, billing_period, amount, status, paid_at, created_at")
+    .select("id, plan, billing_period, amount, status, provider, paid_at, created_at")
     .eq("company_id", company.id)
     .order("created_at", { ascending: false })
     .limit(10)
@@ -118,6 +125,9 @@ export default async function CompanyUyelikPage() {
 
   return (
     <div className="container mx-auto px-4 py-8 space-y-8 min-h-screen max-w-6xl">
+      <Suspense fallback={null}>
+        <PaymentCallbackHandler />
+      </Suspense>
       <div>
         <h1 className="text-2xl font-bold tracking-tight">Üyelik Merkezi</h1>
         <p className="text-muted-foreground mt-1">
@@ -258,6 +268,7 @@ export default async function CompanyUyelikPage() {
                     <th className="pb-3 pr-4 font-medium">Plan</th>
                     <th className="pb-3 pr-4 font-medium">Dönem</th>
                     <th className="pb-3 pr-4 font-medium">Tutar</th>
+                    <th className="pb-3 pr-4 font-medium">Ödeme yöntemi</th>
                     <th className="pb-3 font-medium">Durum</th>
                   </tr>
                 </thead>
@@ -270,6 +281,7 @@ export default async function CompanyUyelikPage() {
                       <td className="py-3 pr-4 font-medium">{getPlanDisplayName(p.plan as CompanyPlan)}</td>
                       <td className="py-3 pr-4">{p.billing_period === "annually" ? "Yıllık" : "Aylık"}</td>
                       <td className="py-3 pr-4 font-medium tabular-nums">{p.amount} ₺</td>
+                      <td className="py-3 pr-4 text-muted-foreground">{PROVIDER_LABELS[p.provider] ?? p.provider ?? "—"}</td>
                       <td className="py-3">{STATUS_LABELS[p.status] ?? p.status}</td>
                     </tr>
                   ))}

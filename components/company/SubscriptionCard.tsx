@@ -5,8 +5,11 @@ import { useRouter } from "next/navigation"
 import { Card, CardContent, CardHeader } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
 import { useToast } from "@/hooks/use-toast"
+import { getPlanPrice, getPlanDisplayName } from "@/lib/billing/plans"
 import type { CompanyPlan, SubscriptionStatus, BillingPeriod } from "@/lib/types"
 import { CreditCard, Loader2 } from "lucide-react"
+
+const PAYMENT_STORAGE_KEY = "iyzico_checkout"
 
 const SUBSCRIPTION_STATUS_LABELS: Record<SubscriptionStatus, string> = {
   pending_payment: "Ödeme Bekleniyor",
@@ -63,8 +66,9 @@ export function SubscriptionCard({
   const [loading, setLoading] = useState(false)
   const isActive = subscriptionStatus === "active"
   const isPending = subscriptionStatus === "pending_payment"
+  const amount = currentPlanPrice ?? getPlanPrice(plan, billingPeriod)
 
-  const handleMockPayment = async () => {
+  const handleStartPayment = async () => {
     setLoading(true)
     try {
       const res = await fetch("/api/company/start-mock-payment", {
@@ -89,13 +93,29 @@ export function SubscriptionCard({
           variant: "destructive",
         })
         router.push("/auth/giris")
-      } else {
-        toast({
-          title: "Ödeme tamamlandı",
-          description: "Aboneliğiniz aktif edildi.",
-        })
-        router.refresh()
+        return
       }
+      if (data.checkoutFormContent) {
+        const payload = {
+          checkoutFormContent: data.checkoutFormContent,
+          plan,
+          billingPeriod,
+          amount,
+          planDisplayName: getPlanDisplayName(plan),
+        }
+        try {
+          sessionStorage.setItem(PAYMENT_STORAGE_KEY, JSON.stringify(payload))
+        } catch {
+          // ignore
+        }
+        router.push(`/dashboard/company/uyelik/odeme?plan=${plan}&billing=${billingPeriod}&amount=${amount}`)
+        return
+      }
+      toast({
+        title: "Ödeme tamamlandı",
+        description: "Aboneliğiniz aktif edildi.",
+      })
+      router.refresh()
     } catch {
       toast({
         title: "Hata",
@@ -147,10 +167,10 @@ export function SubscriptionCard({
         {isPending && (
           <div className="pt-2">
             <p className="text-sm text-muted-foreground mb-2">
-              Aboneliğinizi başlatmak için ödemeyi tamamlayın. (Test ortamında mock ödeme kullanılıyor.)
+              Aboneliğinizi başlatmak için ödemeyi tamamlayın.
             </p>
             <Button
-              onClick={handleMockPayment}
+              onClick={handleStartPayment}
               disabled={loading}
             >
               {loading ? (
