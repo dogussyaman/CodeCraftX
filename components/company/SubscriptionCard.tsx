@@ -9,7 +9,6 @@ import { getPlanPrice, getPlanDisplayName } from "@/lib/billing/plans"
 import type { CompanyPlan, SubscriptionStatus, BillingPeriod } from "@/lib/types"
 import { CreditCard, Loader2 } from "lucide-react"
 
-const PAYMENT_STORAGE_KEY = "iyzico_checkout"
 
 const SUBSCRIPTION_STATUS_LABELS: Record<SubscriptionStatus, string> = {
   pending_payment: "Ödeme Bekleniyor",
@@ -95,21 +94,8 @@ export function SubscriptionCard({
         router.push("/auth/giris")
         return
       }
-      if (data.checkoutFormContent) {
-        const payload = {
-          checkoutFormContent: data.checkoutFormContent,
-          ...(data.paymentId && { paymentId: data.paymentId }),
-        }
-        try {
-          sessionStorage.setItem(PAYMENT_STORAGE_KEY, JSON.stringify(payload))
-        } catch {
-          // ignore
-        }
-        if (data.paymentId) {
-          router.push(`/dashboard/company/uyelik/odeme?paymentId=${data.paymentId}`)
-        } else {
-          router.push(`/dashboard/company/uyelik/odeme?plan=${plan}&billing=${billingPeriod}&amount=${amount}`)
-        }
+      if (data.paymentId) {
+        router.push(`/dashboard/company/uyelik/odeme?paymentId=${data.paymentId}`)
         return
       }
       toast({

@@ -21,7 +21,7 @@ const STATUS_LABELS: Record<string, string> = {
 
 const PROVIDER_LABELS: Record<string, string> = {
   mock: "Test",
-  iyzico: "Kart (iyzico)",
+  stripe: "Kart (Stripe)",
 }
 
 const BILLING_FILTER_OPTIONS = [
@@ -102,7 +102,7 @@ export function PaymentHistoryCard({ payments }: PaymentHistoryCardProps) {
         </CardHeader>
         <CardContent className="space-y-3">
           <p className="text-xs text-muted-foreground">
-            Yukarıdaki fiyat, şu anki aktif aboneliğinize aittir. Tablodaki &quot;Tamamlanmadı&quot; kayıtları, ödeme sayfası açılıp iyzico ile ödeme yapılmadan kapatılan denemelerdir.
+            Yukarıdaki fiyat, şu anki aktif aboneliğinize aittir. Tablodaki &quot;Tamamlanmadı&quot; kayıtları, ödeme sayfası açılıp ödeme yapılmadan kapatılan denemelerdir.
           </p>
           {filteredPayments.length > 0 ? (
             <div className="overflow-x-auto">

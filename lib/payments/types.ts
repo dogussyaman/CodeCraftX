@@ -35,7 +35,7 @@ export interface ConfirmPaymentResult {
 }
 
 export interface PaymentProvider {
-  name: "mock" | "stripe" | "iyzico" | string
+  name: "mock" | "stripe" | string
   createPaymentIntent(
     input: CreatePaymentIntentInput
   ): Promise<CreatePaymentIntentResult>

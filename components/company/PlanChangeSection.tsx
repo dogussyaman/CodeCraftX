@@ -17,7 +17,6 @@ import { getPlanPrice, getPlanDisplayName } from "@/lib/billing/plans"
 import type { CompanyPlan, SubscriptionStatus, BillingPeriod } from "@/lib/types"
 import { ArrowUpCircle, Loader2 } from "lucide-react"
 
-const PAYMENT_STORAGE_KEY = "iyzico_checkout"
 import Link from "next/link"
 
 const BILLING_LABELS: Record<BillingPeriod, string> = {
@@ -84,22 +83,8 @@ export function PlanChangeSection({
         router.push("/auth/giris")
         return
       }
-      if (data.checkoutFormContent) {
-        const payload = {
-          checkoutFormContent: data.checkoutFormContent,
-          ...(data.paymentId && { paymentId: data.paymentId }),
-        }
-        try {
-          sessionStorage.setItem(PAYMENT_STORAGE_KEY, JSON.stringify(payload))
-        } catch {
-          // ignore
-        }
-        if (data.paymentId) {
-          router.push(`/dashboard/company/uyelik/odeme?paymentId=${data.paymentId}`)
-        } else {
-          const selectedPrice = getPlanPrice(plan, billingPeriod)
-          router.push(`/dashboard/company/uyelik/odeme?plan=${plan}&billing=${billingPeriod}&amount=${selectedPrice}`)
-        }
+      if (data.paymentId) {
+        router.push(`/dashboard/company/uyelik/odeme?paymentId=${data.paymentId}`)
         return
       }
       toast({
