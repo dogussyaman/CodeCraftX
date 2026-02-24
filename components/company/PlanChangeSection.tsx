@@ -5,6 +5,7 @@ import { useRouter } from "next/navigation"
 import { Card, CardContent, CardHeader } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
 import { Label } from "@/components/ui/label"
+import { Badge } from "@/components/ui/badge"
 import {
   Select,
   SelectContent,
@@ -15,16 +16,21 @@ import {
 import { useToast } from "@/hooks/use-toast"
 import { getPlanPrice, getPlanDisplayName } from "@/lib/billing/plans"
 import type { CompanyPlan, SubscriptionStatus, BillingPeriod } from "@/lib/types"
-import { ArrowUpCircle, Loader2 } from "lucide-react"
-
+import { ArrowUpCircle, Loader2, Zap } from "lucide-react"
 import Link from "next/link"
 
 const BILLING_LABELS: Record<BillingPeriod, string> = {
   monthly: "Aylık",
-  annually: "Yıllık",
+  annually: "Yıllık (%20 indirim)",
 }
 
-const PAID_PLANS: CompanyPlan[] = ["orta", "premium"]
+const ALL_PAID_PLANS: CompanyPlan[] = ["orta", "premium"]
+
+const PLAN_DESCRIPTIONS: Record<CompanyPlan, string> = {
+  free: "Temel özellikler",
+  orta: "Büyüyen ekipler için",
+  premium: "Sınırsız + öncelikli destek",
+}
 
 export interface PlanChangeSectionProps {
   companyId: string
@@ -39,24 +45,19 @@ export function PlanChangeSection({
 }: PlanChangeSectionProps) {
   const router = useRouter()
   const { toast } = useToast()
-  const [plan, setPlan] = useState<CompanyPlan>(currentPlan === "free" ? "orta" : currentPlan === "orta" ? "premium" : "orta")
+  const [plan, setPlan] = useState<CompanyPlan>(
+    currentPlan === "free" ? "orta" : currentPlan === "orta" ? "premium" : "orta"
+  )
   const [billingPeriod, setBillingPeriod] = useState<BillingPeriod>("monthly")
   const [loading, setLoading] = useState(false)
 
-  const isActive = subscriptionStatus === "active"
-  const upgradePlans = PAID_PLANS.filter((p) => p !== currentPlan)
-  const canUpgrade = upgradePlans.length > 0
   const isPaidPlan = currentPlan === "orta" || currentPlan === "premium"
+  const selectedPrice = getPlanPrice(plan, billingPeriod)
+  const monthlyPrice = getPlanPrice(plan, "monthly")
+  const annualPrice = getPlanPrice(plan, "annually")
+  const annualSaving = monthlyPrice * 12 - annualPrice
 
   const handleUpgrade = async () => {
-    if (plan === currentPlan) {
-      toast({
-        title: "Bilgi",
-        description: "Zaten bu plandasınız.",
-        variant: "destructive",
-      })
-      return
-    }
     setLoading(true)
     try {
       const res = await fetch("/api/company/start-mock-payment", {
@@ -76,8 +77,7 @@ export function PlanChangeSection({
       if (data.mustChangePassword) {
         toast({
           title: "Güvenlik uyarısı",
-          description:
-            "Hesabınız için şifre değişikliği zorunlu görünüyor. Lütfen yeniden giriş yapıp şifrenizi güncelleyin.",
+          description: "Lütfen yeniden giriş yapıp şifrenizi güncelleyin.",
           variant: "destructive",
         })
         router.push("/auth/giris")
@@ -103,88 +103,105 @@ export function PlanChangeSection({
     }
   }
 
-  const selectedPrice = getPlanPrice(plan, billingPeriod)
-
   return (
-    <Card>
-      <CardHeader className="pb-2">
+    <Card className="rounded-2xl border border-border shadow-sm">
+      <CardHeader className="pb-3">
         <div className="flex items-center gap-2">
-          <ArrowUpCircle className="size-5 text-muted-foreground" />
+          <ArrowUpCircle className="size-5 text-primary" />
           <h2 className="text-lg font-semibold">Plan Değiştir</h2>
         </div>
+        <p className="text-sm text-muted-foreground">
+          Planınızı istediğiniz zaman yükseltebilirsiniz.
+        </p>
       </CardHeader>
-      <CardContent className="space-y-4">
-        {canUpgrade && (
-          <>
-            <p className="text-sm text-muted-foreground">
-              Daha fazla özellik için planınızı yükseltebilirsiniz.
+      <CardContent className="space-y-5">
+        <div className="grid gap-4 sm:grid-cols-2">
+          <div className="space-y-2">
+            <Label className="text-sm font-medium">Yeni plan</Label>
+            <Select
+              value={plan}
+              onValueChange={(v) => setPlan(v as CompanyPlan)}
+            >
+              <SelectTrigger className="h-10">
+                <SelectValue />
+              </SelectTrigger>
+              <SelectContent>
+                {ALL_PAID_PLANS.map((p) => (
+                  <SelectItem key={p} value={p}>
+                    <div className="flex items-center gap-2">
+                      <span>{getPlanDisplayName(p)}</span>
+                      {p === currentPlan && (
+                        <Badge variant="secondary" className="text-xs py-0 px-1.5">Mevcut</Badge>
+                      )}
+                      {p === "premium" && p !== currentPlan && (
+                        <Badge className="text-xs py-0 px-1.5 bg-violet-600 text-white">Enterprise</Badge>
+                      )}
+                    </div>
+                  </SelectItem>
+                ))}
+              </SelectContent>
+            </Select>
+            <p className="text-xs text-muted-foreground">{PLAN_DESCRIPTIONS[plan]}</p>
+          </div>
+
+          <div className="space-y-2">
+            <Label className="text-sm font-medium">Faturalandırma</Label>
+            <Select
+              value={billingPeriod}
+              onValueChange={(v) => setBillingPeriod(v as BillingPeriod)}
+            >
+              <SelectTrigger className="h-10">
+                <SelectValue />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="monthly">
+                  Aylık — {monthlyPrice.toLocaleString("tr-TR")} ₺
+                </SelectItem>
+                <SelectItem value="annually">
+                  Yıllık — {annualPrice.toLocaleString("tr-TR")} ₺
+                </SelectItem>
+              </SelectContent>
+            </Select>
+            {billingPeriod === "annually" && annualSaving > 0 && (
+              <p className="text-xs text-emerald-600 dark:text-emerald-400 font-medium flex items-center gap-1">
+                <Zap className="size-3" />
+                Yılda {annualSaving.toLocaleString("tr-TR")} ₺ tasarruf
+              </p>
+            )}
+          </div>
+        </div>
+
+        <div className="rounded-xl border border-border bg-muted/30 p-4 flex items-center justify-between gap-4">
+          <div>
+            <p className="text-xs text-muted-foreground">Ödenecek tutar</p>
+            <p className="text-2xl font-bold tabular-nums text-foreground">
+              {selectedPrice.toLocaleString("tr-TR")} ₺
+              <span className="text-sm font-normal text-muted-foreground ml-1">
+                / {billingPeriod === "annually" ? "yıl" : "ay"}
+              </span>
             </p>
-            <div className="grid gap-4 sm:grid-cols-2">
-              <div className="space-y-2">
-                <Label>Yeni plan</Label>
-                <Select
-                  value={plan}
-                  onValueChange={(v) => setPlan(v as CompanyPlan)}
-                >
-                  <SelectTrigger>
-                    <SelectValue />
-                  </SelectTrigger>
-                  <SelectContent>
-                    {upgradePlans.map((p) => (
-                      <SelectItem key={p} value={p}>
-                        {getPlanDisplayName(p)} — {getPlanPrice(p, "monthly")} ₺/ay
-                      </SelectItem>
-                    ))}
-                  </SelectContent>
-                </Select>
-              </div>
-              <div className="space-y-2">
-                <Label>Faturalandırma dönemi</Label>
-                <Select
-                  value={billingPeriod}
-                  onValueChange={(v) => setBillingPeriod(v as BillingPeriod)}
-                >
-                  <SelectTrigger>
-                    <SelectValue />
-                  </SelectTrigger>
-                  <SelectContent>
-                    <SelectItem value="monthly">
-                      {BILLING_LABELS.monthly} — {getPlanPrice(plan, "monthly")} ₺
-                    </SelectItem>
-                    <SelectItem value="annually">
-                      {BILLING_LABELS.annually} — {getPlanPrice(plan, "annually")} ₺
-                    </SelectItem>
-                  </SelectContent>
-                </Select>
-              </div>
-            </div>
-            <div className="flex flex-wrap items-center gap-2">
-              <Button
-                onClick={handleUpgrade}
-                disabled={loading || selectedPrice === 0}
-              >
-                {loading ? (
-                  <Loader2 className="size-4 animate-spin mr-2" />
-                ) : null}
-                {selectedPrice > 0 ? `${selectedPrice} ₺ öde ve yükselt` : "Yükselt"}
-              </Button>
-            </div>
-          </>
-        )}
-        {isPaidPlan && upgradePlans.length === 0 && (
-          <p className="text-sm text-muted-foreground">
-            Şu an en yüksek plandasınız (Enterprise).
-          </p>
-        )}
+          </div>
+          <Button
+            onClick={handleUpgrade}
+            disabled={loading || selectedPrice === 0}
+            size="lg"
+            className="shrink-0"
+          >
+            {loading ? (
+              <Loader2 className="size-4 animate-spin mr-2" />
+            ) : null}
+            Ödeme Adımına Geç
+          </Button>
+        </div>
+
         {isPaidPlan && (
-          <div className="rounded-lg border border-amber-500/30 bg-amber-500/5 p-3 text-sm text-muted-foreground">
-            <strong className="text-foreground">Plan düşürmek</strong> (örn. Enterprise → Pro veya Basic) için
-            destek talebi oluşturun. Dönem sonunda geçiş yapılabilir.
+          <div className="rounded-lg border border-amber-500/30 bg-amber-500/5 p-3 text-xs text-muted-foreground">
+            <strong className="text-foreground">Plana düşürmek</strong> için destek talebi oluşturun.{" "}
             <Link
               href="/dashboard/company/destek"
-              className="ml-1 text-primary underline-offset-2 hover:underline"
+              className="text-primary underline-offset-2 hover:underline"
             >
-              Destek talebi oluştur
+              Destek talebi oluştur →
             </Link>
           </div>
         )}

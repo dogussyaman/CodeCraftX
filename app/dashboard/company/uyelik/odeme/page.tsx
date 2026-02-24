@@ -343,19 +343,32 @@ export default function OdemePage() {
             {paymentState.status === "ready" &&
               stripePromise &&
               paymentState.clientSecret && (
-                <div className="rounded-xl border border-border bg-card p-6">
+                <div className="rounded-xl border border-border bg-card p-6 space-y-4">
+                  <div className="flex items-center gap-2 pb-2 border-b border-border">
+                    <CreditCard className="size-4 text-muted-foreground" />
+                    <h3 className="font-semibold text-sm">Ödeme Bilgileri</h3>
+                    <span className="ml-auto text-xs text-muted-foreground">Test Modu</span>
+                  </div>
+                  <div className="rounded-lg bg-amber-500/10 border border-amber-500/20 px-4 py-3 text-xs text-amber-700 dark:text-amber-400">
+                    Test kartı: <strong>4242 4242 4242 4242</strong> · Tarih: <strong>herhangi gelecek tarih</strong> · CVC: <strong>herhangi 3 hane</strong>
+                  </div>
                   <Elements
                     stripe={stripePromise}
                     options={{
                       clientSecret: paymentState.clientSecret,
                       appearance: {
                         theme: "stripe",
-                        variables: { borderRadius: "8px" },
+                        variables: { borderRadius: "8px", fontFamily: "inherit" },
+                        rules: {
+                          ".Input": { border: "1px solid hsl(var(--border))", boxShadow: "none" },
+                          ".Input:focus": { border: "1px solid hsl(var(--ring))", boxShadow: "0 0 0 2px hsl(var(--ring) / 0.2)" },
+                        },
                       },
                     }}
                   >
                     <StripeCheckout
                       amount={amount}
+                      paymentId={paymentId ?? ""}
                       onSuccess={handleSuccess}
                       onError={handleError}
                     />

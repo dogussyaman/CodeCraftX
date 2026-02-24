@@ -5,8 +5,9 @@ import { useRouter, useSearchParams } from "next/navigation"
 import { useToast } from "@/hooks/use-toast"
 
 /**
- * Handles payment callback params on uyelik page.
- * - payment_success=1: Stripe 3DS redirect; webhook already updated DB, just show toast.
+ * Stripe redirect (3DS / return_url) sonrası URL parametrelerini yakalar.
+ * - payment_intent + paymentId: /api/payment/confirm çağırıp DB'yi günceller.
+ * - payment_success=1 (eski/basit akış): sadece toast gösterir.
  */
 export function PaymentCallbackHandler() {
   const router = useRouter()
@@ -15,9 +16,50 @@ export function PaymentCallbackHandler() {
   const handled = useRef(false)
 
   useEffect(() => {
+    if (handled.current) return
+
     const paymentSuccess = searchParams.get("payment_success")
-    if (paymentSuccess !== "1" || handled.current) return
+    const paymentIntentId = searchParams.get("payment_intent")
+    const redirectStatus = searchParams.get("redirect_status")
+    const paymentId = searchParams.get("paymentId")
+
+    if (paymentSuccess !== "1" && redirectStatus !== "succeeded") return
     handled.current = true
+
+    if (paymentIntentId && paymentId) {
+      fetch("/api/payment/confirm", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ paymentIntentId, paymentId }),
+      })
+        .then(async (res) => {
+          if (res.ok) {
+            toast({
+              title: "Ödeme alındı",
+              description: "Ödemeniz onaylandı, aboneliğiniz aktif edildi.",
+            })
+          } else {
+            const json = await res.json().catch(() => ({}))
+            toast({
+              title: "Ödeme doğrulanamadı",
+              description: json?.error ?? "Lütfen üyelik sayfanızı kontrol edin.",
+              variant: "destructive",
+            })
+          }
+        })
+        .catch(() => {
+          toast({
+            title: "Hata",
+            description: "Ödeme doğrulanırken bir sorun oluştu.",
+            variant: "destructive",
+          })
+        })
+        .finally(() => {
+          router.replace("/dashboard/company/uyelik", { scroll: true })
+          router.refresh()
+        })
+      return
+    }
 
     toast({
       title: "Ödeme alındı",

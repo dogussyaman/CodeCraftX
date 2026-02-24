@@ -35,6 +35,8 @@ export class PaymentService {
   async startPayment(input: StartPaymentInput): Promise<StartPaymentResult> {
     const admin = createAdminClient()
     const currency = input.currency ?? DEFAULT_CURRENCY
+    const allowMultiple =
+      process.env.ALLOW_MULTIPLE_TEST_PAYMENTS === "true"
 
     const { data: company } = await admin
       .from("companies")
@@ -47,7 +49,10 @@ export class PaymentService {
     }
     const plan = (input.plan || (company.plan as CompanyPlan) || "free") as CompanyPlan
     const isPlanChange = plan !== (company.plan as CompanyPlan)
-    if (company.subscription_status === "active" && !isPlanChange) {
+
+    // Üretimde aynı plan için tekrar ödeme açmayı engelle,
+    // lokal/test ortamında ALLOW_MULTIPLE_TEST_PAYMENTS=true ise her zaman yeni ödeme kaydı oluştur.
+    if (!allowMultiple && company.subscription_status === "active" && !isPlanChange) {
       return {
         paymentId: "",
         status: "success",
