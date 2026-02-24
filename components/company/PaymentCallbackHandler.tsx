@@ -55,8 +55,8 @@ export function PaymentCallbackHandler() {
           })
         })
         .finally(() => {
-          router.replace("/dashboard/company/uyelik", { scroll: true })
           router.refresh()
+          router.replace("/dashboard/company/uyelik", { scroll: true })
         })
       return
     }
@@ -65,8 +65,8 @@ export function PaymentCallbackHandler() {
       title: "Ödeme alındı",
       description: "Ödemeniz onaylandı, aboneliğiniz aktif edildi.",
     })
-    router.replace("/dashboard/company/uyelik", { scroll: true })
     router.refresh()
+    router.replace("/dashboard/company/uyelik", { scroll: true })
   }, [searchParams, router, toast])
 
   return null

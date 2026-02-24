@@ -144,6 +144,7 @@ export default function OdemePage() {
   const handleSuccess = useCallback(() => {
     setPaymentState({ status: "success" })
     toast({ title: "Ödeme alındı", description: "Aboneliğiniz aktif edildi." })
+    router.refresh()
     router.replace("/dashboard/company/uyelik")
   }, [router, toast])
 

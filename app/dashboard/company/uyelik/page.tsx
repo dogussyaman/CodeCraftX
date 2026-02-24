@@ -1,7 +1,10 @@
 import { Suspense } from "react"
 import { redirect } from "next/navigation"
 import { createClient } from "@/lib/supabase/server"
+import { createAdminClient } from "@/lib/supabase/admin"
 import { PlanChangeSection } from "@/components/company/PlanChangeSection"
+
+export const dynamic = "force-dynamic"
 import { PaymentCallbackHandler } from "@/components/company/PaymentCallbackHandler"
 import { PaymentHistoryCard } from "@/components/company/PaymentHistoryCard"
 import { getPlanPrice, getPlanDisplayName } from "@/lib/billing/plans"
@@ -136,24 +139,27 @@ export default async function CompanyUyelikPage() {
 
   if (companyError || !company) redirect("/dashboard/company")
 
-  const { data: payments } = await supabase
-    .from("company_payments")
-    .select("id, plan, billing_period, amount, status, provider, paid_at, created_at, conversation_id, metadata")
-    .eq("company_id", company.id)
-    .order("created_at", { ascending: false })
-    .limit(50)
+  // Admin client: güncel şirket verisini RLS bypass ederek alıyoruz
+  const adminClient = createAdminClient()
 
-  const plan = (company.plan as CompanyPlan) ?? "free"
-  const subscriptionStatus = (company.subscription_status as SubscriptionStatus) ?? "pending_payment"
-  const billingPeriod = (company.billing_period as BillingPeriod) ?? "monthly"
+  const { data: freshCompany } = await adminClient
+    .from("companies")
+    .select(
+      "id, name, plan, subscription_status, billing_period, current_plan_price, last_payment_at, subscription_ends_at, subscription_started_at"
+    )
+    .eq("id", profile.company_id)
+    .single()
 
-  const displayPrice = company.current_plan_price ?? getPlanPrice(plan, billingPeriod)
+  const activeCompany = freshCompany ?? company
+
+  const plan = (activeCompany.plan as CompanyPlan) ?? "free"
+  const subscriptionStatus = (activeCompany.subscription_status as SubscriptionStatus) ?? "pending_payment"
+  const billingPeriod = (activeCompany.billing_period as BillingPeriod) ?? "monthly"
+
+  const displayPrice = activeCompany.current_plan_price ?? getPlanPrice(plan, billingPeriod)
   const isActive = subscriptionStatus === "active"
   const statusCfg = STATUS_CONFIG[subscriptionStatus]
   const StatusIcon = statusCfg.icon
-
-  const successPayments = (payments ?? []).filter((p) => p.status === "success")
-  const totalSpent = successPayments.reduce((sum, p) => sum + Number(p.amount ?? 0), 0)
 
   return (
     <div className="container mx-auto px-4 py-8 space-y-6 min-h-screen max-w-6xl">
@@ -242,22 +248,22 @@ export default async function CompanyUyelikPage() {
         <div className="flex flex-col gap-4">
           <StatMini
             label="Üyelik Süresi"
-            value={membershipDuration(company.subscription_started_at)}
-            sub={company.subscription_started_at ? formatDate(company.subscription_started_at) : "Başlangıç tarihi yok"}
+            value={membershipDuration(activeCompany.subscription_started_at)}
+            sub={activeCompany.subscription_started_at ? formatDate(activeCompany.subscription_started_at) : "Başlangıç tarihi yok"}
             icon={<Calendar className="size-4 text-sky-500" />}
             iconBg="bg-sky-500/10"
           />
           <StatMini
             label="Sonraki Yenileme"
-            value={isActive && company.subscription_ends_at ? formatDate(company.subscription_ends_at) : "—"}
+            value={isActive && activeCompany.subscription_ends_at ? formatDate(activeCompany.subscription_ends_at) : "—"}
             sub={isActive ? "Otomatik yenileme" : "Aktif abonelik yok"}
             icon={<TrendingUp className="size-4 text-emerald-500" />}
             iconBg="bg-emerald-500/10"
           />
           <StatMini
-            label="Toplam Harcama"
-            value={totalSpent > 0 ? `${totalSpent.toLocaleString("tr-TR")} ₺` : "—"}
-            sub={`${successPayments.length} başarılı ödeme`}
+            label="Son Ödeme"
+            value={activeCompany.last_payment_at ? formatDate(activeCompany.last_payment_at) : "—"}
+            sub={isActive ? "Abonelik aktif" : "Ödeme bekleniyor"}
             icon={<Zap className="size-4 text-amber-500" />}
             iconBg="bg-amber-500/10"
           />
@@ -266,13 +272,13 @@ export default async function CompanyUyelikPage() {
 
       {/* ── Plan Değiştir ──────────────────────────────────── */}
       <PlanChangeSection
-        companyId={company.id}
+        companyId={activeCompany.id}
         currentPlan={plan}
         subscriptionStatus={subscriptionStatus}
       />
 
       {/* ── Ödeme Geçmişi ──────────────────────────────────── */}
-      <PaymentHistoryCard payments={payments ?? []} />
+      <PaymentHistoryCard />
     </div>
   )
 }
