@@ -93,7 +93,7 @@ export async function POST(request: Request) {
       mustChangePassword: profile?.must_change_password ?? false,
     })
   } catch (error: unknown) {
-    console.error("start-mock-payment error:", error)
+    console.error("start-payment error:", error)
     const message =
       error instanceof Error ? error.message : "Beklenmeyen bir hata oluştu"
     return NextResponse.json({ error: message }, { status: 500 })

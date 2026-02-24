@@ -60,7 +60,7 @@ export function PlanChangeSection({
   const handleUpgrade = async () => {
     setLoading(true)
     try {
-      const res = await fetch("/api/company/start-mock-payment", {
+      const res = await fetch("/api/company/start-payment", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ companyId, plan, billingPeriod }),
@@ -127,7 +127,7 @@ export function PlanChangeSection({
               </SelectTrigger>
               <SelectContent>
                 {ALL_PAID_PLANS.map((p) => (
-                  <SelectItem key={p} value={p}>
+                  <SelectItem key={p} value={p} className="dark:bg-background dark:hover:bg-gray-800 cursor-pointer">
                     <div className="flex items-center gap-2">
                       <span>{getPlanDisplayName(p)}</span>
                       {p === currentPlan && (
@@ -154,10 +154,10 @@ export function PlanChangeSection({
                 <SelectValue />
               </SelectTrigger>
               <SelectContent>
-                <SelectItem value="monthly">
+                <SelectItem value="monthly" className="dark:bg-background dark:hover:bg-gray-800 cursor-pointer">
                   Aylık — {monthlyPrice.toLocaleString("tr-TR")} ₺
                 </SelectItem>
-                <SelectItem value="annually">
+                <SelectItem value="annually" className="dark:bg-background dark:hover:bg-gray-800 cursor-pointer">
                   Yıllık — {annualPrice.toLocaleString("tr-TR")} ₺
                 </SelectItem>
               </SelectContent>

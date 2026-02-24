@@ -2,7 +2,7 @@ import type { ReactNode } from "react"
 import { redirect } from "next/navigation"
 import { createClient } from "@/lib/supabase/server"
 import { CompanyPaymentGate } from "@/components/company/CompanyPaymentGate"
-import type { CompanyPlan, SubscriptionStatus, BillingPeriod } from "@/lib/types"
+import type { SubscriptionStatus } from "@/lib/types"
 
 export default async function CompanyLayout({ children }: { children: ReactNode }) {
   const supabase = await createClient()
@@ -29,16 +29,13 @@ export default async function CompanyLayout({ children }: { children: ReactNode 
     redirect("/dashboard")
   }
 
-  // Güvenlik için: hala must_change_password true ise kullanıcıyı ilk giriş akışına yönlendir
   if (profile.must_change_password) {
     redirect("/auth/sifre-degistir?first_login=true")
   }
 
   const { data: company } = await supabase
     .from("companies")
-    .select(
-      "id, subscription_status, plan, billing_period, current_plan_price, last_payment_at, subscription_ends_at",
-    )
+    .select("id, subscription_status")
     .eq("id", profile.company_id)
     .single()
 
@@ -47,19 +44,9 @@ export default async function CompanyLayout({ children }: { children: ReactNode 
   }
 
   const subscriptionStatus = (company.subscription_status ?? "pending_payment") as SubscriptionStatus
-  const plan = (company.plan ?? "free") as CompanyPlan
-  const billingPeriod = (company.billing_period ?? "monthly") as BillingPeriod
 
   return (
-    <CompanyPaymentGate
-      companyId={company.id}
-      subscriptionStatus={subscriptionStatus}
-      plan={plan}
-      billingPeriod={billingPeriod}
-      lastPaymentAt={company.last_payment_at}
-      subscriptionEndsAt={company.subscription_ends_at}
-      currentPlanPrice={company.current_plan_price}
-    >
+    <CompanyPaymentGate subscriptionStatus={subscriptionStatus}>
       {children}
     </CompanyPaymentGate>
   )
