@@ -1,8 +1,8 @@
 "use client"
 
 import { useState, useMemo } from "react"
-import { Card, CardContent, CardHeader } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
+import { Badge } from "@/components/ui/badge"
 import {
   Dialog,
   DialogContent,
@@ -11,42 +11,38 @@ import {
 } from "@/components/ui/dialog"
 import { getPlanDisplayName } from "@/lib/billing/plans"
 import type { CompanyPlan } from "@/lib/types"
-import { History, FileText } from "lucide-react"
+import {
+  CheckCircle2,
+  Clock,
+  XCircle,
+  History,
+  CreditCard,
+  Calendar,
+  ChevronRight,
+  TrendingUp,
+} from "lucide-react"
 
-const STATUS_LABELS: Record<string, string> = {
-  pending: "Tamamlanmadı",
-  success: "Başarılı",
-  failed: "Başarısız",
+const STATUS_CONFIG: Record<string, { label: string; icon: typeof CheckCircle2; cls: string; dotCls: string }> = {
+  success: { label: "Başarılı", icon: CheckCircle2, cls: "text-emerald-600 dark:text-emerald-400", dotCls: "bg-emerald-500" },
+  pending: { label: "Tamamlanmadı", icon: Clock, cls: "text-amber-600 dark:text-amber-400", dotCls: "bg-amber-400" },
+  failed: { label: "Başarısız", icon: XCircle, cls: "text-red-600 dark:text-red-400", dotCls: "bg-red-500" },
 }
 
 const PROVIDER_LABELS: Record<string, string> = {
   mock: "Test",
-  stripe: "Kart (Stripe)",
+  stripe: "Stripe",
 }
 
-const BILLING_FILTER_OPTIONS = [
+const PERIOD_LABELS: Record<string, string> = {
+  monthly: "Aylık",
+  annually: "Yıllık",
+}
+
+const FILTER_OPTIONS = [
   { value: "all", label: "Tümü" },
   { value: "monthly", label: "Aylık" },
   { value: "annually", label: "Yıllık" },
 ] as const
-
-function formatDate(iso: string | null | undefined): string {
-  if (!iso) return "-"
-  try {
-    return new Date(iso).toLocaleDateString("tr-TR", {
-      day: "numeric",
-      month: "long",
-      year: "numeric",
-    })
-  } catch {
-    return "-"
-  }
-}
-
-function shortId(id: string): string {
-  if (!id || id.length < 8) return id
-  return id.slice(-8).toUpperCase()
-}
 
 export interface PaymentRow {
   id: string
@@ -61,167 +57,271 @@ export interface PaymentRow {
   metadata?: Record<string, unknown> | null
 }
 
-interface PaymentHistoryCardProps {
-  payments: PaymentRow[]
+function formatDate(iso: string | null | undefined, short = false): string {
+  if (!iso) return "—"
+  try {
+    return new Date(iso).toLocaleDateString("tr-TR", short
+      ? { day: "numeric", month: "short" }
+      : { day: "numeric", month: "long", year: "numeric" }
+    )
+  } catch {
+    return "—"
+  }
 }
 
-export function PaymentHistoryCard({ payments }: PaymentHistoryCardProps) {
-  const [billingFilter, setBillingFilter] = useState<"all" | "monthly" | "annually">("all")
-  const [detailPayment, setDetailPayment] = useState<PaymentRow | null>(null)
+function formatTime(iso: string | null | undefined): string {
+  if (!iso) return ""
+  try {
+    return new Date(iso).toLocaleTimeString("tr-TR", { hour: "2-digit", minute: "2-digit" })
+  } catch {
+    return ""
+  }
+}
 
-  const filteredPayments = useMemo(() => {
-    if (billingFilter === "all") return payments
-    return payments.filter((p) => p.billing_period === billingFilter)
-  }, [payments, billingFilter])
+function shortId(id: string): string {
+  if (!id || id.length < 8) return id
+  return "#" + id.slice(-6).toUpperCase()
+}
+
+function groupByMonth(payments: PaymentRow[]) {
+  const groups: Record<string, PaymentRow[]> = {}
+  payments.forEach((p) => {
+    const date = new Date(p.paid_at ?? p.created_at)
+    const key = date.toLocaleDateString("tr-TR", { month: "long", year: "numeric" })
+    if (!groups[key]) groups[key] = []
+    groups[key].push(p)
+  })
+  return Object.entries(groups)
+}
+
+export function PaymentHistoryCard({ payments }: { payments: PaymentRow[] }) {
+  const [filter, setFilter] = useState<"all" | "monthly" | "annually">("all")
+  const [detail, setDetail] = useState<PaymentRow | null>(null)
+
+  const filtered = useMemo(() => {
+    if (filter === "all") return payments
+    return payments.filter((p) => p.billing_period === filter)
+  }, [payments, filter])
+
+  const grouped = useMemo(() => groupByMonth(filtered), [filtered])
+
+  const successTotal = useMemo(
+    () => filtered.filter((p) => p.status === "success").reduce((s, p) => s + Number(p.amount ?? 0), 0),
+    [filtered]
+  )
 
   return (
     <>
-      <Card className="rounded-2xl border border-border shadow-sm">
-        <CardHeader className="pb-2">
-          <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
-            <div className="flex items-center gap-2">
-              <History className="size-5 text-muted-foreground" />
-              <h2 className="text-lg font-semibold">Ödeme geçmişi</h2>
+      <div className="rounded-2xl border border-border bg-card overflow-hidden">
+        {/* Başlık */}
+        <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 px-6 py-5 border-b border-border">
+          <div className="flex items-center gap-3">
+            <div className="rounded-xl bg-muted/60 p-2">
+              <History className="size-4 text-muted-foreground" />
             </div>
-            {payments.length > 0 && (
-              <div className="flex gap-1 p-0.5 rounded-lg bg-muted/60">
-                {BILLING_FILTER_OPTIONS.map((opt) => (
-                  <Button
-                    key={opt.value}
-                    variant={billingFilter === opt.value ? "secondary" : "ghost"}
-                    size="sm"
-                    className="h-8 text-xs"
-                    onClick={() => setBillingFilter(opt.value)}
-                  >
-                    {opt.label}
-                  </Button>
-                ))}
-              </div>
-            )}
+            <div>
+              <h2 className="font-semibold text-foreground">İşlem Geçmişi</h2>
+              <p className="text-xs text-muted-foreground">
+                {filtered.length} kayıt
+                {successTotal > 0 && ` · Toplam ${successTotal.toLocaleString("tr-TR")} ₺`}
+              </p>
+            </div>
           </div>
-        </CardHeader>
-        <CardContent className="space-y-3">
-          <p className="text-xs text-muted-foreground">
-            Yukarıdaki fiyat, şu anki aktif aboneliğinize aittir. Tablodaki &quot;Tamamlanmadı&quot; kayıtları, ödeme sayfası açılıp ödeme yapılmadan kapatılan denemelerdir.
-          </p>
-          {filteredPayments.length > 0 ? (
-            <div className="overflow-x-auto">
-              <table className="w-full text-sm">
-                <thead>
-                  <tr className="border-b text-left text-muted-foreground">
-                    <th className="pb-3 pr-4 font-medium">Tarih</th>
-                    <th className="pb-3 pr-4 font-medium">Plan</th>
-                    <th className="pb-3 pr-4 font-medium">Dönem</th>
-                    <th className="pb-3 pr-4 font-medium">Tutar</th>
-                    <th className="pb-3 pr-4 font-medium">Ödeme yöntemi</th>
-                    <th className="pb-3 pr-4 font-medium">Durum</th>
-                    <th className="pb-3 w-20" />
-                  </tr>
-                </thead>
-                <tbody>
-                  {filteredPayments.map((p) => (
-                    <tr key={p.id} className="border-b last:border-0 hover:bg-muted/30">
-                      <td className="py-3 pr-4">
-                        {p.paid_at ? formatDate(p.paid_at) : formatDate(p.created_at)}
-                      </td>
-                      <td className="py-3 pr-4 font-medium">
-                        {getPlanDisplayName(p.plan as CompanyPlan)}
-                      </td>
-                      <td className="py-3 pr-4">
-                        {p.billing_period === "annually" ? "Yıllık" : "Aylık"}
-                      </td>
-                      <td className="py-3 pr-4 font-medium tabular-nums">
-                        {Number(p.amount).toLocaleString("tr-TR")} ₺
-                      </td>
-                      <td className="py-3 pr-4 text-muted-foreground">
-                        {PROVIDER_LABELS[p.provider ?? ""] ?? p.provider ?? "—"}
-                      </td>
-                      <td className="py-3 pr-4">
-                        {STATUS_LABELS[p.status] ?? p.status}
-                      </td>
-                      <td className="py-3">
-                        <Button
-                          variant="ghost"
-                          size="sm"
-                          className="h-8 text-xs gap-1"
-                          onClick={() => setDetailPayment(p)}
-                        >
-                          <FileText className="size-3.5" />
-                          Detay
-                        </Button>
-                      </td>
-                    </tr>
-                  ))}
-                </tbody>
-              </table>
-            </div>
-          ) : (
-            <p className="text-sm text-muted-foreground py-4">
-              {payments.length === 0
-                ? "Henüz ödeme kaydı bulunmuyor."
-                : "Seçilen filtreye uygun kayıt yok."}
-            </p>
-          )}
-        </CardContent>
-      </Card>
 
-      <Dialog open={!!detailPayment} onOpenChange={(open) => !open && setDetailPayment(null)}>
+          {payments.length > 0 && (
+            <div className="flex gap-1 p-1 rounded-xl bg-muted/50 border border-border self-start sm:self-auto">
+              {FILTER_OPTIONS.map((opt) => (
+                <button
+                  key={opt.value}
+                  onClick={() => setFilter(opt.value)}
+                  className={`px-3 py-1.5 rounded-lg text-xs font-medium transition-all ${
+                    filter === opt.value
+                      ? "bg-background text-foreground shadow-sm border border-border"
+                      : "text-muted-foreground hover:text-foreground"
+                  }`}
+                >
+                  {opt.label}
+                </button>
+              ))}
+            </div>
+          )}
+        </div>
+
+        {/* İçerik */}
+        {filtered.length === 0 ? (
+          <div className="px-6 py-16 text-center">
+            <div className="mx-auto size-12 rounded-xl bg-muted/50 flex items-center justify-center mb-4">
+              <CreditCard className="size-6 text-muted-foreground/50" />
+            </div>
+            <p className="text-sm text-muted-foreground">
+              {payments.length === 0 ? "Henüz ödeme kaydı bulunmuyor." : "Bu filtreye uygun kayıt yok."}
+            </p>
+          </div>
+        ) : (
+          <div className="divide-y divide-border/50">
+            {grouped.map(([month, rows]) => {
+              const monthTotal = rows.filter((r) => r.status === "success").reduce((s, r) => s + Number(r.amount ?? 0), 0)
+              return (
+                <div key={month}>
+                  {/* Ay başlığı */}
+                  <div className="flex items-center justify-between px-6 py-2.5 bg-muted/30">
+                    <div className="flex items-center gap-2">
+                      <Calendar className="size-3.5 text-muted-foreground" />
+                      <span className="text-xs font-semibold text-muted-foreground">{month}</span>
+                    </div>
+                    {monthTotal > 0 && (
+                      <span className="text-xs text-muted-foreground">
+                        {monthTotal.toLocaleString("tr-TR")} ₺
+                      </span>
+                    )}
+                  </div>
+
+                  {/* Satırlar */}
+                  {rows.map((p) => {
+                    const cfg = STATUS_CONFIG[p.status] ?? STATUS_CONFIG.failed
+                    const StatusIcon = cfg.icon
+                    const dateStr = p.paid_at ?? p.created_at
+                    return (
+                      <button
+                        key={p.id}
+                        onClick={() => setDetail(p)}
+                        className="w-full flex items-center gap-4 px-6 py-4 hover:bg-muted/30 transition-colors text-left group"
+                      >
+                        {/* İkon */}
+                        <div className={`rounded-xl p-2.5 shrink-0 ${
+                          p.status === "success"
+                            ? "bg-emerald-500/10"
+                            : p.status === "pending"
+                              ? "bg-amber-500/10"
+                              : "bg-red-500/10"
+                        }`}>
+                          <StatusIcon className={`size-4 ${cfg.cls}`} />
+                        </div>
+
+                        {/* Bilgi */}
+                        <div className="flex-1 min-w-0">
+                          <div className="flex items-center gap-2">
+                            <p className="text-sm font-medium text-foreground">
+                              {getPlanDisplayName(p.plan as CompanyPlan)} — {PERIOD_LABELS[p.billing_period] ?? p.billing_period}
+                            </p>
+                            <Badge
+                              variant="outline"
+                              className={`text-[10px] px-1.5 py-0 h-4 hidden sm:inline-flex ${
+                                p.status === "success"
+                                  ? "border-emerald-500/30 text-emerald-600 dark:text-emerald-400"
+                                  : p.status === "pending"
+                                    ? "border-amber-500/30 text-amber-600 dark:text-amber-400"
+                                    : "border-red-500/30 text-red-600 dark:text-red-400"
+                              }`}
+                            >
+                              {cfg.label}
+                            </Badge>
+                          </div>
+                          <div className="flex items-center gap-2 mt-0.5">
+                            <p className="text-xs text-muted-foreground">
+                              {formatDate(dateStr, true)} {formatTime(dateStr)}
+                            </p>
+                            <span className="text-muted-foreground/30">·</span>
+                            <p className="text-xs text-muted-foreground font-mono">{shortId(p.id)}</p>
+                            <span className="text-muted-foreground/30">·</span>
+                            <p className="text-xs text-muted-foreground">
+                              {PROVIDER_LABELS[p.provider ?? ""] ?? (p.provider ?? "—")}
+                            </p>
+                          </div>
+                        </div>
+
+                        {/* Tutar */}
+                        <div className="text-right shrink-0">
+                          <p className={`text-sm font-bold tabular-nums ${
+                            p.status === "success"
+                              ? "text-foreground"
+                              : "text-muted-foreground"
+                          }`}>
+                            {p.status === "success" ? "" : ""}
+                            {Number(p.amount).toLocaleString("tr-TR")} ₺
+                          </p>
+                          <ChevronRight className="size-3.5 text-muted-foreground/40 ml-auto mt-0.5 group-hover:text-muted-foreground transition-colors" />
+                        </div>
+                      </button>
+                    )
+                  })}
+                </div>
+              )
+            })}
+          </div>
+        )}
+
+        {/* Alt özet */}
+        {successTotal > 0 && (
+          <div className="px-6 py-4 border-t border-border bg-muted/20 flex items-center justify-between">
+            <div className="flex items-center gap-2 text-xs text-muted-foreground">
+              <TrendingUp className="size-3.5" />
+              <span>Toplam başarılı ödeme</span>
+            </div>
+            <span className="text-sm font-bold tabular-nums text-foreground">
+              {successTotal.toLocaleString("tr-TR")} ₺
+            </span>
+          </div>
+        )}
+      </div>
+
+      {/* Detay Modal */}
+      <Dialog open={!!detail} onOpenChange={(open) => !open && setDetail(null)}>
         <DialogContent className="sm:max-w-md">
           <DialogHeader>
-            <DialogTitle>Ödeme detayı</DialogTitle>
+            <DialogTitle className="flex items-center gap-2">
+              <CreditCard className="size-4" />
+              Ödeme Detayı
+            </DialogTitle>
           </DialogHeader>
-          {detailPayment && (
-            <div className="grid gap-3 text-sm">
-              <div className="flex justify-between">
-                <span className="text-muted-foreground">Ödeme no</span>
-                <span className="font-mono">{shortId(detailPayment.id)}</span>
-              </div>
-              <div className="flex justify-between">
-                <span className="text-muted-foreground">Plan</span>
-                <span className="font-medium">
-                  {getPlanDisplayName(detailPayment.plan as CompanyPlan)}
-                </span>
-              </div>
-              <div className="flex justify-between">
-                <span className="text-muted-foreground">Dönem</span>
-                <span>{detailPayment.billing_period === "annually" ? "Yıllık" : "Aylık"}</span>
-              </div>
-              <div className="flex justify-between">
-                <span className="text-muted-foreground">Tutar</span>
-                <span className="font-medium tabular-nums">
-                  {Number(detailPayment.amount).toLocaleString("tr-TR")} ₺
-                </span>
-              </div>
-              <div className="flex justify-between">
-                <span className="text-muted-foreground">Ödeme tarihi</span>
-                <span>
-                  {detailPayment.paid_at
-                    ? formatDate(detailPayment.paid_at)
-                    : formatDate(detailPayment.created_at)}
-                </span>
-              </div>
-              <div className="flex justify-between">
-                <span className="text-muted-foreground">Ödeme yöntemi</span>
-                <span>
-                  {PROVIDER_LABELS[detailPayment.provider ?? ""] ?? detailPayment.provider ?? "—"}
-                </span>
-              </div>
-              <div className="flex justify-between">
-                <span className="text-muted-foreground">Durum</span>
-                <span>{STATUS_LABELS[detailPayment.status] ?? detailPayment.status}</span>
-              </div>
-              {detailPayment.conversation_id && (
-                <div className="flex justify-between">
-                  <span className="text-muted-foreground">İşlem no</span>
-                  <span className="font-mono text-xs break-all">
-                    {detailPayment.conversation_id}
-                  </span>
+          {detail && (() => {
+            const cfg = STATUS_CONFIG[detail.status] ?? STATUS_CONFIG.failed
+            const StatusIcon = cfg.icon
+            return (
+              <div className="space-y-4">
+                <div className={`rounded-xl p-4 flex items-center gap-3 ${
+                  detail.status === "success"
+                    ? "bg-emerald-500/10"
+                    : detail.status === "pending"
+                      ? "bg-amber-500/10"
+                      : "bg-red-500/10"
+                }`}>
+                  <StatusIcon className={`size-5 ${cfg.cls}`} />
+                  <div>
+                    <p className="font-semibold text-sm">{cfg.label}</p>
+                    <p className="text-xs text-muted-foreground">
+                      {formatDate(detail.paid_at ?? detail.created_at)} {formatTime(detail.paid_at ?? detail.created_at)}
+                    </p>
+                  </div>
+                  <p className="ml-auto text-xl font-bold tabular-nums">
+                    {Number(detail.amount).toLocaleString("tr-TR")} ₺
+                  </p>
                 </div>
-              )}
-            </div>
-          )}
+
+                <div className="space-y-2.5 text-sm">
+                  <DetailRow label="İşlem No" value={shortId(detail.id)} mono />
+                  <DetailRow label="Plan" value={getPlanDisplayName(detail.plan as CompanyPlan)} />
+                  <DetailRow label="Dönem" value={PERIOD_LABELS[detail.billing_period] ?? detail.billing_period} />
+                  <DetailRow label="Ödeme Yöntemi" value={PROVIDER_LABELS[detail.provider ?? ""] ?? detail.provider ?? "—"} />
+                  {detail.paid_at && (
+                    <DetailRow label="Ödeme Tarihi" value={formatDate(detail.paid_at)} />
+                  )}
+                  <DetailRow label="Oluşturulma" value={formatDate(detail.created_at)} />
+                </div>
+              </div>
+            )
+          })()}
         </DialogContent>
       </Dialog>
     </>
+  )
+}
+
+function DetailRow({ label, value, mono }: { label: string; value: string; mono?: boolean }) {
+  return (
+    <div className="flex items-center justify-between py-1.5 border-b border-border/50 last:border-0">
+      <span className="text-muted-foreground">{label}</span>
+      <span className={`font-medium ${mono ? "font-mono text-xs" : ""}`}>{value}</span>
+    </div>
   )
 }

@@ -1,40 +1,79 @@
 import { Suspense } from "react"
 import { redirect } from "next/navigation"
 import { createClient } from "@/lib/supabase/server"
-import { SubscriptionCard } from "@/components/company/SubscriptionCard"
 import { PlanChangeSection } from "@/components/company/PlanChangeSection"
 import { PaymentCallbackHandler } from "@/components/company/PaymentCallbackHandler"
 import { PaymentHistoryCard } from "@/components/company/PaymentHistoryCard"
 import { getPlanPrice, getPlanDisplayName } from "@/lib/billing/plans"
 import type { CompanyPlan, SubscriptionStatus, BillingPeriod } from "@/lib/types"
-import { Card, CardContent, CardHeader } from "@/components/ui/card"
 import { Badge } from "@/components/ui/badge"
-import { Calendar, Check, Sparkles } from "lucide-react"
+import { Button } from "@/components/ui/button"
+import {
+  CheckCircle2,
+  Clock,
+  XCircle,
+  AlertCircle,
+  CreditCard,
+  Calendar,
+  TrendingUp,
+  Zap,
+  Check,
+  ArrowRight,
+} from "lucide-react"
+import Link from "next/link"
 
-const PLAN_DESCRIPTIONS: Record<CompanyPlan, string> = {
-  free: "Temel özellikler, 5 ilan hakkı",
-  orta: "Büyüyen ekipler için, 100 ilan",
-  premium: "Sınırsız ilan ve öncelikli destek",
+const STATUS_CONFIG: Record<SubscriptionStatus, {
+  label: string
+  icon: typeof CheckCircle2
+  badgeCls: string
+  dot: string
+}> = {
+  active: {
+    label: "Aktif",
+    icon: CheckCircle2,
+    badgeCls: "bg-emerald-500/10 text-emerald-700 dark:text-emerald-400 border-emerald-500/20",
+    dot: "bg-emerald-500",
+  },
+  pending_payment: {
+    label: "Ödeme Bekleniyor",
+    icon: Clock,
+    badgeCls: "bg-amber-500/10 text-amber-700 dark:text-amber-400 border-amber-500/20",
+    dot: "bg-amber-500",
+  },
+  past_due: {
+    label: "Ödeme Gecikmiş",
+    icon: AlertCircle,
+    badgeCls: "bg-red-500/10 text-red-700 dark:text-red-400 border-red-500/20",
+    dot: "bg-red-500",
+  },
+  cancelled: {
+    label: "İptal Edildi",
+    icon: XCircle,
+    badgeCls: "bg-muted text-muted-foreground border-border",
+    dot: "bg-muted-foreground",
+  },
 }
 
-const SUBSCRIPTION_STATUS_LABELS: Record<SubscriptionStatus, string> = {
-  pending_payment: "Ödeme Bekleniyor",
-  active: "Aktif",
-  past_due: "Ödeme Gecikmiş",
-  cancelled: "İptal",
+const PLAN_FEATURES: Record<CompanyPlan, string[]> = {
+  free: ["5 aktif ilan", "Temel başvuru yönetimi", "E-posta destek"],
+  orta: ["100 aktif ilan", "10 İK çalışanı", "Canlı destek", "AI eşleştirme"],
+  premium: ["Sınırsız ilan", "Sınırsız İK", "7/24 destek", "API erişimi", "White-label"],
 }
 
-const PREMIUM_FEATURES = [
-  "Sınırsız ilan hakkı",
-  "Sınırsız İK çalışanı",
-  "7/24 premium destek",
-  "Özel hesap yöneticisi",
-  "API erişimi",
-  "White-label / özelleştirme seçenekleri",
-]
+const PLAN_GRADIENT: Record<CompanyPlan, string> = {
+  free: "from-zinc-500/10 to-zinc-500/5",
+  orta: "from-primary/15 to-primary/5",
+  premium: "from-violet-500/15 to-violet-500/5",
+}
+
+const PLAN_ICON_COLOR: Record<CompanyPlan, string> = {
+  free: "text-zinc-500",
+  orta: "text-primary",
+  premium: "text-violet-500",
+}
 
 function formatDate(iso: string | null | undefined): string {
-  if (!iso) return "-"
+  if (!iso) return "—"
   try {
     return new Date(iso).toLocaleDateString("tr-TR", {
       day: "numeric",
@@ -42,25 +81,29 @@ function formatDate(iso: string | null | undefined): string {
       year: "numeric",
     })
   } catch {
-    return "-"
+    return "—"
   }
 }
 
 function membershipDuration(startedAt: string | null | undefined): string {
-  if (!startedAt) return "-"
+  if (!startedAt) return "—"
   try {
     const start = new Date(startedAt)
     const now = new Date()
-    const months = Math.max(0, (now.getFullYear() - start.getFullYear()) * 12 + (now.getMonth() - start.getMonth()))
-    if (months < 1) return "1 aydan kısa"
+    const months = Math.max(
+      0,
+      (now.getFullYear() - start.getFullYear()) * 12 + (now.getMonth() - start.getMonth())
+    )
+    if (months < 1) return "1 aydan az"
     if (months === 1) return "1 ay"
     if (months < 12) return `${months} ay`
     const years = Math.floor(months / 12)
     const m = months % 12
-    if (m === 0) return years === 1 ? "1 yıl" : `${years} yıl`
-    return `${years} yıl ${m} ay`
+    return m === 0
+      ? `${years} yıl`
+      : `${years} yıl ${m} ay`
   } catch {
-    return "-"
+    return "—"
   }
 }
 
@@ -70,9 +113,7 @@ export default async function CompanyUyelikPage() {
     data: { user },
   } = await supabase.auth.getUser()
 
-  if (!user) {
-    redirect("/auth/giris")
-  }
+  if (!user) redirect("/auth/giris")
 
   const { data: profile } = await supabase
     .from("profiles")
@@ -80,31 +121,27 @@ export default async function CompanyUyelikPage() {
     .eq("id", user.id)
     .single()
 
-  if (!profile?.company_id) {
-    redirect("/dashboard/company")
-  }
+  if (!profile?.company_id) redirect("/dashboard/company")
 
   const allowedRoles = ["company_admin", "hr"]
-  if (!profile.role || !allowedRoles.includes(profile.role)) {
-    redirect("/dashboard/company")
-  }
+  if (!profile.role || !allowedRoles.includes(profile.role)) redirect("/dashboard/company")
 
   const { data: company, error: companyError } = await supabase
     .from("companies")
-    .select("id, name, plan, subscription_status, billing_period, current_plan_price, last_payment_at, subscription_ends_at, subscription_started_at")
+    .select(
+      "id, name, plan, subscription_status, billing_period, current_plan_price, last_payment_at, subscription_ends_at, subscription_started_at"
+    )
     .eq("id", profile.company_id)
     .single()
 
-  if (companyError || !company) {
-    redirect("/dashboard/company")
-  }
+  if (companyError || !company) redirect("/dashboard/company")
 
   const { data: payments } = await supabase
     .from("company_payments")
     .select("id, plan, billing_period, amount, status, provider, paid_at, created_at, conversation_id, metadata")
     .eq("company_id", company.id)
     .order("created_at", { ascending: false })
-    .limit(25)
+    .limit(50)
 
   const plan = (company.plan as CompanyPlan) ?? "free"
   const subscriptionStatus = (company.subscription_status as SubscriptionStatus) ?? "pending_payment"
@@ -112,142 +149,155 @@ export default async function CompanyUyelikPage() {
 
   const displayPrice = company.current_plan_price ?? getPlanPrice(plan, billingPeriod)
   const isActive = subscriptionStatus === "active"
+  const statusCfg = STATUS_CONFIG[subscriptionStatus]
+  const StatusIcon = statusCfg.icon
+
+  const successPayments = (payments ?? []).filter((p) => p.status === "success")
+  const totalSpent = successPayments.reduce((sum, p) => sum + Number(p.amount ?? 0), 0)
 
   return (
-    <div className="container mx-auto px-4 py-8 space-y-8 min-h-screen max-w-6xl">
+    <div className="container mx-auto px-4 py-8 space-y-6 min-h-screen max-w-6xl">
       <Suspense fallback={null}>
         <PaymentCallbackHandler />
       </Suspense>
-      <div>
-        <h1 className="text-2xl font-bold tracking-tight">Üyelik Merkezi</h1>
-        <p className="text-muted-foreground mt-1">
-          Aboneliğinizi görüntüleyin, plan değiştirin ve ödeme geçmişinize bakın.
-        </p>
+
+      {/* Başlık */}
+      <div className="flex items-center justify-between">
+        <div>
+          <h1 className="text-2xl font-bold tracking-tight">Üyelik Merkezi</h1>
+          <p className="text-sm text-muted-foreground mt-0.5">
+            Aboneliğinizi görüntüleyin, plan değiştirin ve ödeme geçmişinize bakın.
+          </p>
+        </div>
+        <Button asChild size="sm" variant="outline">
+          <Link href="/dashboard/company" className="gap-1.5">
+            <ArrowRight className="size-3.5 rotate-180" />
+            Panele Dön
+          </Link>
+        </Button>
       </div>
 
-      {/* Mevcut plan – büyük ve modern */}
-      <Card className="rounded-2xl border-2 border-primary/20 from-primary/5 via-card to-card dark:from-primary/10 dark:via-card dark:to-card overflow-hidden">
-        <CardContent className="p-8 md:p-10">
-          <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-8">
-            <div>
-              <p className="text-sm font-medium text-muted-foreground uppercase tracking-wider">
-                Mevcut plan
-              </p>
-              <h2 className="text-3xl md:text-4xl font-bold text-foreground mt-1">
-                {getPlanDisplayName(plan)}
-              </h2>
-              <p className="text-muted-foreground mt-2 max-w-md">
-                {PLAN_DESCRIPTIONS[plan]}
-              </p>
-              <div className="flex items-center gap-3 mt-4">
-                <Badge
-                  variant={isActive ? "default" : "secondary"}
-                  className={
-                    isActive
-                      ? "bg-green-500/15 text-green-700 dark:text-green-400 border-green-500/30"
-                      : "bg-amber-500/15 text-amber-700 dark:text-amber-400 border-amber-500/30"
-                  }
-                >
-                  {SUBSCRIPTION_STATUS_LABELS[subscriptionStatus]}
-                </Badge>
-                <span className="text-sm text-muted-foreground">
-                  {billingPeriod === "annually" ? "Yıllık faturalandırma" : "Aylık faturalandırma"}
-                </span>
+      {/* ── Üst İki Sütun: Plan + İstatistikler ─────────────── */}
+      <div className="grid grid-cols-1 lg:grid-cols-3 gap-5">
+
+        {/* Mevcut Plan – geniş kart */}
+        <div className={`lg:col-span-2 rounded-2xl border border-border bg-linear-to-br ${PLAN_GRADIENT[plan]} overflow-hidden`}>
+          <div className="p-6 md:p-8">
+            <div className="flex flex-col md:flex-row md:items-start md:justify-between gap-6">
+              <div className="flex-1">
+                <div className="flex items-center gap-3 mb-3">
+                  <div className="rounded-xl bg-background/70 p-2.5">
+                    <CreditCard className={`size-5 ${PLAN_ICON_COLOR[plan]}`} />
+                  </div>
+                  <div>
+                    <p className="text-xs font-medium text-muted-foreground uppercase tracking-wider">Mevcut Plan</p>
+                    <h2 className="text-2xl font-bold leading-tight">{getPlanDisplayName(plan)}</h2>
+                  </div>
+                </div>
+
+                <div className="flex items-center gap-2 mb-4">
+                  <div className={`size-2 rounded-full ${statusCfg.dot} ${isActive ? "animate-pulse" : ""}`} />
+                  <Badge variant="outline" className={`text-xs ${statusCfg.badgeCls}`}>
+                    <StatusIcon className="size-3 mr-1" />
+                    {statusCfg.label}
+                  </Badge>
+                  <span className="text-xs text-muted-foreground">
+                    {billingPeriod === "annually" ? "Yıllık" : "Aylık"} fatura
+                  </span>
+                </div>
+
+                <div className="grid grid-cols-2 gap-3">
+                  {PLAN_FEATURES[plan].map((f) => (
+                    <div key={f} className="flex items-center gap-1.5 text-sm">
+                      <Check className={`size-3.5 shrink-0 ${PLAN_ICON_COLOR[plan]}`} />
+                      <span className="text-muted-foreground">{f}</span>
+                    </div>
+                  ))}
+                </div>
               </div>
-            </div>
-            <div className="text-center md:text-right shrink-0">
-              <p className="text-sm font-medium text-muted-foreground uppercase tracking-wider">
-                {billingPeriod === "annually" ? "Yıllık tutar" : "Aylık tutar"}
-              </p>
-              <p className="text-4xl md:text-5xl font-bold text-primary mt-1 tabular-nums">
+
+              <div className="shrink-0 text-right">
+                <p className="text-xs text-muted-foreground uppercase tracking-wider mb-1">
+                  {billingPeriod === "annually" ? "Yıllık tutar" : "Aylık tutar"}
+                </p>
                 {displayPrice > 0 ? (
                   <>
-                    {displayPrice.toLocaleString("tr-TR")}
-                    <span className="text-2xl font-semibold text-muted-foreground"> ₺</span>
+                    <p className="text-4xl font-bold tabular-nums">
+                      {displayPrice.toLocaleString("tr-TR")}
+                      <span className="text-xl font-normal text-muted-foreground"> ₺</span>
+                    </p>
+                    <p className="text-xs text-muted-foreground mt-1">
+                      {billingPeriod === "annually" ? "/ yıl" : "/ ay"} + KDV
+                    </p>
                   </>
                 ) : (
-                  <span className="text-2xl font-semibold text-muted-foreground">Ücretsiz</span>
+                  <p className="text-2xl font-bold text-muted-foreground">Ücretsiz</p>
                 )}
-              </p>
-              {displayPrice > 0 && (
-                <p className="text-sm text-muted-foreground mt-1">
-                  {billingPeriod === "annually" ? "yıllık" : "aylık"} + KDV
-                </p>
-              )}
+              </div>
             </div>
           </div>
-        </CardContent>
-      </Card>
+        </div>
 
-      {/* Enterprise ayrıcalıkları */}
-      <Card className="rounded-2xl border border-amber-500/20  from-amber-500/5 via-card to-card dark:from-amber-500/10 dark:via-card dark:to-card overflow-hidden">
-        <CardHeader className="pb-2">
-          <div className="flex items-center gap-2">
-            <Sparkles className="size-5 text-amber-600 dark:text-amber-400" />
-            <h2 className="text-xl font-semibold">Enterprise ayrıcalıkları</h2>
-          </div>
-          <p className="text-sm text-muted-foreground">
-            Enterprise plana geçerek aşağıdaki özelliklerin tamamına erişin.
-          </p>
-        </CardHeader>
-        <CardContent>
-          <ul className="grid grid-cols-1 sm:grid-cols-2 gap-3">
-            {PREMIUM_FEATURES.map((feature) => (
-              <li key={feature} className="flex items-center gap-3 text-sm">
-                <span className="flex size-6 shrink-0 items-center justify-center rounded-full bg-amber-500/15 text-amber-600 dark:text-amber-400">
-                  <Check className="size-3.5" />
-                </span>
-                <span className="text-foreground">{feature}</span>
-              </li>
-            ))}
-          </ul>
-        </CardContent>
-      </Card>
+        {/* Sağ: 3 küçük stat kart */}
+        <div className="flex flex-col gap-4">
+          <StatMini
+            label="Üyelik Süresi"
+            value={membershipDuration(company.subscription_started_at)}
+            sub={company.subscription_started_at ? formatDate(company.subscription_started_at) : "Başlangıç tarihi yok"}
+            icon={<Calendar className="size-4 text-sky-500" />}
+            iconBg="bg-sky-500/10"
+          />
+          <StatMini
+            label="Sonraki Yenileme"
+            value={isActive && company.subscription_ends_at ? formatDate(company.subscription_ends_at) : "—"}
+            sub={isActive ? "Otomatik yenileme" : "Aktif abonelik yok"}
+            icon={<TrendingUp className="size-4 text-emerald-500" />}
+            iconBg="bg-emerald-500/10"
+          />
+          <StatMini
+            label="Toplam Harcama"
+            value={totalSpent > 0 ? `${totalSpent.toLocaleString("tr-TR")} ₺` : "—"}
+            sub={`${successPayments.length} başarılı ödeme`}
+            icon={<Zap className="size-4 text-amber-500" />}
+            iconBg="bg-amber-500/10"
+          />
+        </div>
+      </div>
 
-      <SubscriptionCard
-        companyId={company.id}
-        plan={plan}
-        subscriptionStatus={subscriptionStatus}
-        billingPeriod={billingPeriod}
-        lastPaymentAt={company.last_payment_at}
-        subscriptionEndsAt={company.subscription_ends_at}
-        currentPlanPrice={company.current_plan_price}
-      />
-
+      {/* ── Plan Değiştir ──────────────────────────────────── */}
       <PlanChangeSection
         companyId={company.id}
         currentPlan={plan}
         subscriptionStatus={subscriptionStatus}
       />
 
-      <Card className="rounded-2xl border border-border shadow-sm">
-        <CardHeader className="pb-2">
-          <div className="flex items-center gap-2">
-            <Calendar className="size-5 text-muted-foreground" />
-            <h2 className="text-lg font-semibold">Üyelik özeti</h2>
-          </div>
-        </CardHeader>
-        <CardContent className="space-y-2 text-sm">
-          <div className="flex justify-between">
-            <span className="text-muted-foreground">Üyelik süresi</span>
-            <span className="font-medium">{membershipDuration(company.subscription_started_at)}</span>
-          </div>
-          {company.subscription_started_at && (
-            <div className="flex justify-between">
-              <span className="text-muted-foreground">Üyelik başlangıcı</span>
-              <span>{formatDate(company.subscription_started_at)}</span>
-            </div>
-          )}
-          {isActive && company.subscription_ends_at && (
-            <div className="flex justify-between">
-              <span className="text-muted-foreground">Sonraki yenileme tarihi</span>
-              <span className="font-medium">{formatDate(company.subscription_ends_at)}</span>
-            </div>
-          )}
-        </CardContent>
-      </Card>
-
+      {/* ── Ödeme Geçmişi ──────────────────────────────────── */}
       <PaymentHistoryCard payments={payments ?? []} />
+    </div>
+  )
+}
+
+function StatMini({
+  label,
+  value,
+  sub,
+  icon,
+  iconBg,
+}: {
+  label: string
+  value: string
+  sub: string
+  icon: React.ReactNode
+  iconBg: string
+}) {
+  return (
+    <div className="flex-1 rounded-2xl border border-border bg-card p-4 flex items-center gap-4">
+      <div className={`rounded-xl p-2.5 shrink-0 ${iconBg}`}>{icon}</div>
+      <div className="min-w-0">
+        <p className="text-xs text-muted-foreground">{label}</p>
+        <p className="font-semibold text-foreground text-sm leading-snug truncate">{value}</p>
+        <p className="text-xs text-muted-foreground truncate">{sub}</p>
+      </div>
     </div>
   )
 }
