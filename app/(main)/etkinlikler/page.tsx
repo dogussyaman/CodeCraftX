@@ -1,12 +1,11 @@
 import type { Metadata } from "next"
 import Link from "next/link"
-import { Calendar, MapPin, Video } from "lucide-react"
+import { Calendar } from "lucide-react"
 import { createClient } from "@/lib/supabase/server"
 import { buildPageMetadata, getSiteTitle } from "@/lib/seo"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent } from "@/components/ui/card"
-import { Badge } from "@/components/ui/badge"
-import Glow from "@/components/ui/glow"
+import { EventCard } from "@/components/EventCard"
 
 export const metadata: Metadata = buildPageMetadata({
   title: getSiteTitle("Etkinlikler"),
@@ -72,74 +71,24 @@ export default async function EtkinliklerPage() {
           ) : (
             <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
               {events.map((ev) => {
-                const start = ev.start_date ? new Date(ev.start_date) : null
-                const loc = ev.location as { city?: string; venue?: string } | null | undefined
-                const locationLabel = ev.is_online ? "Online" : loc?.city ?? loc?.venue ?? "Yer bilgisi yok"
+                const loc = ev.location as { city?: string; venue?: string; address?: string } | null | undefined
                 return (
-                  <Link key={ev.id} href={`/etkinlikler/${ev.slug}`} className="block h-full">
-                    <Card className="relative h-full overflow-hidden rounded-2xl border border-border bg-card shadow-sm transition-all duration-200 hover:shadow-md dark:hover:bg-muted/5 dark:hover:border-muted-foreground/10">
-                      <div className="absolute inset-0 pointer-events-none overflow-hidden rounded-2xl">
-                        <Glow variant="bottom" className="opacity-60" />
-                      </div>
-                      <div className="relative pt-3 px-3">
-                        <div className="relative aspect-video w-full overflow-hidden rounded-xl bg-muted">
-                          {(ev as { cover_image_url?: string | null }).cover_image_url ? (
-                            <img
-                              src={(ev as { cover_image_url: string }).cover_image_url}
-                              alt=""
-                              className="size-full object-cover"
-                            />
-                          ) : (
-                            <div className="size-full flex items-center justify-center text-muted-foreground/50">
-                              <Calendar className="size-12" />
-                            </div>
-                          )}
-                          <div className="absolute top-2 left-2 z-10 flex gap-1.5">
-                            <Badge variant="secondary" className="text-xs">{TYPE_LABELS[ev.type] ?? ev.type}</Badge>
-                            {(ev as { featured?: boolean }).featured && (
-                              <Badge variant="default" className="text-xs">Öne çıkan</Badge>
-                            )}
-                          </div>
-                        </div>
-                      </div>
-                      <CardContent className="relative p-4 pt-3 space-y-2">
-                        <h3 className="font-semibold text-foreground line-clamp-2 leading-snug">{ev.title}</h3>
-                        <div className="flex items-center gap-2 flex-wrap">
-                          <Badge variant="outline" className="text-xs font-normal">
-                            {(ev as { attendance_type?: string }).attendance_type === "free" ? "Ücretsiz" : `Ücretli · ${(ev as { price?: number }).price ?? 0} TL`}
-                          </Badge>
-                        </div>
-                        {ev.short_description && (
-                          <p className="text-sm text-muted-foreground line-clamp-2">{ev.short_description}</p>
-                        )}
-                        <div className="flex items-center gap-2 text-xs text-muted-foreground">
-                          {ev.is_online ? (
-                            <Video className="size-3.5 shrink-0" />
-                          ) : (
-                            <MapPin className="size-3.5 shrink-0" />
-                          )}
-                          <span>{locationLabel}</span>
-                        </div>
-                        {start && (
-                          <p className="text-xs text-muted-foreground">
-                            {start.toLocaleDateString("tr-TR", { weekday: "short", day: "numeric", month: "short" })} · {start.toLocaleTimeString("tr-TR", { hour: "2-digit", minute: "2-digit" })}
-                          </p>
-                        )}
-                        {(ev as { tags?: string[] }).tags?.length ? (
-                          <div className="flex flex-wrap gap-1.5">
-                            {(ev as { tags: string[] }).tags.slice(0, 4).map((t) => (
-                              <Badge key={t} variant="outline" className="text-xs font-normal">{t}</Badge>
-                            ))}
-                          </div>
-                        ) : null}
-                        <div className="pt-3">
-                          <span className="inline-flex items-center justify-center rounded-lg border border-primary/30 bg-primary/10 px-4 py-2 text-sm font-medium text-primary">
-                            Detaylar
-                          </span>
-                        </div>
-                      </CardContent>
-                    </Card>
-                  </Link>
+                  <EventCard
+                    key={ev.id}
+                    id={ev.id}
+                    title={ev.title}
+                    slug={ev.slug}
+                    type={ev.type}
+                    short_description={ev.short_description}
+                    start_date={ev.start_date}
+                    is_online={ev.is_online ?? false}
+                    location={loc}
+                    cover_image_url={(ev as { cover_image_url?: string | null }).cover_image_url}
+                    tags={(ev as { tags?: string[] }).tags}
+                    featured={(ev as { featured?: boolean }).featured}
+                    attendance_type={(ev as { attendance_type?: string }).attendance_type}
+                    price={(ev as { price?: number }).price}
+                  />
                 )
               })}
             </div>
