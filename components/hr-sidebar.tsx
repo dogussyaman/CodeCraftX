@@ -22,6 +22,7 @@ import {
   SidebarMenu,
   SidebarMenuButton,
   SidebarMenuItem,
+  useSidebar,
 } from "@/components/ui/sidebar"
 import { cn } from "@/lib/utils"
 
@@ -44,6 +45,8 @@ interface HRSidebarProps {
 
 export function HRSidebar({ profile }: HRSidebarProps) {
   const pathname = usePathname()
+  const { state } = useSidebar()
+  const isCollapsed = state === "collapsed"
 
   return (
     <Sidebar>
@@ -96,10 +99,18 @@ export function HRSidebar({ profile }: HRSidebarProps) {
         {profile && (
           <SidebarMenu>
             <SidebarMenuItem>
-              <div className="flex flex-col gap-0.5 rounded-lg px-3 py-2 text-sm">
-                <span className="truncate font-medium">{profile.full_name ?? "İK"}</span>
-                <span className="truncate text-xs text-muted-foreground dark:text-foreground/75">{profile.email}</span>
-              </div>
+              {isCollapsed ? (
+                <SidebarMenuButton tooltip={profile.full_name ?? "Profil"} asChild>
+                  <Link href="/dashboard/ik/profil" className="flex size-8 items-center justify-center rounded-lg bg-sidebar-accent">
+                    <User className="size-4 shrink-0" />
+                  </Link>
+                </SidebarMenuButton>
+              ) : (
+                <Link href="/dashboard/ik/profil" className="flex flex-col gap-0.5 rounded-lg px-3 py-2 text-sm">
+                  <span className="truncate font-medium">{profile.full_name ?? "İK"}</span>
+                  <span className="truncate text-xs text-muted-foreground dark:text-foreground/75">{profile.email}</span>
+                </Link>
+              )}
             </SidebarMenuItem>
           </SidebarMenu>
         )}

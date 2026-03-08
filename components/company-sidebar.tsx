@@ -22,7 +22,9 @@ import {
   SidebarMenu,
   SidebarMenuButton,
   SidebarMenuItem,
+  useSidebar,
 } from "@/components/ui/sidebar"
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
 import { cn } from "@/lib/utils"
 
 const menuItems = [
@@ -45,6 +47,8 @@ interface CompanySidebarProps {
 
 export function CompanySidebar({ profile, company }: CompanySidebarProps) {
   const pathname = usePathname()
+  const { state } = useSidebar()
+  const isCollapsed = state === "collapsed"
   const isPremium = company?.plan === "premium"
 
   return (
@@ -113,21 +117,77 @@ export function CompanySidebar({ profile, company }: CompanySidebarProps) {
         </SidebarMenu>
       </SidebarContent>
       <SidebarFooter>
-        {isPremium && (
-          <div className="mb-2 flex items-center justify-center gap-1.5 rounded-lg border border-amber-500/30 bg-amber-500/10 px-3 py-1.5 text-xs font-semibold text-amber-700 dark:bg-amber-500/15 dark:text-amber-400">
-            <Sparkles className="size-3.5 shrink-0" />
-            Premium
-          </div>
-        )}
-        {profile && (
+        {isCollapsed ? (
           <SidebarMenu>
-            <SidebarMenuItem>
-              <div className={cn("flex flex-col gap-0.5 rounded-lg px-3 py-2 text-sm", isPremium ? "bg-amber-500/10 text-amber-700 dark:bg-amber-500/20 dark:text-amber-300" : "bg-primary/10 text-primary-foreground")}>
-                <span className="truncate font-medium">{profile.full_name ?? "Şirket"}</span>
-                <span className="truncate text-xs text-muted-foreground dark:text-foreground/75">{profile.email}</span>
-              </div>
-            </SidebarMenuItem>
+            {isPremium && (
+              <SidebarMenuItem>
+                <SidebarMenuButton tooltip="Premium" className="rounded-lg border border-amber-500/30 bg-amber-500/10 text-amber-700 dark:bg-amber-500/15 dark:text-amber-400" asChild>
+                  <span className="flex size-8 items-center justify-center">
+                    <Sparkles className="size-4 shrink-0" />
+                  </span>
+                </SidebarMenuButton>
+              </SidebarMenuItem>
+            )}
+            {profile && (
+              <SidebarMenuItem>
+                <SidebarMenuButton tooltip={profile.full_name ?? "Profil"} asChild>
+                  <Link href="/dashboard/company/ayarlar" className="flex size-8 items-center justify-center rounded-lg bg-sidebar-accent">
+                    <Avatar className="size-7 shrink-0 border border-sidebar-border">
+                      <AvatarImage src={(profile as { avatar_url?: string })?.avatar_url} alt={profile.full_name ?? ""} className="object-cover" />
+                      <AvatarFallback className="bg-primary/10 text-primary text-xs font-bold">
+                        {(profile.full_name ?? "Ş")
+                          .split(" ")
+                          .filter(Boolean)
+                          .map((n) => n[0])
+                          .join("")
+                          .toUpperCase()
+                          .slice(0, 2)}
+                      </AvatarFallback>
+                    </Avatar>
+                  </Link>
+                </SidebarMenuButton>
+              </SidebarMenuItem>
+            )}
           </SidebarMenu>
+        ) : (
+          <>
+            {isPremium && (
+              <div className="mb-2 flex items-center justify-center gap-1.5 rounded-lg border border-amber-500/30 bg-amber-500/10 px-3 py-1.5 text-xs font-semibold text-amber-700 dark:bg-amber-500/15 dark:text-amber-400">
+                <Sparkles className="size-3.5 shrink-0" />
+                Premium
+              </div>
+            )}
+            {profile && (
+              <SidebarMenu>
+                <SidebarMenuItem>
+                  <Link
+                    href="/dashboard/company/ayarlar"
+                    className={cn(
+                      "flex items-center gap-3 rounded-lg px-3 py-2 text-sm min-w-0",
+                      isPremium ? "bg-amber-500/10 text-amber-700 dark:bg-amber-500/20 dark:text-amber-300" : "bg-primary/10 text-primary-foreground",
+                    )}
+                  >
+                    <Avatar className="size-9 shrink-0 border border-sidebar-border">
+                      <AvatarImage src={(profile as { avatar_url?: string })?.avatar_url} alt={profile.full_name ?? ""} className="object-cover" />
+                      <AvatarFallback className="bg-primary/10 text-primary text-xs font-bold">
+                        {(profile.full_name ?? "Ş")
+                          .split(" ")
+                          .filter(Boolean)
+                          .map((n) => n[0])
+                          .join("")
+                          .toUpperCase()
+                          .slice(0, 2)}
+                      </AvatarFallback>
+                    </Avatar>
+                    <div className="flex min-w-0 flex-1 flex-col gap-0.5">
+                      <span className="truncate font-medium">{profile.full_name ?? "Şirket"}</span>
+                      <span className="truncate text-xs text-muted-foreground dark:text-foreground/75">{profile.email}</span>
+                    </div>
+                  </Link>
+                </SidebarMenuItem>
+              </SidebarMenu>
+            )}
+          </>
         )}
       </SidebarFooter>
     </Sidebar>

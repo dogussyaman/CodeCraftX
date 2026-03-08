@@ -26,6 +26,7 @@ import {
   SidebarMenu,
   SidebarMenuButton,
   SidebarMenuItem,
+  useSidebar,
 } from "@/components/ui/sidebar"
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
 import { cn } from "@/lib/utils"
@@ -53,6 +54,8 @@ interface DeveloperSidebarProps {
 
 export function DeveloperSidebar({ profile }: DeveloperSidebarProps) {
   const pathname = usePathname()
+  const { state } = useSidebar()
+  const isCollapsed = state === "collapsed"
 
   return (
     <Sidebar>
@@ -121,24 +124,43 @@ export function DeveloperSidebar({ profile }: DeveloperSidebarProps) {
         {profile && (
           <SidebarMenu>
             <SidebarMenuItem>
-              <div className="flex items-center gap-3 rounded-lg px-3 py-2 text-sm min-w-0">
-                <Avatar className="size-9 shrink-0 border border-sidebar-border">
-                  <AvatarImage src={profile.avatar_url ?? undefined} alt={profile.full_name ?? ""} className="object-cover" />
-                  <AvatarFallback className="bg-primary/10 text-primary text-xs font-bold">
-                    {(profile.full_name ?? "Geliştirici")
-                      .split(" ")
-                      .filter(Boolean)
-                      .map((n) => n[0])
-                      .join("")
-                      .toUpperCase()
-                      .slice(0, 2)}
-                  </AvatarFallback>
-                </Avatar>
-                <div className="flex flex-col gap-0.5 min-w-0 flex-1">
-                  <span className="truncate font-medium">{profile.full_name ?? "Geliştirici"}</span>
-                  <span className="truncate text-xs text-muted-foreground dark:text-foreground/75">{profile.email}</span>
-                </div>
-              </div>
+              {isCollapsed ? (
+                <SidebarMenuButton tooltip={profile.full_name ?? "Profil"} asChild>
+                  <Link href="/dashboard/gelistirici/profil" className="flex size-8 items-center justify-center rounded-lg bg-sidebar-accent">
+                    <Avatar className="size-7 shrink-0 border border-sidebar-border">
+                      <AvatarImage src={profile.avatar_url ?? undefined} alt={profile.full_name ?? ""} className="object-cover" />
+                      <AvatarFallback className="bg-primary/10 text-primary text-xs font-bold">
+                        {(profile.full_name ?? "G")
+                          .split(" ")
+                          .filter(Boolean)
+                          .map((n) => n[0])
+                          .join("")
+                          .toUpperCase()
+                          .slice(0, 2)}
+                      </AvatarFallback>
+                    </Avatar>
+                  </Link>
+                </SidebarMenuButton>
+              ) : (
+                <Link href="/dashboard/gelistirici/profil" className="flex items-center gap-3 rounded-lg px-3 py-2 text-sm min-w-0">
+                  <Avatar className="size-9 shrink-0 border border-sidebar-border">
+                    <AvatarImage src={profile.avatar_url ?? undefined} alt={profile.full_name ?? ""} className="object-cover" />
+                    <AvatarFallback className="bg-primary/10 text-primary text-xs font-bold">
+                      {(profile.full_name ?? "Geliştirici")
+                        .split(" ")
+                        .filter(Boolean)
+                        .map((n) => n[0])
+                        .join("")
+                        .toUpperCase()
+                        .slice(0, 2)}
+                    </AvatarFallback>
+                  </Avatar>
+                  <div className="flex min-w-0 flex-1 flex-col gap-0.5">
+                    <span className="truncate font-medium">{profile.full_name ?? "Geliştirici"}</span>
+                    <span className="truncate text-xs text-muted-foreground dark:text-foreground/75">{profile.email}</span>
+                  </div>
+                </Link>
+              )}
             </SidebarMenuItem>
           </SidebarMenu>
         )}
